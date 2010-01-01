@@ -10,10 +10,11 @@ typedef struct bptree_s bptree_t;
 
 struct bptree_node_s
 {
-    unsigned int         keynum;
-    int                  is_leaf;
-    void               **key;
-    struct bptree_node_s**child;
+    unsigned int           keynum;
+    int                    is_leaf;
+    struct bptree_node_s  *parent;
+    void                 **key;
+    struct bptree_node_s **child;
 };
 
 struct bptree_s
