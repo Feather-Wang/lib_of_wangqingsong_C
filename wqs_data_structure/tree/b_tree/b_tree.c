@@ -395,6 +395,8 @@ btree_insert( btree_t *btree, void *value )
         /*如果根结点没有满，则直接调用btree_insert_nofull()插入*/
         btree_insert_nofull(btree, value);
     }
+
+    return 0;
 }
 
 /*判断x结点的key值个数是否在底线值上，num_ceil为结点内key值的最小个数*/

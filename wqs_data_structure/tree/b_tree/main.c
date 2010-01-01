@@ -12,7 +12,7 @@ int make_srand(int range)
     unsigned int n = 0;
 
     gettimeofday( &tpstart, NULL);
-    int seed = tpstart.tv_usec;
+    unsigned int seed = tpstart.tv_usec;
     srand(seed);
 
     n = rand_r(&seed) % range;
@@ -24,22 +24,22 @@ int compareTo(void *va1, void *va2)
 {
     int *value1 = (int*)va1;
     int *value2 = (int*)va2;
+    int ret = -1;
 
     if( *value1 < *value2 )
-        return -1;
+        ret = -1;
     else if ( *value1 == *value2 ) 
-    {
-        return 0;
-    }
+        ret = 0;
     else if ( *value1 > *value2 ) 
-    {
-        return 1;
-    }
+        ret = 1;
+
+    return ret;
 }
 int deleteTo(void *key)
 {
     if( NULL != key )
         free(key);
+    return 0;
 }
 
 /*层序遍历*/
