@@ -1,66 +1,91 @@
 TRASH_DIR="$HOME/trash_wqs"
 TRASH_PATH=""
-    
+HISTORY_FILE="$HOME/lib_of_wangqingsong_C/wqs_tools/wqs_rm/history_file"
+
 DATE=`date +%Y_%m_%d`
+TIME=`date +%H:%M:%S`
 
 function Usage()
 {
-	echo "--help		show all arguments"
-	echo "--clear		delete trash except near 5 days"
+    echo "--help		show all arguments"
+    echo "--clear		delete trash except near 5 days"
+    echo "--history     --history=number, show command history, when number=-1, the history will be destory"
 }
+
 function Clear()
 {
-	all_day=`ls $TRASH_DIR`
-	num=`ls $TRASH_DIR | wc -l`
-	#echo $all_day":"$num
-	
-	for day in $all_day
-	do
-		if [ $num -le 5 ]
-		then
-			return 0
-		fi
+    all_day=`ls $TRASH_DIR`
+    num=`ls $TRASH_DIR | wc -l`
+    #echo $all_day":"$num
 
-		#echo "num="$num" day = "$day
-		rm -rf $TRASH_DIR/$day
-		num=`expr $num - 1`
-		#echo "num="$num
-	done
+    for day in $all_day
+    do
+        if [ $num -le 5 ]
+        then
+            return 0
+        fi
+
+        #echo "num="$num" day = "$day
+        rm -rf $TRASH_DIR/$day
+        num=`expr $num - 1`
+        #echo "num="$num
+    done
 }
+
+function History_SHOW()
+{
+    cat $HISTORY_FILE
+}
+function History_CLEAN()
+{
+    echo "History Show ......" > $HISTORY_FILE
+}
+
 function opt_process()
 {
-	#echo "opt_process --> " $@
-	args=`getopt -u -o "" -l "help,clear" -- "$@"`
-	set -- ${args}
-	ret=0
-	while [ -n "$1" ]
-	do
-		case $1 in
-			--help)
-				Usage
-				ret=1
-				shift
-				;;
-			--clear)
-				Clear
-				ret=1
-				shift
-				;;
-		esac
-		shift
-	done
+    #echo "opt_process --> " $@
+    args=`getopt -u -o "" -l "help,clear,history,history-clean" -- "$@"`
+    set -- ${args}
+    ret=0
+    while [ -n "$1" ]
+    do
+        case $1 in
+            --help)
+                Usage
+                ret=1
+                shift
+                ;;
+            --clear)
+                Clear
+                ret=1
+                shift
+                ;;
+            --history)
+                History_SHOW
+                ret=1
+                shift
+                ;;
+            --history-clean)
+                History_CLEAN
+                ret=1
+                shift
+                ;;
+        esac
+        shift
+    done
 
-	if [ $ret -eq 1 ]
-	then
-		exit
-	fi
+    if [ $ret -eq 1 ]
+    then
+        exit
+    fi
 }
+
 ############################################### 命令行参数处理
 opt_process $@
 ##############################################################
 if [ ! -e $TRASH_DIR ]
 then
-	mkdir $TRASH_DIR
+    mkdir $TRASH_DIR
 fi
 
 TRASH_PATH="$TRASH_DIR/$DATE"
@@ -68,37 +93,39 @@ TRASH_PATH="$TRASH_DIR/$DATE"
 Judge=`ls $TRASH_DIR | grep "^$DATE$"`
 if [ "$Judge" = "" ]
 then
-	mkdir $TRASH_DIR/$DATE
+    mkdir $TRASH_DIR/$DATE
 fi
 #echo $TRASH_PATH
 
 for arg in "$@"
 do
-    TIME=`date +%H:%M:%S`
     len=${#arg}
-	#echo $len
-	
-	if [ "$len" -eq "0" ]
-	then
-		echo "nothing input"
-		exit 0
-	elif [ "$arg" == "/" ]
-	then
-		echo "Do you want to rm the root path ?"
-		exit 0
-	fi
-		
-	str=${arg:$len-1:1}
-		
-	if [ "$str" = "/" ]
-	then
-		arg=${arg:0:$len-1}
-	fi
-	newFile=${arg##*/}
-	newFile="${TRASH_PATH}/${newFile}.$TIME"
+    #echo $len
 
-#echo "arg=$arg"
-#echo "newFile=$newFile"
+    if [ "$len" -eq "0" ]
+    then
+        echo "nothing input"
+        exit 0
+    elif [ "$arg" == "/" ]
+    then
+        echo "Do you want to rm the root path ?"
+        exit 0
+    fi
 
-	mv $arg $newFile
+    str=${arg:$len-1:1}
+
+    if [ "$str" = "/" ]
+    then
+        arg=${arg:0:$len-1}
+    fi
+    newFile=${arg##*/}
+    newFile="${TRASH_PATH}/${newFile}.$TIME"
+
+    #echo "arg=$arg"
+    #echo "newFile=$newFile"
+
+    mv $arg $newFile
 done
+
+path_command=`pwd`
+echo -e "[$path_command] [$TIME] del $@" >> $HISTORY_FILE
