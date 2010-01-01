@@ -4,9 +4,25 @@
 
 TRASH_DIR="$HOME/trash_wqs"
 TRASH_PATH=""
+
 HISTORY_FILE="$HOME/lib_of_wangqingsong_C/wqs_tools/wqs_rm/history_file"
+if [ -e $HISTORY_FILE ]
+then
 HISTORY_NUMBER=`cat $HISTORY_FILE | wc -l`
+else
+    HISTORY_NUMBER="0"
+fi
 (( HISTORY_NUMBER = HISTORY_NUMBER + 1 ))
+HISTORY_NUMBER_LEN=${#HISTORY_NUMBER}
+if [ $HISTORY_NUMBER_LEN -lt 2 ]
+then
+    HISTORY_NUMBER="000$HISTORY_NUMBER"
+elif [ $HISTORY_NUMBER_LEN -lt 3 ]
+then
+    HISTORY_NUMBER="00$HISTORY_NUMBER"
+else
+    HISTORY_NUMBER="0$HISTORY_NUMBER"
+fi
 
 DATE=`date +%Y_%m_%d`
 TIME=`date +%H:%M:%S`
