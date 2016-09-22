@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <sys/ipc.h>
-#include <sys/shm.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <signal.h>
 
 #include <sys/sem.h>
+#include "wqs_sem.h"
+#include "../shm/wqs_shm.h"
 
 #define READRS 0
 #define WRITERS 1

@@ -91,7 +91,7 @@ int shm_del(int *shmid, char *shm_addr)
 
         ret = 0;
 
-    }while{0};
+    }while(0);
 
     return ret;
 }
