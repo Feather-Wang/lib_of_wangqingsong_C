@@ -10,4 +10,3 @@ else
     echo "fi" >> $Config_Path
     echo "install success"
 fi
-ooo
