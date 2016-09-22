@@ -11,6 +11,11 @@
 
 #include "wqs_shm.h"
 
+/*
+ * return:
+ * -1:error
+ *  0:ok
+ *  */
 int shm_init(int *shmid, char **shm_addr, char *shm_file, int shm_size, int flag)
 {
     key_t key;
@@ -56,20 +61,37 @@ int shm_init(int *shmid, char **shm_addr, char *shm_file, int shm_size, int flag
     {
         shm_del(shmid, *shm_addr);
     }
+
     return ret;
 }
 
+/*
+ * return:
+ * -1:error
+ *  0:ok
+ *  */
 int shm_del(int *shmid, char *shm_addr)
 {
-    if( NULL != shm_addr && 0 > shmdt(shm_addr) )
+    int ret = -1;
+    do
     {
-        perror("Fail to shmdt");
-        exit(EXIT_FAILURE);
-    }
-    
-    if( 0 < *shmid && 0 > shmctl(*shmid, IPC_RMID, NULL) )
-    {
-        perror("Fail to shmctl");
-        exit(EXIT_FAILURE);
-    }
+        /*取消共享内存到进程空间的映射*/
+        if( NULL != shm_addr && 0 > shmdt(shm_addr) )
+        {
+            perror("Fail to shmdt");
+            break;
+        }
+
+        /*删除共享内存片段*/
+        if( 0 < *shmid && 0 > shmctl(*shmid, IPC_RMID, NULL) )
+        {
+            perror("Fail to shmctl");
+            break;
+        }
+
+        ret = 0;
+
+    }while{0};
+
+    return ret;
 }
