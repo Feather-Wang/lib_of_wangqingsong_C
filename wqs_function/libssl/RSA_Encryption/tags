@@ -1,0 +1,23 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+RSA_KEY_BITES	wqs_rsa.c	7;"	d	file:
+__WQS_RSA_H__	wqs_rsa.h	2;"	d
+main	main.c	/^int main(int argc, const char *argv[])$/;"	f
+make_keys_by_create	wqs_rsa.c	/^int make_keys_by_create(RSA **rsa_pri_key, RSA **rsa_pub_key)$/;"	f
+make_keys_by_file	wqs_rsa.c	/^int make_keys_by_file(RSA **rsa_pri_key, RSA **rsa_pub_key, char *PrivateKeyFile, char *PublicKeyFile)$/;"	f
+make_keys_to_file	wqs_rsa.c	/^int make_keys_to_file(char *pri_key_file, char *pub_key_file)$/;"	f
+make_private_key_by_create	wqs_rsa.c	/^int make_private_key_by_create(RSA **rsa_pri_key)$/;"	f
+make_private_key_by_file	wqs_rsa.c	/^int make_private_key_by_file(RSA **rsa_pri_key, char *PrivateKeyFile)$/;"	f
+make_public_key_by_create	wqs_rsa.c	/^int make_public_key_by_create(RSA **rsa_pub_key)$/;"	f
+make_public_key_by_file	wqs_rsa.c	/^int make_public_key_by_file(RSA **rsa_pub_key, char *PublicKeyFile)$/;"	f
+make_public_key_by_private_key	wqs_rsa.c	/^int make_public_key_by_private_key(RSA **rsa_pub_key, RSA *rsa_pri_key)$/;"	f
+rsa_free	wqs_rsa.c	/^void rsa_free(RSA *rsa)$/;"	f
+rsa_private_decryption	wqs_rsa.c	/^int rsa_private_decryption(RSA **rsa_pri_key, unsigned char *ByteBuf, unsigned char *sourdata)$/;"	f
+rsa_private_encryption	wqs_rsa.c	/^int rsa_private_encryption(RSA **rsa_pri_key, unsigned char *msg, unsigned int msg_len, unsigned char *encryBuf)$/;"	f
+rsa_public_decryption	wqs_rsa.c	/^int rsa_public_decryption(RSA **rsa_pub_key, unsigned char *ByteBuf, unsigned char *sourdata)$/;"	f
+rsa_public_encryption	wqs_rsa.c	/^int rsa_public_encryption(RSA **rsa_pub_key, unsigned char *msg, unsigned int msg_len, unsigned char *encryBuf)$/;"	f
+test_rsa_encryption	main.c	/^int test_rsa_encryption()$/;"	f

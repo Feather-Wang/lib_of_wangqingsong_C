@@ -1,0 +1,25 @@
+t = 116, ? = 63, h = 104
+index = 0, opt = 116
+optind = 3, opterr = 1, optopt = 0, optarg = 30
+reargu = 0, noargu = 0, opargu = 0
+30
+******************************************************************************
+index = 0, opt = 63
+optind = 4, opterr = 1, optopt = 0, optarg = (null)
+reargu = 0, noargu = 0, opargu = 0
+help1
+******************************************************************************
+index = 0, opt = 0
+optind = 6, opterr = 1, optopt = 0, optarg = 200
+reargu = 60, noargu = 0, opargu = 0
+******************************************************************************
+index = 0, opt = 63
+optind = 7, opterr = 1, optopt = 105, optarg = (null)
+reargu = 60, noargu = 0, opargu = 0
+help1
+******************************************************************************
+index = 0, opt = 63
+optind = 8, opterr = 1, optopt = 60, optarg = (null)
+reargu = 60, noargu = 0, opargu = 0
+help1
+******************************************************************************

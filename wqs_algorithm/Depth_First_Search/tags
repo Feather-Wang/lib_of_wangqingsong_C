@@ -1,0 +1,18 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ADJLIST_H_	adjlist.h	2;"	d
+DFS	adjlist.c	/^void DFS(linklist s, int v, int *visited)$/;"	f
+N	main.c	6;"	d	file:
+adjlist_insert	adjlist.c	/^void adjlist_insert(linklist s, int v, int u)\/\/insert(s, 1, 3)$/;"	f
+data	adjlist.h	/^    int data;$/;"	m	struct:node
+firstadj	adjlist.c	/^int firstadj(linklist s, int v)\/\/firstadj(s, 1)$/;"	f
+linklist	adjlist.h	/^}listnode, *linklist;$/;"	t	typeref:struct:node
+listnode	adjlist.h	/^}listnode, *linklist;$/;"	t	typeref:struct:node
+main	main.c	/^int main()$/;"	f
+next	adjlist.h	/^    struct node *next;$/;"	m	struct:node	typeref:struct:node::node
+nextadj	adjlist.c	/^int nextadj(linklist s, int v, int u)\/\/nextadj(s, 1, 3)$/;"	f
+node	adjlist.h	/^typedef struct node$/;"	s

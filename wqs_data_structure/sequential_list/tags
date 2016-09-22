@@ -1,0 +1,23 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+N	sqlist.h	4;"	d
+_SQLIST_H_	sqlist.h	2;"	d
+data	sqlist.h	/^    datatype data[N];$/;"	m	struct:__anon1
+datatype	sqlist.h	/^typedef int datatype;$/;"	t
+last	sqlist.h	/^    int last;$/;"	m	struct:__anon1
+main	main.c	/^int main()$/;"	f
+sqlink	sqlist.h	/^}sqlist, *sqlink;$/;"	t	typeref:struct:__anon1
+sqlist	sqlist.h	/^}sqlist, *sqlink;$/;"	t	typeref:struct:__anon1
+sqlist_create	sqlist.c	/^sqlink sqlist_create()$/;"	f
+sqlist_delete	sqlist.c	/^int sqlist_delete(sqlink L, int pos)$/;"	f
+sqlist_empty	sqlist.c	/^int sqlist_empty(sqlink L)$/;"	f
+sqlist_get	sqlist.c	/^int sqlist_get(sqlink L, int pos, datatype *x)$/;"	f
+sqlist_insert	sqlist.c	/^int sqlist_insert(sqlink L, datatype x, int pos)$/;"	f
+sqlist_locate	sqlist.c	/^int sqlist_locate(sqlink L, datatype x)$/;"	f
+sqlist_purge	sqlist.c	/^int sqlist_purge(sqlink L)$/;"	f
+sqlist_show	sqlist.c	/^int sqlist_show(sqlink L)$/;"	f
+sqlist_union	sqlist.c	/^int sqlist_union(sqlink La, sqlink Lb)$/;"	f

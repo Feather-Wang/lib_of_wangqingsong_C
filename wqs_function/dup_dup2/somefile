@@ -1,0 +1,6 @@
+test dup 2 : This is a test
+test dup 2 : This is a test 2
+test dup 2 : copyfd = 1
+test dup 2 : fd = 3
+test dup 2 : STDOUT_FILENO = 1
+1

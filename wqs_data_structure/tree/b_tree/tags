@@ -1,0 +1,54 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.7	//
+IS_CEIL	b_tree.c	385;"	d	file:
+M	b_tree.h	/^    unsigned int            M;$/;"	m	struct:btree_s	access:public
+MOVE	main.c	47;"	d	file:
+__B_TREE_H__	b_tree.h	3;"	d
+btree_create	b_tree.c	/^btree_create( compare_t compareTo, delete_t deleteTo )$/;"	f	signature:( compare_t compareTo, delete_t deleteTo )
+btree_delete	b_tree.c	/^btree_delete( btree_t *btree, void *value)$/;"	f	signature:( btree_t *btree, void *value)
+btree_destory	b_tree.c	/^btree_destory(btree_t **btree)$/;"	f	signature:(btree_t **btree)
+btree_destory_child	b_tree.c	/^btree_destory_child(btree_t *btree, btree_node_t **node)$/;"	f	file:	signature:(btree_t *btree, btree_node_t **node)
+btree_insert	b_tree.c	/^btree_insert( btree_t *btree, void *value )$/;"	f	signature:( btree_t *btree, void *value )
+btree_insert_nofull	b_tree.c	/^btree_insert_nofull(btree_t *btree, void *value)$/;"	f	file:	signature:(btree_t *btree, void *value)
+btree_merge_child	b_tree.c	/^btree_merge_child(btree_t *btree, btree_node_t *parent, int index_node)$/;"	f	file:	signature:(btree_t *btree, btree_node_t *parent, int index_node)
+btree_move_child	b_tree.c	/^btree_move_child(btree_t *btree, btree_node_t *parent, int index_node, int is_left)$/;"	f	file:	signature:(btree_t *btree, btree_node_t *parent, int index_node, int is_left)
+btree_node_s	b_tree.h	/^struct btree_node_s$/;"	s
+btree_node_s::child	b_tree.h	/^    struct btree_node_s**child;$/;"	m	struct:btree_node_s	typeref:struct:btree_node_s::btree_node_s	access:public
+btree_node_s::is_leaf	b_tree.h	/^    int                  is_leaf;$/;"	m	struct:btree_node_s	access:public
+btree_node_s::key	b_tree.h	/^    void               **key;$/;"	m	struct:btree_node_s	access:public
+btree_node_s::keynum	b_tree.h	/^    unsigned int         keynum;$/;"	m	struct:btree_node_s	access:public
+btree_node_t	b_tree.h	/^typedef struct btree_node_s btree_node_t;$/;"	t	typeref:struct:btree_node_s
+btree_s	b_tree.h	/^struct btree_s$/;"	s
+btree_s::M	b_tree.h	/^    unsigned int            M;$/;"	m	struct:btree_s	access:public
+btree_s::compareTo	b_tree.h	/^    compare_t               compareTo;$/;"	m	struct:btree_s	access:public
+btree_s::deleteTo	b_tree.h	/^    delete_t                deleteTo;$/;"	m	struct:btree_s	access:public
+btree_s::root	b_tree.h	/^    struct btree_node_s    *root;$/;"	m	struct:btree_s	typeref:struct:btree_s::btree_node_s	access:public
+btree_search	b_tree.c	/^btree_search( btree_t *btree, void *value )$/;"	f	signature:( btree_t *btree, void *value )
+btree_split_child	b_tree.c	/^btree_split_child(btree_t *btree, btree_node_t *parent, int index_node, btree_node_t *node)$/;"	f	file:	signature:(btree_t *btree, btree_node_t *parent, int index_node, btree_node_t *node)
+btree_t	b_tree.h	/^typedef struct btree_s btree_t;$/;"	t	typeref:struct:btree_s
+child	b_tree.h	/^    struct btree_node_s**child;$/;"	m	struct:btree_node_s	typeref:struct:btree_node_s::btree_node_s	access:public
+compareTo	b_tree.h	/^    compare_t               compareTo;$/;"	m	struct:btree_s	access:public
+compareTo	main.c	/^int compareTo(void *va1, void *va2)$/;"	f	signature:(void *va1, void *va2)
+compare_t	b_tree.h	/^typedef int (*compare_t) (void *va1, void *va2);$/;"	t
+deleteTo	b_tree.h	/^    delete_t                deleteTo;$/;"	m	struct:btree_s	access:public
+deleteTo	main.c	/^int deleteTo(void *key)$/;"	f	signature:(void *key)
+delete_t	b_tree.h	/^typedef int (*delete_t) (void *key);$/;"	t
+format	tags	/^!_TAG_FILE_FORMAT	2	\/extended format; --format=1 will not append ;" to lines\/$/;"	v
+is_leaf	b_tree.h	/^    int                  is_leaf;$/;"	m	struct:btree_node_s	access:public
+key	b_tree.h	/^    void               **key;$/;"	m	struct:btree_node_s	access:public
+key_destory	b_tree.c	/^key_destory(btree_t *btree, void **key)$/;"	f	file:	signature:(btree_t *btree, void **key)
+keynum	b_tree.h	/^    unsigned int         keynum;$/;"	m	struct:btree_node_s	access:public
+main	main.c	/^int main(int argc, const char *argv[])$/;"	f	signature:(int argc, const char *argv[])
+make_srand	main.c	/^int make_srand(int range)$/;"	f	signature:(int range)
+node_create	b_tree.c	/^node_create(unsigned int M)$/;"	f	file:	signature:(unsigned int M)
+node_destory	b_tree.c	/^node_destory( btree_node_t **node )$/;"	f	file:	signature:( btree_node_t **node )
+node_find_max	b_tree.c	/^node_find_max(btree_node_t *node)$/;"	f	file:	signature:(btree_node_t *node)
+print	main.c	/^void print(btree_t *btree)$/;"	f	signature:(btree_t *btree)
+queue	main.c	/^btree_node_t *queue[100000];$/;"	v
+root	b_tree.h	/^    struct btree_node_s    *root;$/;"	m	struct:btree_s	typeref:struct:btree_s::btree_node_s	access:public
+test	main.c	/^int test(void) $/;"	f	signature:(void)
+v	a.out	/^/;"	v

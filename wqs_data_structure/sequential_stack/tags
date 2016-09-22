@@ -1,0 +1,17 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+N	seqstack.h	5;"	d
+data	seqstack.h	/^    datatype data[N];$/;"	m	struct:__anon1
+datatype	seqstack.h	/^typedef int datatype;$/;"	t
+main	main.c	/^int main()$/;"	f
+pop	seqstack.c	/^int pop(seqstack *s, datatype *p)$/;"	f
+push	seqstack.c	/^int push(seqstack *s, datatype x)$/;"	f
+seqstack	seqstack.h	/^}seqstack;$/;"	t	typeref:struct:__anon1
+seqstack_H_	seqstack.h	2;"	d
+seqstack_create	seqstack.c	/^seqstack * seqstack_create()$/;"	f
+seqstack_empty	seqstack.c	/^int seqstack_empty(seqstack *s)$/;"	f
+top	seqstack.h	/^    int top;$/;"	m	struct:__anon1

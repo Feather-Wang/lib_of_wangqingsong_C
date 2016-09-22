@@ -1,0 +1,23 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+_LINKLIST_H_	linklist.h	2;"	d
+data	linklist.h	/^    datatype data;$/;"	m	struct:node
+datatype	linklist.h	/^typedef int datatype;$/;"	t
+linklist	linklist.h	/^}listnode, *linklist;\/\/linklist---struct node *---listnode *$/;"	t	typeref:struct:node
+list_create	linklist.c	/^linklist list_create()$/;"	f
+list_delete	linklist.c	/^int list_delete(linklist H, int pos)$/;"	f
+list_empty	linklist.c	/^int list_empty(linklist H)$/;"	f
+list_head_insert	linklist.c	/^int list_head_insert(linklist H, datatype x)$/;"	f
+list_insert	linklist.c	/^int list_insert(linklist H, datatype x, int pos)$/;"	f
+list_locate	linklist.c	/^int list_locate(linklist H, datatype x)$/;"	f
+list_order_insert	linklist.c	/^int list_order_insert(linklist H, datatype x)$/;"	f
+list_reverse	linklist.c	/^int list_reverse(linklist H)$/;"	f
+list_show	linklist.c	/^int list_show(linklist H)$/;"	f
+listnode	linklist.h	/^}listnode, *linklist;\/\/linklist---struct node *---listnode *$/;"	t	typeref:struct:node
+main	main.c	/^int main()$/;"	f
+next	linklist.h	/^    struct node *next;$/;"	m	struct:node	typeref:struct:node::node
+node	linklist.h	/^typedef struct node$/;"	s

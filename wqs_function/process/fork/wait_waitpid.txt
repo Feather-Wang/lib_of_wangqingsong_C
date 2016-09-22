@@ -1,0 +1,41 @@
+pid_t wait(int *status);
+
+1.检查是否有处于僵尸态的子进程，如果有处于僵尸态的进程，释放其未释放的资源，然后返回其PID.
+即给它收尸
+2.如果没有处于僵尸态的子进程,调用wait的进程将会阻塞
+
+注意:
+A.如果没有子进程，wait函数会立即放回，放回值为-1
+B.如果status指针不为NULL,子子进程结束时的状态信息将会存放在status指针指向的内存空间
+
+常用用法:
+
+wait(NULL);
+等待任一子进程结束
+
+pid_t waitpid(pid_t pid,int *status,int option);
+当子进程的状态发生改变时，waitpid函数将返回,放回值为指定进程的PID
+
+这里的状态发生改变可以是:
+A.指定的子进程从运行态变成僵尸态(exit,被信号杀死);
+B.指定的子进程从运行态变为停止态(SIGSTOP)(option 为 WUNTRACED)
+C.指定的子进程从停止态变为运行态(SIGCONT)(option 为 WCONTINUED)
+
+waitpid(pid1,NULL, WUNTRACED | WCONTINUED);
+
+waitpid(pid1,NULL,0);
+
+注意:
+pid > 0时，只等待指定pid的子进程，其他子进程状态发生变化不理会
+pid == -1时，等待任一子进程结束，此时和wait函数的功能一样
+即wait(&status) <=>waitpid(-1,&status,0)
+pid == 0时，waitpid只会关心和自己同组的任一子进程状态发生变化
+pid < 0时，waitpid只会关心子进程所在组PID和|pid|相等的任一子进程状态发生变化
+
+options：
+
+options == 0时，同wait,阻塞等待子进程状态发生变化
+options == WNOHANG,如果没有子进程状态发生变化，waitpid函数不阻塞，返回值为0 
+options == WUNTRACED,如果有子进程被停止，waitpid函数会被返回,如果不指定，waitpid函数不会放回
+options == WCONTINUED,如果子进程从停止态变成运行态，waitpid函数会返回,如果不指定，waitpid函数不会返回
+

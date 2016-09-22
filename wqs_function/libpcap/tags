@@ -1,0 +1,33 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+MAXEPOLLSIZE	client.c	16;"	d	file:
+MAXEPOLLSIZE	server.c	21;"	d	file:
+N	client.c	12;"	d	file:
+N	server.c	17;"	d	file:
+SA	client.c	/^typedef struct sockaddr SA;$/;"	t	typeref:struct:sockaddr	file:
+SA	server.c	/^typedef struct sockaddr SA;$/;"	t	typeref:struct:sockaddr	file:
+SERVER_IP	client.c	13;"	d	file:
+SERVER_IP	server.c	18;"	d	file:
+SERVER_PORT	client.c	14;"	d	file:
+SERVER_PORT	server.c	19;"	d	file:
+WAITTIME	client.c	17;"	d	file:
+WAITTIME	server.c	22;"	d	file:
+eth	server.c	/^struct ether_header eth;$/;"	v	typeref:struct:ether_header
+eth	test_libpcap.c	/^struct ether_header eth;$/;"	v	typeref:struct:ether_header
+getPacket	test_libpcap.c	/^void getPacket(u_char *arg, const struct pcap_pkthdr *pkthdr, const u_char *packet)$/;"	f
+inet_nltoa	server.c	/^char *inet_nltoa(int hostlong)$/;"	f
+inet_nltoa	test_libpcap.c	/^char *inet_nltoa(int hostlong)$/;"	f
+ip	server.c	/^struct iphdr ip;$/;"	v	typeref:struct:iphdr
+ip	test_libpcap.c	/^struct iphdr ip;$/;"	v	typeref:struct:iphdr
+main	client.c	/^int main(int argc, char *argv[])$/;"	f
+main	server.c	/^int main(int argc, char *argv[])$/;"	f
+main	test_libpcap.c	/^int main(int argc, char *argv[])$/;"	f
+pcap_method_1	test_libpcap.c	/^void *pcap_method_1(void *arg) {$/;"	f
+pcap_method_2	test_libpcap.c	/^void *pcap_method_2(void *arg) {$/;"	f
+pcap_server	server.c	/^void *pcap_server(void *arg) {$/;"	f
+udp	server.c	/^struct udphdr udp;$/;"	v	typeref:struct:udphdr
+udp	test_libpcap.c	/^struct udphdr udp;$/;"	v	typeref:struct:udphdr

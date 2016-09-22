@@ -1,0 +1,34 @@
+exec函数族
+
+l:列举（list）
+execl(可执行文件的路径,可执行文件的文件名，传递参数,....,NULL);
+
+execl()执行/bin/ls 
+execl("/bin/ls","ls","-l",NULL);
+
+p:可执行文件的搜索路径是PATH
+execlp("可执行文件名","可执行文件名",传递参数,...,NULL); 
+execlp()执行/bin/ls 
+
+execlp("ls","ls","-l",NULL);
+
+注意:execlp()执行当前目录下的a.out
+execlp("a.out","a.out",NULL);此时可能会失败，因为当前目录不一定是PATH所包含的路径
+
+e:环境变量(env)
+char *const envp[] = {"环境变量名 = 内容",...,NULL}
+execle("可执行文件的路径","可执行文件名","参数",NULL,envp);
+
+eg:
+char *const envp[] = {"PATH1=hello word","PATH2 = OK",NULL}
+execle("./a.out","a.out",NULL,envp);
+
+v：文件名和参数放在一个指针数组
+int execv(const char *path, char *const argv[]);
+
+execv  执行 /bin/ls 
+char *const argv[] = {"ls","-l",NULL};
+execv("/bin/ls",argv);
+
+int execvp(const char *file, char *const argv[]);
+execvp("ls",argv);

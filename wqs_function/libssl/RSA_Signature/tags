@@ -1,0 +1,23 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+CRYPTO_memcmp	wqs_signature.c	/^int CRYPTO_memcmp( const void *in_a, const void *in_b, size_t len )$/;"	f
+EVP_RSA_SIGN_Init	wqs_signature.c	/^void EVP_RSA_SIGN_Init()$/;"	f
+EVP_RSA_SIGN_Signature	wqs_signature.c	/^int EVP_RSA_SIGN_Signature(const byte* msg, size_t mlen, byte** sig, size_t* slen, EVP_PKEY* pri_key)$/;"	f
+EVP_RSA_SIGN_Verify	wqs_signature.c	/^int EVP_RSA_SIGN_Verify(const byte* msg, size_t mlen, byte* sig, size_t slen, EVP_PKEY* pub_key)$/;"	f
+EVP_RSA_SIGN_Verify_Hmac	wqs_signature.c	/^int EVP_RSA_SIGN_Verify_Hmac(const byte* msg, size_t mlen, const byte* sig, size_t slen, EVP_PKEY* pub_key)$/;"	f
+EVP_RSA_SIGN_make_keys_by_create	wqs_signature.c	/^int EVP_RSA_SIGN_make_keys_by_create(EVP_PKEY** pri_key, EVP_PKEY** pub_key)$/;"	f
+EVP_RSA_SIGN_make_keys_by_file	wqs_signature.c	/^int EVP_RSA_SIGN_make_keys_by_file(EVP_PKEY** pri_key, EVP_PKEY** pub_key, char *pri_key_file, char *pub_key_file)$/;"	f
+EVP_RSA_SIGN_make_keys_by_hmac	wqs_signature.c	/^int EVP_RSA_SIGN_make_keys_by_hmac(EVP_PKEY** pri_key, EVP_PKEY** pub_key, unsigned char *hmac_key)$/;"	f
+EVP_RSA_SIGN_make_keys_to_file	wqs_signature.c	/^int EVP_RSA_SIGN_make_keys_to_file(char *pri_key_file, char *pub_key_file)$/;"	f
+RSA_KEY_BITES	wqs_signature.c	10;"	d	file:
+UNUSED	wqs_signature.c	7;"	d	file:
+__WQS_SIGNATURE_H__	wqs_signature.h	2;"	d
+byte	wqs_signature.h	/^typedef unsigned char byte;$/;"	t
+hn	wqs_signature.c	/^const char hn[] = "SHA256";$/;"	v
+main	main.c	/^int main(int argc, const char *argv[])$/;"	f
+print_it	wqs_signature.c	/^void print_it(const char* label, const byte* buff, size_t len)$/;"	f
+test_signature	main.c	/^int test_signature()$/;"	f

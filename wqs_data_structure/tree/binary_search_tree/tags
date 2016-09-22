@@ -1,0 +1,42 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+__BINARY_SEARCH_TREE_H__	binary_search_tree.h	3;"	d
+bstree_create	binary_search_tree.c	/^bstree_t *bstree_create(compare_t compareTo, delete_t delete_f)$/;"	f	signature:(compare_t compareTo, delete_t delete_f)
+bstree_delete	binary_search_tree.c	/^int bstree_delete(bstree_t *btree, node_t *node)$/;"	f	signature:(bstree_t *btree, node_t *node)
+bstree_destroy	binary_search_tree.c	/^void bstree_destroy(bstree_t **btree)$/;"	f	signature:(bstree_t **btree)
+bstree_find	binary_search_tree.c	/^node_t *bstree_find(bstree_t *btree, void *value) $/;"	f	signature:(bstree_t *btree, void *value)
+bstree_insert	binary_search_tree.c	/^node_t *bstree_insert(bstree_t *btree, void *value)$/;"	f	signature:(bstree_t *btree, void *value)
+bstree_s	binary_search_tree.h	/^struct bstree_s$/;"	s
+bstree_s::compareTo	binary_search_tree.h	/^    compare_t compareTo;$/;"	m	struct:bstree_s	access:public
+bstree_s::deleteTo	binary_search_tree.h	/^    delete_t deleteTo;$/;"	m	struct:bstree_s	access:public
+bstree_s::root	binary_search_tree.h	/^    node_t *root;$/;"	m	struct:bstree_s	access:public
+bstree_t	binary_search_tree.h	/^typedef struct bstree_s bstree_t;$/;"	t	typeref:struct:bstree_s
+compare	main.c	/^int compare(void *va1, void *va2)$/;"	f	signature:(void *va1, void *va2)
+compareTo	binary_search_tree.h	/^    compare_t compareTo;$/;"	m	struct:bstree_s	access:public
+compare_t	binary_search_tree.h	/^typedef int (*compare_t)(void *va1, void *va2);$/;"	t
+delete	main.c	/^int delete(node_t *node)$/;"	f	signature:(node_t *node)
+deleteTo	binary_search_tree.h	/^    delete_t deleteTo;$/;"	m	struct:bstree_s	access:public
+delete_leaf	binary_search_tree.c	/^static int delete_leaf(bstree_t *btree, node_t *node)$/;"	f	file:	signature:(bstree_t *btree, node_t *node)
+delete_t	binary_search_tree.h	/^typedef int (*delete_t)(node_t *node);$/;"	t
+element	binary_search_tree.h	/^    void *element;$/;"	m	struct:node_s	access:public
+find_max	binary_search_tree.c	/^static node_t *find_max(node_t *node)$/;"	f	file:	signature:(node_t *node)
+find_min	binary_search_tree.c	/^static node_t *find_min(node_t *node)$/;"	f	file:	signature:(node_t *node)
+is_leaf	binary_search_tree.c	/^static int is_leaf(node_t *node)$/;"	f	file:	signature:(node_t *node)
+is_root	binary_search_tree.c	/^static int is_root(node_t *node)$/;"	f	file:	signature:(node_t *node)
+lchild	binary_search_tree.h	/^    node_t *lchild;$/;"	m	struct:node_s	access:public
+main	main.c	/^int main(void) $/;"	f	signature:(void)
+make_srand	main.c	/^int make_srand(double range)$/;"	f	signature:(double range)
+node_s	binary_search_tree.h	/^struct node_s {$/;"	s
+node_s::element	binary_search_tree.h	/^    void *element;$/;"	m	struct:node_s	access:public
+node_s::lchild	binary_search_tree.h	/^    node_t *lchild;$/;"	m	struct:node_s	access:public
+node_s::parent	binary_search_tree.h	/^    node_t *parent;$/;"	m	struct:node_s	access:public
+node_s::rchild	binary_search_tree.h	/^    node_t *rchild;$/;"	m	struct:node_s	access:public
+node_t	binary_search_tree.h	/^typedef struct node_s node_t;$/;"	t	typeref:struct:node_s
+parent	binary_search_tree.h	/^    node_t *parent;$/;"	m	struct:node_s	access:public
+print_sorted_tree	binary_search_tree.c	/^void print_sorted_tree(node_t *node)$/;"	f	signature:(node_t *node)
+rchild	binary_search_tree.h	/^    node_t *rchild;$/;"	m	struct:node_s	access:public
+root	binary_search_tree.h	/^    node_t *root;$/;"	m	struct:bstree_s	access:public
