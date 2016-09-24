@@ -3,11 +3,24 @@
 #include <stdlib.h>
 #include <malloc.h>
 
-#include "b_tree.h"
+#include "b+tree.h"
+
+/*node is full*/
+static int
+is_full(bptree_t *btree, bptree_node_t *node)
+{
+    return (node->keynum == btree->M);
+}
+
+static int
+get_ceil(bptree_t *btree)
+{
+    return (btree->M/2 + btree->M%2);
+}
 
 /*delete a key*/
 static void
-key_destory(btree_t *btree, void **key)
+key_destory(bptree_t *btree, void **key)
 {
     if(NULL != *key)
     {
@@ -26,7 +39,7 @@ key_destory(btree_t *btree, void **key)
 
 /*destory a node*/
 static void
-node_destory( btree_node_t **node )
+node_destory( bptree_node_t **node )
 {
     if( NULL != *node )
     {
@@ -44,17 +57,17 @@ node_destory( btree_node_t **node )
  * return:
  * a new node pointer
  * */
-static btree_node_t *
+static bptree_node_t *
 node_create(unsigned int M)
 {
-    btree_node_t *node = NULL, *ret = NULL;
+    bptree_node_t *node = NULL, *ret = NULL;
     do
     {
         /*申请结点空间，并初始化*/
-        node = (btree_node_t *)malloc(sizeof(btree_node_t));
+        node = (bptree_node_t *)malloc(sizeof(bptree_node_t));
         if( NULL == node )
             break;
-        memset(node, 0x00, sizeof(btree_node_t));
+        memset(node, 0x00, sizeof(bptree_node_t));
 
         /*keynum为0，is_leaf为1*/
         node->keynum = 0;
@@ -66,10 +79,10 @@ node_create(unsigned int M)
             break;
         memset(node->key, 0x00, sizeof(void*)*M);
 
-        node->child = (btree_node_t **)malloc(sizeof(btree_node_t*)*M);
+        node->child = (bptree_node_t **)malloc(sizeof(bptree_node_t*)*M);
         if( NULL == node->child )
             break;
-        memset(node->child, 0x00, sizeof(btree_node_t*)*M);
+        memset(node->child, 0x00, sizeof(bptree_node_t*)*M);
 
         ret = node;
 
@@ -86,17 +99,17 @@ node_create(unsigned int M)
 
 /*
  * description:
- * 供btree_destory调用，用于销毁b-tree
+ * 供bptree_destory调用，用于销毁B+Tree
  * 该函数为递归函数*/
 static void
-btree_destory_child(btree_t *btree, btree_node_t **node)
+bptree_destory_child(bptree_t *btree, bptree_node_t **node)
 {
-    /*从0到keynum，判断该结点是否有子结点，如果有，则将子结点作为参数，递归调用该函数，直到找到叶子结点，然后调用node_destory()销毁叶子结点*/
+    /*从0到keynum-1，判断该结点是否有子结点，如果有，则将子结点作为参数，递归调用该函数，直到找到叶子结点，然后调用node_destory()销毁叶子结点*/
     int index = 0;
-    for(index = 0; index <= (*node)->keynum; index++) 
+    for(index = 0; index < (*node)->keynum; index++) 
     {
         if( NULL != (*node)->child[index] )
-            btree_destory_child(btree, &((*node)->child[index]));
+            bptree_destory_child(btree, &((*node)->child[index]));
         /*释放key值的内存*/
         key_destory(btree, &((*node)->key[index]));
     }
@@ -104,8 +117,8 @@ btree_destory_child(btree_t *btree, btree_node_t **node)
 }
 
 /*find a max node of tree*/
-static btree_node_t *
-node_find_max(btree_node_t *node)
+static bptree_node_t *
+node_find_max(bptree_node_t *node)
 {
     while( 1 ) 
     {
@@ -119,7 +132,7 @@ node_find_max(btree_node_t *node)
         }
         else 
         {
-            node = node->child[node->keynum];
+            node = node->child[node->keynum - 1];
         }
     }    
     return node;
@@ -128,68 +141,69 @@ node_find_max(btree_node_t *node)
 /*
  * 结点间移动key值函数：
  * description:
- * 主要用于供btree_delete调用，在删除过程中，如果要下降的子结点树等于底线值，而相邻子结点都大于底线值，这时候就不能通过合并子结点的办法，保证下降的子结点的key的个数在底线值以上了，这时候就需要将当前结点的一个key值下降到子结点中，然后从相邻结点中借一个key值，补充到当前结点的key值中
- * parent：将要移动key值得结点
- * index_node：将要下沉key孩子的结点中，用于下沉到子结点中的key的下标
+ * 主要用于供bptree_delete调用，在删除过程中，如果要下降的子结点树等于底线值，而相邻子结点都大于底线值，这时候就不能通过合并子结点的办法，保证下降的子结点的key的个数在底线值以上了，这时候就需要将当前结点的一个key值下降到子结点中，然后从相邻结点中借一个key值，补充到当前结点的key值中
+ * parent：父结点
+ * index_node：需要借key值的结点，在parent中key的下标
  * 返回值：
  * -1：失败
  *  0：成功*/
 static int
-btree_move_left_child(btree_t *btree, btree_node_t *parent, int index_node)
+bptree_move_left_child(bptree_t *btree, bptree_node_t *parent, int index_node)
 {
     /*node_1为主动借key值的结点，node_2为被动借key值的结点*/
-    btree_node_t *node_1 = parent->child[index_node-1];
-    btree_node_t *node_2 = parent->child[index_node];
+    bptree_node_t *node_1 = parent->child[index_node];
+    bptree_node_t *node_2 = parent->child[index_node + 1];
 
     /*将parent的key值，移动到node_1中，将node_2的第一个child移动到node_1中，node_1的keynum+1*/
-    node_1->key[node_1->keynum+1] = parent->key[index_node];
-    node_1->child[node_1->keynum+1] = node_2->child[0];
+    node_1->key[node_1->keynum] = node_2->key[0];
+    node_1->child[node_1->keynum] = node_2->child[0];
     node_1->keynum += 1;
 
-    /*将node_2的第一个key值提升到parent中*/
-    parent->key[index_node] = node_2->key[1];
 
     /*将node_2的key值和child整体前移，因为第一个key值和child都移到了parent和node_1*/
-    int index = 1;
-    node_2->child[0] = node_2->child[1];
-    for(index = 1; index <= node_2->keynum-1; index++) 
+    int index = 0;
+    for(index = 0; index < node_2->keynum-1; index++) 
     {
-        node_2->key[index] = node_2->key[index+1];
-        node_2->child[index] = node_2->child[index+1];
+        node_2->key[index] = node_2->key[index + 1];
+        node_2->child[index] = node_2->child[index + 1];
     }
+
     /*将空掉的key和child置为NULL，keynum-1*/
     node_2->key[index] = NULL;
     node_2->child[index] = NULL;
     node_2->keynum--;
+    
+    /*将node_2的第一个key值添加到parent中*/
+    parent->key[index_node + 1] = node_2->key[0];
 
     return 0;
 }
 
-/*与btree_move_left_child一样，只是在拷贝的时候，有点区别*/
+/*与bptree_move_left_child一样，只是在拷贝的时候，有点区别*/
 static int
-btree_move_right_child(btree_t *btree, btree_node_t *parent, int index_node)
+bptree_move_right_child(bptree_t *btree, bptree_node_t *parent, int index_node)
 {
     /*node_1为主动借key值的结点，node_2为被动借key值的结点*/
-    btree_node_t *node_1 = parent->child[index_node];
-    btree_node_t *node_2 = parent->child[index_node-1];
+    bptree_node_t *node_1 = parent->child[index_node];
+    bptree_node_t *node_2 = parent->child[index_node-1];
 
     /*将node_1的key值和child整体后移，为即将迁移过来的key和child腾出位置*/
     int index = 0;
-    for( index = node_1->keynum; index >= 0; index--)
+    for( index = node_1->keynum - 1 ; index >= 0; index--)
     {
         node_1->key[index + 1] = node_1->key[index];
         node_1->child[index + 1] = node_1->child[index];
     }
     
     /*将父结点的key值，移动到node_1中，将node_2的最后一个child移动到node_1中*/
-    node_1->key[1] = parent->key[index_node];
-    node_1->child[0] = node_2->child[node_2->keynum];
-    node_1->keynum += 1;
+    node_1->key[0] = node_2->key[node_2->keynum - 1];
+    node_1->child[0] = node_2->child[node_2->keynum - 1];
+    node_1->keynum++;
 
     /*将node_2中的最后一个key值提升到parent中，并将移走的key和child置为空，key值个数减1*/
-    parent->key[index_node] = node_2->key[node_2->keynum];
-    node_2->key[node_2->keynum] = NULL;
-    node_2->child[node_2->keynum] = NULL;
+    parent->key[index_node] = node_2->key[node_2->keynum - 1];
+    node_2->key[node_2->keynum - 1] = NULL;
+    node_2->child[node_2->keynum - 1] = NULL;
     node_2->keynum--;
 
     return 0;
@@ -197,28 +211,24 @@ btree_move_right_child(btree_t *btree, btree_node_t *parent, int index_node)
 
 /*
  * 合并函数：
- * 将两个key值个数为ceil(M/2.0)的子结点，合并成一个，主要供btree_delete调用，防止在下降过程中，下降到一个ceil(M/2.0)个key值的结点上，这样在做其他操作时，可能会破坏B-Tree的性质
+ * 将两个key值个数为ceil(M/2.0)的子结点，合并成一个，主要供bptree_delete调用，防止在下降过程中，下降到一个ceil(M/2.0)个key值的结点上，这样在做其他操作时，可能会破坏B-Tree的性质
  * parent：将要合并的结点的父结点
  * index_node：将要合并的结点中，用于下沉到子结点中的key的下标
  * 返回值：
  * -1：失败
  *  0：成功*/
 static int
-btree_merge_child(btree_t *btree, btree_node_t *parent, int index_node)
+bptree_merge_child(bptree_t *btree, bptree_node_t *parent, int index_node)
 {
     //printf("merge 1 : key[index_node] --> %d\n", *((int*)parent->key[index_node]));
     /*获取要合并的两个子结点，node_1结点会吸收node_2结点的key值和child值*/
-    btree_node_t *node_1 = parent->child[index_node-1];
-    btree_node_t *node_2 = parent->child[index_node];
+    bptree_node_t *node_1 = parent->child[index_node-1];
+    bptree_node_t *node_2 = parent->child[index_node];
 
-    int index = 1;
-
-    /*将要下沉的key值，先拷贝到node_1，然后把node_2的第一个child也拷贝到node_1中，node_1的keynum+1*/
-    node_1->key[node_1->keynum+1] = parent->key[index_node];
-    node_1->child[node_1->keynum+1] = node_2->child[0];
-    node_1->keynum += 1;
-    /*从1到node_2->keynum，将node_2中的所有的key和child都拷贝到node_1中*/
-    for(index = 1; index <= node_2->keynum; index++) 
+    int index = 0;
+    
+    /*从0到node_2->keynum-1，将node_2中的所有的key和child都拷贝到node_1中*/
+    for(index = 0; index < node_2->keynum; index++) 
     {
         node_1->key[node_1->keynum+index] = node_2->key[index];
         node_1->child[node_1->keynum+index] = node_2->child[index];
@@ -226,7 +236,7 @@ btree_merge_child(btree_t *btree, btree_node_t *parent, int index_node)
     node_1->keynum += node_2->keynum;
 
     /*将parent中下沉的key和指向node_2的child都取消，后面的成员往前移动*/
-    for( index = index_node; index <= parent->keynum-1; index++ )
+    for( index = index_node; index < parent->keynum-1; index++ )
     {
         parent->key[index] = parent->key[index+1];
         parent->child[index] = parent->child[index+1];
@@ -243,7 +253,7 @@ btree_merge_child(btree_t *btree, btree_node_t *parent, int index_node)
 
 /*
  * 分裂函数：
- * 将一个key值个数达到M-1的结点，分裂成两个小结点，主要供btree_insert和btree_insert_nofull调用，防止在插入的过程中，遇到一个满结点，这样会破坏B-Tree的性质
+ * 将一个key值个数达到M-1的结点，分裂成两个小结点，主要供bptree_insert和bptree_insert_nofull调用，防止在插入的过程中，遇到一个满结点，这样会破坏B-Tree的性质
  * parent：将要分裂的结点的父结点
  * index_node：node子结点在parent中的位置
  * node：将要分裂的结点
@@ -251,17 +261,17 @@ btree_merge_child(btree_t *btree, btree_node_t *parent, int index_node)
  * -1：失败
  *  0：成功*/
 static int
-btree_split_child(btree_t *btree, btree_node_t *parent, int index_node, btree_node_t *node)
+bptree_split_child(bptree_t *btree, bptree_node_t *parent, int index_node, bptree_node_t *node)
 {
     /*申请一个新的结点，用于存放分裂后的部分key*/
-    btree_node_t *node_new = node_create(btree->M);
+    bptree_node_t *node_new = node_create(btree->M);
     if( NULL == node_new )
         return -1;
 
-    /*分裂一个满结点时，分裂出去的key的个数*/
-    int copy_key_num = (node->keynum - 1) / 2;
     /*index_up是将要提升到父结点中的key的下标*/
-    int index_up = node->keynum - copy_key_num;
+    int index_up = (node->keynum + 1) / 2;
+    /*分裂一个满结点时，分裂出去的key的个数，包括来index_up下标所在的结点*/
+    int copy_key_num = node->keynum - index_up;
 
     /*新的结点与分裂的结点的is_leaf是一样的，在拷贝key值得过程中，也会把相关的child*/
     node_new->is_leaf = node->is_leaf;
@@ -270,7 +280,7 @@ btree_split_child(btree_t *btree, btree_node_t *parent, int index_node, btree_no
 
     /*拷贝key值的过程*/
     int j = 0;
-    for( j = 1;  j <= copy_key_num;  j++) 
+    for( j = 0;  j < copy_key_num;  j++) 
     {
         /*这里用index_up+j，是因为index_up后面的key，都是要拷贝到node_new中去的*/
         node_new->key[j] = node->key[index_up + j]; 
@@ -281,7 +291,7 @@ btree_split_child(btree_t *btree, btree_node_t *parent, int index_node, btree_no
     /*判断：如果node不是叶子结点，还需要把相应的子结点的信息，也拷贝到node_new中*/
     if( !node->is_leaf ) 
     {
-        for(j = 0; j <= copy_key_num; j++) 
+        for(j = 0; j < copy_key_num; j++) 
         {
             node_new->child[j] = node->child[index_up + j];
             node->child[index_up + j] = NULL;
@@ -289,19 +299,19 @@ btree_split_child(btree_t *btree, btree_node_t *parent, int index_node, btree_no
     }
 
     /*node中剩下的key的数量*/
-    node->keynum = index_up - 1;
+    node->keynum = index_up;
 
     /*
      * 为index_up提升到父结点做准备，腾出空间，存放node_New的地址，
      * 因为node_new是在node的后面，所以在父结点中的位置，也应该是在index_node的下一个结点，所以从index_node+1开始，往后的结点，整体向后移动一位，然后将child[index_node+1]指向node_new
      * */
-    for(j = parent->keynum; j >= index_node + 1; j--) 
+    for(j = parent->keynum - 1; j >= index_node + 1; j--) 
     {
-        parent->child[j + 1] = parent->child[j];
         parent->key[j + 1] = parent->key[j];
+        parent->child[j + 1] = parent->child[j];
     }
-    parent->child[index_node + 1] = node_new;
     parent->key[index_node + 1] = node->key[index_up];
+    parent->child[index_node + 1] = node_new;
 
     /*父结点的key值数量增加1，并将结点的地址从node中移除*/
     parent->keynum++;
@@ -312,21 +322,21 @@ btree_split_child(btree_t *btree, btree_node_t *parent, int index_node, btree_no
 
 /*
  * description:
- * 供btree_insert调用，插入key值，当root不为满结点时或将root分裂后，调用该函数，将value插入到B-Tree中*/
+ * 供bptree_insert调用，插入key值，当root不为满结点时或将root分裂后，调用该函数，将value插入到B+Tree中*/
 static int
-btree_insert_nofull(btree_t *btree, void *value)
+bptree_insert_nofull(bptree_t *btree, void *value)
 {
-    btree_node_t *temp = btree->root;
+    bptree_node_t *temp = btree->root;
     int i = 0;
 
     /*循环，找到合适的插入点，一般插入的结点都为叶子结点*/
     while( 1 )
     {
-        i = temp->keynum;
+        i = temp->keynum - 1;
         /*如果temp是叶子结点，则直接找一个位置，将value插入到该结点中*/
         if( temp->is_leaf ) 
         {
-            while( i >= 1 && -1 == btree->compareTo(value, temp->key[i]) )
+            while( i >= 0 && -1 == btree->compareTo(value, temp->key[i]) )
             {
                 temp->key[i+1] = temp->key[i];
                 --i;
@@ -339,15 +349,15 @@ btree_insert_nofull(btree_t *btree, void *value)
         else 
         {
             /*如果该结点不是叶子结点，则找到合适的子结点，一直找到合适的叶子结点位置*/
-            while( i >= 1 && -1 == btree->compareTo(value, temp->key[i]) )
+            while( i >= 0 && -1 == btree->compareTo(value, temp->key[i]) )
                 --i;
 
-            btree_node_t *child = temp->child[i];
+            bptree_node_t *child = temp->child[i];
 
             /*如果该子结点已满，则分裂该子结点*/
-            if( child->keynum == btree->M-1 )
+            if( is_full(btree, child) )
             {
-                btree_split_child(btree, temp, i, child);
+                bptree_split_child(btree, temp, i, child);
                 if( 1 == btree->compareTo(value, temp->key[i+1]) )
                     ++i;
             }
@@ -362,24 +372,25 @@ btree_insert_nofull(btree_t *btree, void *value)
 
 /*插入一个key值*/
 int
-btree_insert( btree_t *btree, void *value )
+bptree_insert( bptree_t *btree, void *value )
 {
-    btree_node_t *root = btree->root;
+    bptree_node_t *root = btree->root;
     /*如果根结点满了，则申请一个新的根结点，将原根结点作为新根结点的一个子结点，对根进行分裂是增加B树高度的唯一途径*/
-    if( root->keynum == btree->M - 1 )
+    if( is_full(btree, root) )
     {
         /*申请一个新的结点*/
-        btree_node_t *temp = node_create(btree->M);
+        bptree_node_t *temp = node_create(btree->M);
         if( NULL == temp )
             return -1;
 
-        /*新结点，非叶子结点，key的数量为0*/
+        /*新结点，非叶子结点，key的数量为0，为什么新结点的key值个数为1，这是因为B+Tree的性质6决定的（我自己笔记总结的几个性质）*/
         temp->is_leaf = 0;
-        temp->keynum = 0;
+        temp->keynum = 1;
+        temp->key[0] = root->key[0];
         temp->child[0] = root;
 
         /*对原根结点进行分裂*/
-        if( -1 == btree_split_child(btree, temp, 0, root) )
+        if( -1 == bptree_split_child(btree, temp, 0, root) )
         {
             node_destory(&temp);
             return -1;
@@ -388,12 +399,12 @@ btree_insert( btree_t *btree, void *value )
         btree->root = temp;
 
         /*进行插入key值*/
-        btree_insert_nofull(btree, value);
+        bptree_insert_nofull(btree, value);
     }
     else
     {
-        /*如果根结点没有满，则直接调用btree_insert_nofull()插入*/
-        btree_insert_nofull(btree, value);
+        /*如果根结点没有满，则直接调用bptree_insert_nofull()插入*/
+        bptree_insert_nofull(btree, value);
     }
 }
 
@@ -401,21 +412,21 @@ btree_insert( btree_t *btree, void *value )
 #define IS_CEIL(x, num_ceil) (NULL != (x) && num_ceil >= (x)->keynum)
 /*delete a key*/
 int
-btree_delete( btree_t *btree, void *value)
+bptree_delete( bptree_t *btree, void *value)
 {
-    btree_node_t *temp = btree->root;
+    bptree_node_t *temp = btree->root;
     int index = 1;
-    int num_ceil = btree->M/2 + btree->M%2 - 1;
+    int num_ceil = get_ceil(btree);
     int ret = -1;
 
     while( NULL != temp )
     {
-        index = 1;
+        index = 0;
         /*从第一个key值到最后一个key值，与value比较，找到与value相等或合适的位置*/
-        while( index <= temp->keynum && 1 == btree->compareTo(value, temp->key[index]) )
+        while( index < temp->keynum && 1 == btree->compareTo(value, temp->key[index]) )
             ++index;
         /*如果value在当前结点内，则进行删除操作*/
-        if( index <= temp->keynum && 0 == btree->compareTo(value, temp->key[index]) ) 
+        if( index < temp->keynum && 0 == btree->compareTo(value, temp->key[index]) ) 
         {
             //printf("delete 1 : key[1] --> %d\n", *((int*)temp->key[1]));
             /*
@@ -428,7 +439,7 @@ btree_delete( btree_t *btree, void *value)
             if( temp->is_leaf )
             {
                 key_destory(btree, &(temp->key[index]));
-                while( index <= temp->keynum-1 )
+                while( index < temp->keynum-1 )
                 {
                     temp->key[index] = temp->key[index+1];
                     index++;
@@ -444,13 +455,13 @@ btree_delete( btree_t *btree, void *value)
                 /*如果左结点和右结点的key值的个数都为num_ceil，则合并这两个结点，然后将要删除的key值从当前结点中删除，移动后面的结点以及子结点指针*/
                 if( IS_CEIL(temp->child[index-1], num_ceil) && IS_CEIL(temp->child[index], num_ceil) ) 
                 {
-                    btree_merge_child(btree, temp, index);
+                    bptree_merge_child(btree, temp, index);
                     temp = temp->child[index-1];
                     continue;
                 }
                 else 
                 {
-                    btree_node_t *node = node_find_max(temp->child[index-1]);
+                    bptree_node_t *node = node_find_max(temp->child[index-1]);
                     key_destory(btree, &(temp->key[index]));
                     temp->key[index] = node->key[node->keynum];
                     node->key[node->keynum] = NULL;
@@ -472,23 +483,23 @@ btree_delete( btree_t *btree, void *value)
             if( index < btree->M && IS_CEIL(temp->child[index-1], num_ceil) && IS_CEIL(temp->child[index], num_ceil) ) 
             {
                 //printf("merge 1 --> index = %d\n", index);
-                btree_merge_child(btree, temp, index);
+                bptree_merge_child(btree, temp, index);
             }
             else if( index >= 2 && IS_CEIL(temp->child[index-2], num_ceil) && IS_CEIL(temp->child[index-1],num_ceil) ) 
             {
                 //printf("merge 2 --> index = %d\n", index);
-                btree_merge_child(btree, temp, index-1);
+                bptree_merge_child(btree, temp, index-1);
                 index--;
             }
             else if( IS_CEIL(temp->child[index-1],num_ceil) && NULL != temp->child[index] && num_ceil < temp->child[index]->keynum ) 
             {
                 //printf("move 3 --> index = %d\n", index);
-                btree_move_left_child(btree, temp, index);
+                bptree_move_left_child(btree, temp, index);
             }
             else if( index >= 2 && IS_CEIL(temp->child[index-1],num_ceil) && NULL != temp->child[index-2] && num_ceil < temp->child[index-2]->keynum ) 
             {
                 //printf("move 4 --> index = %d\n", index);
-                btree_move_right_child(btree, temp, index-1);
+                bptree_move_right_child(btree, temp, index-1);
             }
             temp = temp->child[index-1];
         }
@@ -496,7 +507,7 @@ btree_delete( btree_t *btree, void *value)
 
     if( 0 == ret )
     {
-        if( 0 == btree->root->keynum )
+        if( 1 == btree->root->keynum )
         {
             temp = btree->root;
             btree->root = btree->root->child[0];
@@ -510,17 +521,18 @@ btree_delete( btree_t *btree, void *value)
  * B树查找
  * 返回值：
  * 0：找到了
- * 大于0：没有找到，返回的是查找的最后一个*/
+ * 大于0：没有找到，返回的是查找的最后一个
+ * */
 int
-btree_search( btree_t *btree, void *value )
+bptree_search( bptree_t *btree, void *value )
 {
     int i = 0;
-    btree_node_t *pstr = btree->root;
+    bptree_node_t *pstr = btree->root;
 
     while( 1 )
     {
-        i = 1;
-        while( i <= pstr->keynum && 1 == btree->compareTo(value, pstr->key[i]) )
+        i = 0;
+        while( i < pstr->keynum && 1 == btree->compareTo(value, pstr->key[i]) )
         {
             ++i;
         }
@@ -541,19 +553,19 @@ btree_search( btree_t *btree, void *value )
 }
 
 /*create a b_tree root*/
-btree_t *
-btree_create( compare_t compareTo, delete_t deleteTo )
+bptree_t *
+bptree_create( compare_t compareTo, delete_t deleteTo )
 {
-    btree_t *btree = (btree_t *)malloc(sizeof(btree_t));
+    bptree_t *btree = (bptree_t *)malloc(sizeof(bptree_t));
     if( NULL == btree )
         return NULL;
-    memset(btree, 0x00, sizeof(btree_t));
+    memset(btree, 0x00, sizeof(bptree_t));
 
     btree->M = 4;
     btree->compareTo = compareTo;
     btree->deleteTo = deleteTo;
 
-    btree_node_t *root = node_create(btree->M);
+    bptree_node_t *root = node_create(btree->M);
     if( NULL == root )
         return NULL;
 
@@ -564,9 +576,9 @@ btree_create( compare_t compareTo, delete_t deleteTo )
 
 /*destory a b_tree*/
 void
-btree_destory(btree_t **btree)
+bptree_destory(bptree_t **btree)
 {
-    btree_destory_child(*btree, &((*btree)->root));
+    bptree_destory_child(*btree, &((*btree)->root));
     free(*btree);
     *btree = NULL;
 }
