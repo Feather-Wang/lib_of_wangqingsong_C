@@ -452,23 +452,30 @@ bptree_delete( bptree_t *btree, void *value)
             else
             {
                 /*如果要删除的key值在内结点上*/
-                /*如果左结点和右结点的key值的个数都为num_ceil，则合并这两个结点，然后将要删除的key值从当前结点中删除，移动后面的结点以及子结点指针*/
-                if( IS_CEIL(temp->child[index-1], num_ceil) && IS_CEIL(temp->child[index], num_ceil) ) 
+                bptree_node_t *node = temp;
+                while( !node->child[0]->is_leaf ) 
                 {
-                    bptree_merge_child(btree, temp, index);
-                    temp = temp->child[index-1];
-                    continue;
+                    node = node->child[0]; 
                 }
-                else 
+
+                while( temp != node ) 
                 {
-                    bptree_node_t *node = node_find_max(temp->child[index-1]);
-                    key_destory(btree, &(temp->key[index]));
-                    temp->key[index] = node->key[node->keynum];
-                    node->key[node->keynum] = NULL;
-                    node->keynum--;
-                    ret = 0;
-                    break;
+                    temp->key[0] = node->key[1];
+                    temp = temp->child[0];
                 }
+
+                key_destory(btree, &(temp->key[0]));
+                index = 0;
+                while( index < temp->keynum-1 )
+                {
+                    temp->key[index] = temp->key[index+1];
+                    index++;
+                }
+                temp->key[index] = NULL;
+                temp->keynum--;
+
+                ret = 0;
+                break;
             }
         }
         else 
