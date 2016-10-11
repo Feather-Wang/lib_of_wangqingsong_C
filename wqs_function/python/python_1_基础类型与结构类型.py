@@ -56,7 +56,7 @@ print
 print
 
 
-########################  list
+########################  list,列表
 lists = ["fist list", 2, 3.1]
 print lists
 # print the first element 
@@ -85,7 +85,7 @@ print lists[::2]
 print
 print
 
-#########################  tuple
+#########################  tuple,元组
 tuples = (1, 2, "wang", "qing", "song")
 print tuples
 # print the first element 
@@ -116,7 +116,7 @@ Fiveth: %s" % tuples
 print
 print
 
-#########################  dictionaries
+#########################  dictionaries,字典
 dic = {"first element" : "first", 2 : 2.1, 3 : "hello world"}
 print dic
 # add new element
