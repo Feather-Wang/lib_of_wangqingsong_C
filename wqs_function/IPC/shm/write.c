@@ -19,7 +19,7 @@ int main(int argc,char *argv[])
         perror("Failed to shm_init");
         return -1;
     }
-	
+
 	while(1)
 	{
 		printf(">");

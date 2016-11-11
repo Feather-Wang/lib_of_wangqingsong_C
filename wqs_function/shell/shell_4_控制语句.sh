@@ -47,6 +47,9 @@ str2="/"
 if [ "$str2" = "/" ]
 then
 	echo "Yes"
+elif [ "$str2" = "\\" ]
+then
+    echo "Yes 2"
 else
 	echo "No"
 fi

@@ -91,3 +91,13 @@ if [ $value -ge 100 ]
 then
 	echo "$value >= 100"
 fi
+
+if [ $value -eq 100 -a $value -gt 100 ]
+then
+    echo "$value > 100 and $value == 100"
+fi
+
+if [ $value -gt 100 -o $value -lt 10 ]
+then
+    echo "$value > 100 or $value < 10"
+fi
