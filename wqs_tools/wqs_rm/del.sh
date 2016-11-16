@@ -1,3 +1,7 @@
+#!/bin/bash
+
+# 本工具依赖以下系统命令：ls、date、pwd、cat、wc、expr、rm、sed、echo、cut、getopt、grep
+
 TRASH_DIR="$HOME/trash_wqs"
 TRASH_PATH=""
 HISTORY_FILE="$HOME/lib_of_wangqingsong_C/wqs_tools/wqs_rm/history_file"
@@ -6,16 +10,18 @@ HISTORY_NUMBER=`cat $HISTORY_FILE | wc -l`
 
 DATE=`date +%Y_%m_%d`
 TIME=`date +%H:%M:%S`
+path_command=`pwd`
 
 function Usage()
 {
-    echo "--help		    show all arguments"
-    echo "--clean		    delete trash except near 5 days"
-    echo "--history         show command history"
-    echo "--history-clean   delete the history"
-    echo "--recovery=num    num is the number in history"
+    echo "-h|--help		            show all arguments"
+    echo "-c|--clean		        delete trash except near 5 days"
+    echo "-s|--history              show command history"
+    echo "-d|--history-clean        delete the history"
+    echo "-r|--recovery=num         num is the number in history"
 }
 
+# 清理$TRASH_DIR目录，保留5天内的删除文件
 function Clean()
 {
     all_day=`ls $TRASH_DIR`
@@ -35,6 +41,10 @@ function Clean()
         #echo "num="$num
     done
 }
+
+# 恢复删除文件，具有以下功能
+# 1、删除文件和当前目录下是否存在要恢复的文件
+# 2、根据历史文件记录进行文件恢复处理
 function Recovery()
 {
     file_trash=""
@@ -89,46 +99,50 @@ function Recovery()
     mv $file_trash $file_old
 }
 
+# 显示删除历史记录
 function History_SHOW()
 {
     cat $HISTORY_FILE
 }
+
+# 清空历史记录
 function History_CLEAN()
 {
     rm -f $HISTORY_FILE
     touch $HISTORY_FILE
 }
 
+# 处理命令参数，然后调用相应的处理函数
 function opt_process()
 {
     #echo "opt_process --> " $@
-    args=`getopt -u -o "" -l "help,clean,history,history-clean,recovery:" -- "$@"`
+    args=`getopt -u -o "hcsdr:" -l "help,clean,history,history-clean,recovery:" -- "$@"`
     set -- ${args}
     ret=0
     while [ -n "$1" ]
     do
         case $1 in
-            --help)
+            -h|--help)
                 Usage
                 ret=1
                 shift
                 ;;
-            --clean)
+            -c|--clean)
                 Clean
                 ret=1
                 shift
                 ;;
-            --history)
+            -s|--history)
                 History_SHOW
                 ret=1
                 shift
                 ;;
-            --history-clean)
+            -d|--history-clean)
                 History_CLEAN
                 ret=1
                 shift
                 ;;
-            --recovery)
+            -r|--recovery)
                 Recovery $2
                 ret=1
                 shift
@@ -149,8 +163,9 @@ isCommand=0
 isFile=0
 for arg in $@
 do
-    arg_str=${arg:0:2}
-    if [[ $arg_str =~ "--" ]]
+    arg_one=${arg:0:1}
+    arg_two=${arg:0:2}
+    if [[ "-" =~ $arg_one || "--" =~ $arg_two ]]
     then
         isCommand=1
     else
@@ -158,15 +173,18 @@ do
     fi
 done
 
-if [ $isCommand -eq 1 -a $isFile -ne 1 ]
+if [ $isCommand -eq 1 -a $isFile -ne 1 ] # 只有命令参数
 then
     opt_process $@
-elif [ $isCommand -eq 1 -a $isFile -eq 1 ]
+elif [ $isCommand -eq 1 -a $isFile -eq 1 ] # 同时存在命令参数和文件
 then
     echo "this command can't run with command and file"
     exit
+else
+    echo "Start Delete File ..."
 fi
 ##############################################################
+# 判断回收站目录是否存在，不存在则创建
 if [ ! -e $TRASH_DIR ]
 then
     mkdir $TRASH_DIR
@@ -174,6 +192,7 @@ fi
 
 TRASH_PATH="$TRASH_DIR/$DATE"
 
+# 判断回收站目录下是否存在当前日期的目录，不存在则创建
 Judge=`ls $TRASH_DIR | grep "^$DATE$"`
 if [ "$Judge" = "" ]
 then
@@ -181,6 +200,7 @@ then
 fi
 #echo $TRASH_PATH
 
+# 进行文件处理，利用mv命令，将要删除的文件移动到回收站目录下
 for arg in "$@"
 do
     len=${#arg}
@@ -211,5 +231,9 @@ do
     mv $arg $newFile
 done
 
-path_command=`pwd`
+# 将本次删除记录到历史文件中
 echo -e "$HISTORY_NUMBER $DATE $TIME del $@ $path_command" >> $HISTORY_FILE
+    
+echo "Finished ..."
+
+exit 0
