@@ -180,7 +180,7 @@ elif [ $isCommand -eq 1 -a $isFile -eq 1 ] # 同时存在命令参数和文件
 then
     echo "this command can't run with command and file"
     exit
-else
+#else
     # echo "Start Delete File ..."
 fi
 ##############################################################
