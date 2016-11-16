@@ -181,7 +181,7 @@ then
     echo "this command can't run with command and file"
     exit
 else
-    echo "Start Delete File ..."
+    # echo "Start Delete File ..."
 fi
 ##############################################################
 # 判断回收站目录是否存在，不存在则创建
@@ -234,6 +234,6 @@ done
 # 将本次删除记录到历史文件中
 echo -e "$HISTORY_NUMBER $DATE $TIME del $@ $path_command" >> $HISTORY_FILE
     
-echo "Finished ..."
+# echo "Finished ..."
 
 exit 0
