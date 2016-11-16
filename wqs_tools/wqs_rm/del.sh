@@ -18,7 +18,7 @@ function Usage()
     echo "-c|--clean		        delete trash except near 5 days"
     echo "-s|--history              show command history"
     echo "-d|--history-clean        delete the history"
-    echo "-r|--recovery=num         num is the number in history"
+    echo "-rnum|--recovery=num      num is the number in history, e.g. del -r1 or del --recovery=1"
 }
 
 # 清理$TRASH_DIR目录，保留5天内的删除文件
