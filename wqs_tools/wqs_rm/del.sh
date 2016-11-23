@@ -15,9 +15,10 @@ path_command=`pwd`
 function Usage()
 {
     echo "-h|--help		            show all arguments"
-    echo "-c|--clean		        delete trash except near 5 days"
+    #echo "-c|--clean		        delete trash except near 5 days"
+    echo "-c|--clean		        delete trash and history"
     echo "-s|--history              show command history"
-    echo "-d|--history-clean        delete the history"
+    #echo "-d|--history-clean        delete the history"
     echo "-rnum|--recovery=num      num is the number in history, e.g. del -r1 or del --recovery=1"
 }
 
@@ -30,10 +31,10 @@ function Clean()
 
     for day in $all_day
     do
-        if [ $num -le 5 ]
-        then
-            return 0
-        fi
+        #if [ $num -le 5 ]
+        #then
+        #    return 0
+        #fi
 
         #echo "num="$num" day = "$day
         rm -rf $TRASH_DIR/$day
@@ -118,36 +119,32 @@ function opt_process()
     #echo "opt_process --> " $@
     args=`getopt -u -o "hcsdr:" -l "help,clean,history,history-clean,recovery:" -- "$@"`
     set -- ${args}
-    ret=0
     while [ -n "$1" ]
     do
         case $1 in
             -h|--help)
                 Usage
-                ret=1
                 shift
                 ;;
             -c|--clean)
                 Clean
-                ret=1
+                History_CLEAN
                 shift
                 ;;
             -s|--history)
                 History_SHOW
-                ret=1
                 shift
                 ;;
-            -d|--history-clean)
-                History_CLEAN
-                ret=1
-                shift
-                ;;
+            #-d|--history-clean)
+            #    History_CLEAN
+            #    shift
+            #    ;;
             -r|--recovery)
                 Recovery $2
-                ret=1
                 shift
                 ;;
             *)
+                Usage
                 shift
                 ;;
         esac
