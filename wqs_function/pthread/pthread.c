@@ -16,6 +16,13 @@ int a = 10;
 
 void *pthread_func(void *arg)
 {
+    /*给线程起一个别名，方便在调试时确定是哪个线程*/
+    /*存放线程名的数组最大为16字符，且最后一个字符为'\0'*/
+    char pname[16] = {0};
+    memset(pname, 0x00, 16);
+    snprintf(pname, "pthread_func");
+    prctl(PR_SET_NAME, pname);
+
     int *argument = (int*)arg;
     WQS_LOG(LOG_INFO, "argument = %d\n", *argument);
     int index = 0;
