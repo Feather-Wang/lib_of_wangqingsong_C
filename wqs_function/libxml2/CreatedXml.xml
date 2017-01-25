@@ -1,2 +1,13 @@
 <?xml version="1.0"?>
-<root><newNode1>newNode1 content</newNode1><newNode2>newNode2 content</newNode2><newNode3>newNode3 content</newNode3><node2 attribute="yes">NODE CONTENT</node2><son><grandson>This is a grandson node</grandson></son></root>
+<root>
+  <newNode1>newNode1 content</newNode1>
+  <newNode2>newNode2 content</newNode2>
+  <newNode3>newNode3 content</newNode3>
+  <node02_sibling_prev>this is node02_sibling_prev</node02_sibling_prev>
+  <node02>
+    <node02_child01>modified node02_child01</node02_child01>
+    <newNode1>newNode1 content</newNode1>
+  </node02>
+  <node02_sibling_next>this is node02_sibling_next</node02_sibling_next>
+  <node02_sibling>this is node02_sibling</node02_sibling>
+</root>
