@@ -17,6 +17,8 @@ strs = "wang qing song"
 print strs
 strs += " 1"
 print strs
+strs += str(12345)
+print strs
 # the string is one more lines
 print "Hello\
 world"
