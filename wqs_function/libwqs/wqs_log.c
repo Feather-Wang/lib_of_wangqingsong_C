@@ -22,13 +22,14 @@ struct wqs_syslog_t{
 
 static struct wqs_syslog_t *wqs_log;
 
-static int getsystime(char *time_buf){
-    time_t t = time(NULL);
-    struct tm *ptr;
+static int log_time(char *timestr, int str_size)
+{
+    time_t time_now = time(NULL);
+    struct tm now;
 
-    ptr = localtime(&t);
+    localtime_r(&time_now, &now);
 
-    strftime(time_buf, 64, "%F %T", ptr);
+    strftime(timestr, str_size, "%Y-%m-%d %H:%M:%S", &now);
     return 0;
 }
 
@@ -50,50 +51,6 @@ int wqs_syslog_init(unsigned char log_flag)
     return 0;
 }
 
-int wqs_syslog_printf(int log_level, char *file, const char *func_name, int line, char *fmt,...)
-{
-    char timebuf[64];
-    va_list arg;
-    int flag_print_log = 0;
-
-    getsystime(timebuf);
-    va_start(arg, fmt);
-    pthread_mutex_lock(wqs_log->rw_mutex);
-
-    switch (log_level & wqs_log->flag)
-    {
-    case LOG_INFO:
-        printf(wqs_LOG_GREEN"[INFO]"wqs_LOG_NONE"[%s][%s][%s][Line:%d]", timebuf, file, func_name, line);
-        flag_print_log = 1;
-        break;
-    case LOG_ERROR:
-        printf(wqs_LOG_RED"[ERROR]"wqs_LOG_NONE"[%s][%s][%s][Line:%d]", timebuf, file, func_name, line);
-        flag_print_log =1;
-        break;
-    case LOG_DEBUG:
-        printf(wqs_LOG_BLUE"[DEBUG]"wqs_LOG_NONE"[%s][%s][%s][Line:%d]", timebuf, file, func_name, line);
-        flag_print_log =1;
-        break;
-    case LOG_WARNING:
-        printf(wqs_LOG_YELLOW"[WARNING]"wqs_LOG_NONE"[%s][%s][%s][Line:%d]", timebuf, file, func_name, line);
-        flag_print_log =1;
-        break;
-    default:
-        break;
-    }
-
-    if( flag_print_log )
-    {
-        vfprintf(stderr, fmt, arg);
-        fflush(stderr);
-    }
-
-    pthread_mutex_unlock(wqs_log->rw_mutex);
-    va_end(arg);
-
-    return 0;
-}
-
 int wqs_syslog_destroy()
 {
     pthread_mutexattr_destroy(&wqs_log->attr);
@@ -101,4 +58,50 @@ int wqs_syslog_destroy()
     free(wqs_log);
 
     return 0;
+}
+
+int wqs_syslog_printf(int log_level, char *file, const char *func_name, int line, char *fmt,...)
+{
+    char timestr[64] = {0};
+    char head[1024] = {0};
+    char body[1024] = {0};
+    char logstring[1024] = {0};
+    int body_len = 0;
+    va_list arg;
+
+    log_time(timestr, 64);
+
+    va_start(arg, fmt);
+    body_len = vsnprintf(body, 1024, fmt, arg);
+    va_end(arg);
+
+    if( 0 >= body_len )
+        return body_len;
+
+    switch (log_level & wqs_log->flag)
+    {
+    case LOG_INFO:
+        snprintf(head, 1024, wqs_LOG_GREEN"[INFO]"wqs_LOG_NONE"[%s][%s:%d][%s]", timestr, file, line, func_name);
+        break;
+    case LOG_ERROR:
+        snprintf(head, 1024, wqs_LOG_RED"[ERROR]"wqs_LOG_NONE"[%s][%s:%d][%s]", timestr, file, line, func_name);
+        break;
+    case LOG_DEBUG:
+        snprintf(head, 1024, wqs_LOG_BLUE"[DEBUG]"wqs_LOG_NONE"[%s][%s:%d][%s]", timestr, file, line, func_name);
+        break;
+    case LOG_WARNING:
+        snprintf(head, 1024, wqs_LOG_YELLOW"[WARNING]"wqs_LOG_NONE"[%s][%s:%d][%s]", timestr, file, line, func_name);
+        break;
+    default:
+        break;
+    }
+
+    snprintf(logstring, 1024, "%s %s", head, body);
+
+    pthread_mutex_lock(wqs_log->rw_mutex);
+    fwrite(logstring, strlen(logstring), 1, stdout);
+    fflush(stdout);
+    pthread_mutex_unlock(wqs_log->rw_mutex);
+
+    return strlen(logstring);
 }
