@@ -20,3 +20,10 @@ if [ "$wqs_NEWPATH" != "$PATH" ]
 then
 	export PATH=$wqs_NEWPATH
 fi
+
+# 更新当前系统时间，需要联网，针对虚拟机做的，虚拟机使用休眠功能时，系统时间会与真实时间脱节
+screen_count=`who | awk 'BEGIN{i=0} {len=length($5)} len>7{i=i+1} END{print i}'`
+if [ $screen_count -le 1 ]
+then
+    sudo /usr/sbin/ntpdate -u ntp.api.bz
+fi
