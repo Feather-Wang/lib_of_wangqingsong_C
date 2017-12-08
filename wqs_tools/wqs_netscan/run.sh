@@ -8,7 +8,7 @@ fi
 for((i = $3; i <= $4; i++))
 do
 	{
-		info=`sudo ./a.out $1 $2.$i`
+		info=`sudo ./a.out $1 $2.$i --silence`
 		if [ "$info" != "" ]
 		then
 			echo -e "$info"

@@ -11,11 +11,13 @@
 #include "wqs_arp.h"
 
 typedef struct sockaddr SA;
+int g_flag_silence;
 
 int main(int argc, char *argv[])
 {
     int ret = -1;
     int sock_fd = 0;
+    char errmsg[1024] = {0};
     char recv_buf[1280] = {0};
     unsigned char mac_dst[ETH_ALEN] = {0};
     struct sockaddr_ll broadcast_addr;
@@ -24,10 +26,21 @@ int main(int argc, char *argv[])
     struct arp_req arp_send;
 
     do{
-        if( argc != 3 )
+        if( argc != 3 && argc != 4 )
         {
-            puts("Error : ./wqs_arp interface_name dst_ip_addr");
+            puts("Error : ./wqs_arp interface_name dst_ip_addr [--silence]");
             break;
+        }
+        if( argc == 4 )
+        {
+            if( 0 == strcmp( argv[3], "--silence") )
+            {
+                g_flag_silence = 1;
+            }
+            else
+            {
+                puts("Error : ./wqs_arp interface_name dst_ip_addr [--silence]");
+            }
         }
         char *dev_name = argv[1];
         char *ip_dst = argv[2];
@@ -45,9 +58,12 @@ int main(int argc, char *argv[])
         broadcast_addr.sll_ifindex = if_nametoindex(dev_name);
 
         memset(&arp_send, 0x00, sizeof(arp_send));
-        if( -1 == arp_build(&arp_send, ip_dst, dev_name) )
+        ret = arp_build(&arp_send, ip_dst, dev_name);
+        if( 0 != ret )
         {
-            puts("arp_build is Error ...");
+            get_errmsg( ret, errmsg );
+            if( !g_flag_silence )
+                fprintf(stderr, "arp_build : ret=[%d], errmsg=[%s]\n", ret, errmsg);
             break;
         }
 
@@ -63,12 +79,16 @@ int main(int argc, char *argv[])
             break;
         }
 
-        char mac[24] = {0};
-        if( -1 == arp_solve(recv_buf, ip_dst, mac) )
+        char wqs_netscan[1024] = {0};
+        ret = arp_solve(recv_buf, ip_dst, wqs_netscan);
+        if( 0 != ret )
         {
+            get_errmsg( ret, errmsg );
+            if( !g_flag_silence )
+                fprintf(stderr, "arp_solve : ret=[%d], errmsg=[%s]\n", ret, errmsg);
             break;
         }
-        printf("ip = %s,\t\tmac = %s\n", ip_dst, mac);
+        printf("wqs_netscan : %s\n", wqs_netscan);
 
         ret = 0;
 

@@ -28,7 +28,8 @@ struct arp_req
     u_char padding[18];
 };
 
+extern void get_errmsg(int err, char *errmsg);
 extern int arp_build(struct arp_req *arp_send, uint8_t *ip_dst, char *dev_name);
-extern int arp_solve(uint8_t *arp_reply, uint8_t *ip_dst, uint8_t *mac_dst);
+extern int arp_solve(uint8_t *arp_reply, uint8_t *ip_dst, uint8_t *wqs_netscan);
 
 #endif
