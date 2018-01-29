@@ -94,7 +94,7 @@ int arp_solve(uint8_t *arp_reply, uint8_t *ip_dst, uint8_t *wqs_netscan)
     if( memcmp(arp_recv->ea.arp_spa, &ip_addr, sizeof(ip_addr)) )
         return -104;
 
-    sprintf(wqs_netscan, "DestIP=[%s], ReturnIP=[%d:%d:%d:%d], Mac=[%02X:%02X:%02X:%02X:%02X:%02X]", 
+    sprintf(wqs_netscan, "DestIP=[%s], ReturnIP=[%d.%d.%d.%d], Mac=[%02X:%02X:%02X:%02X:%02X:%02X]", 
             ip_dst,
             arp_recv->ea.arp_spa[0], arp_recv->ea.arp_spa[1], arp_recv->ea.arp_spa[2], arp_recv->ea.arp_spa[3],
             arp_recv->ea.arp_sha[0], arp_recv->ea.arp_sha[1], arp_recv->ea.arp_sha[2], arp_recv->ea.arp_sha[3], arp_recv->ea.arp_sha[4], arp_recv->ea.arp_sha[5]);

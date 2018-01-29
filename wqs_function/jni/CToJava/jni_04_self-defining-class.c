@@ -13,8 +13,8 @@ int jni_create(JavaVM **jvm, JNIEnv **env)
     /*屏蔽即时编译*/
     options[0].optionString = "-Djava.compiler=NONE";
     /*设置CLASSPATH*/
-    options[1].optionString = "-Djava.class.path=.:/home/wangqingsong/test/jdk1.7/jdk1.7.0_79/lib/tools.jar:/home/wangqingsong/test/jdk1.7/jdk1.7.0_79/lib/dt.jar:";
-    options[2].optionString = "-Djava.library.path=.:/home/wangqingsong/test/jdk1.7/jdk1.7.0_79/lib/tools.jar:/home/wangqingsong/test/jdk1.7/jdk1.7.0_79/lib/dt.jar:";
+    options[1].optionString = "-Djava.class.path=.";
+    options[2].optionString = "-Djava.library.path=.";
     //options[2].optionString = "-verbose:NONE";
     /*设置JVM内存初始值*/
     options[3].optionString = "-Xms4M";
