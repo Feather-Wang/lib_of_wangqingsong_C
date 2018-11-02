@@ -2,8 +2,8 @@
 
 # 本工具依赖以下系统命令：ls、date、pwd、cat、wc、expr、rm、sed、echo、cut、getopt、grep
 
-CONFIG_FILE="$HOME/lib_of_wangqingsong_C/wqs_tools/wqs_rm/wqs_rm.conf"
-HISTORY_FILE="$HOME/lib_of_wangqingsong_C/wqs_tools/wqs_rm/history_file"
+CONFIG_FILE="$WQS_PATH/wqs_tools/wqs_rm/wqs_rm.conf"
+HISTORY_FILE="$WQS_PATH/wqs_tools/wqs_rm/history_file"
 TRASH_DIR=""
 TRASH_PATH=""
 
@@ -98,7 +98,7 @@ function Recovery()
     if [ "$line" == "" ]
     then
         echo "there is not $@ history"
-        exit
+        return 1
     fi
 
     for((i=1;i<=6;i++))
@@ -106,7 +106,7 @@ function Recovery()
         str=`echo "$line" | cut -d ' ' -f $i`
         if [ $i -eq 2 ]
         then
-            path_trash="$HOME/trash_wqs/$str"
+            path_trash="$TRASH_DIR/$str"
         elif [ $i -eq 3 ]
         then
             name_trash="$str"
@@ -126,13 +126,13 @@ function Recovery()
     if [ -e $file_old ]
     then
         echo "$file_old is exist"
-        exit
+        return 2
     fi
 
     if [ ! -e $file_trash ]
     then
         echo "$file_trash is already deleted"
-        exit
+        return 3
     fi
 
     mv $file_trash $file_old
@@ -141,7 +141,6 @@ function Recovery()
 function SetTrashPath()
 {
     isHave=`cat $CONFIG_FILE | grep "TRASH_DIR"`
-    echo "isHave=[$isHave]"
     if [ "" != "$isHave" ]
     then
         sed -i '/TRASH_DIR/d' $CONFIG_FILE
@@ -173,12 +172,12 @@ function History_CLEAN()
 function opt_process()
 {
     #echo "opt_process --> " $@
-    args=`getopt -u -o "" -l "help,clean,history,history-clean,recovery:,trashpath:,view-profile" -- "$@"`
+    args=`getopt -u -o "h" --long "help,clean,history,history-clean,recovery:,trashpath:,view-profile" -- "$@"`
     set -- ${args}
     while [ -n "$1" ]
     do
         case $1 in
-            --help)
+            -h|--help)
             Usage
             shift
             ;;
@@ -207,6 +206,9 @@ function opt_process()
             ViewProfile
             shift
             ;;
+            --)
+            shift
+            ;;
             *)
             Usage
             shift
@@ -214,6 +216,7 @@ function opt_process()
         esac
         shift
     done
+
 
     exit
 }

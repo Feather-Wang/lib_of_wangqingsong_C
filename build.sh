@@ -3,7 +3,7 @@ WQS_NEWPATH="$PATH"
 
 #添加环境变量：代码目录
 export CODE=${WQS_PATH}/wqs_function
-#export WQS_PATH=$WQS_PATH
+export WQS_PATH=$WQS_PATH
 
 # 添加自定义命令
 . $HOME/lib_of_wangqingsong_C/tool.sh
