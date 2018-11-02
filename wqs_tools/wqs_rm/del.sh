@@ -17,7 +17,7 @@ then
     }
     END{
     if( "TRASH_DIR" in array ){
-        print array["TRASH_DIR"];
+        print array["TRASH_DIR"]"/trash_wqs";
     }else{
     print home"/trash_wqs";
 }
