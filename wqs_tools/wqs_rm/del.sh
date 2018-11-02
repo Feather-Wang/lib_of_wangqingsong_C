@@ -2,13 +2,34 @@
 
 # 本工具依赖以下系统命令：ls、date、pwd、cat、wc、expr、rm、sed、echo、cut、getopt、grep
 
-TRASH_DIR="$HOME/trash_wqs"
+CONFIG_FILE="$HOME/lib_of_wangqingsong_C/wqs_tools/wqs_rm/wqs_rm.conf"
+HISTORY_FILE="$HOME/lib_of_wangqingsong_C/wqs_tools/wqs_rm/history_file"
+TRASH_DIR=""
 TRASH_PATH=""
 
-HISTORY_FILE="$HOME/lib_of_wangqingsong_C/wqs_tools/wqs_rm/history_file"
+if [ -f $CONFIG_FILE -a -e $CONFIG_FILE ]
+then
+    TRASH_DIR=`cat $CONFIG_FILE | awk -v home=$HOME 'BEGIN{FS="=";}
+    {
+        if( $1 == "TRASH_DIR" ){
+            array["TRASH_DIR"] = $2;
+        }
+    }
+    END{
+    if( "TRASH_DIR" in array ){
+        print array["TRASH_DIR"];
+    }else{
+    print home"/trash_wqs";
+}
+}'`
+else
+    touch $CONFIG_FILE
+    TRASH_DIR="$HOME/trash_wqs"
+fi
+
 if [ -e $HISTORY_FILE ]
 then
-HISTORY_NUMBER=`cat $HISTORY_FILE | wc -l`
+    HISTORY_NUMBER=`cat $HISTORY_FILE | wc -l`
 else
     HISTORY_NUMBER="0"
 fi
@@ -30,12 +51,13 @@ path_command=`pwd`
 
 function Usage()
 {
-    echo "-h|--help		            show all arguments"
-    #echo "-c|--clean		        delete trash except near 5 days"
-    echo "-c|--clean		        delete trash and history"
-    echo "-s|--history              show command history"
-    #echo "-d|--history-clean        delete the history"
-    echo "-rnum|--recovery=num      num is the number in history, e.g. del -r1 or del --recovery=1"
+    echo "--help		            show all arguments"
+    echo "--clean		        delete trash and history"
+    echo "--history              show command history"
+    #echo "--history-clean        delete the history"
+    echo "--recovery=num      recovery file, num is the number in history, e.g. del -r1 or del --recovery=1"
+    echo "--trashpath=<path>                  set the trash directory, the init path is \$HOME/trash_wqs"
+    echo "--view-profile        view profile"
 }
 
 # 清理$TRASH_DIR目录，保留5天内的删除文件
@@ -78,7 +100,7 @@ function Recovery()
         echo "there is not $@ history"
         exit
     fi
-    
+
     for((i=1;i<=6;i++))
     do
         str=`echo "$line" | cut -d ' ' -f $i`
@@ -116,6 +138,24 @@ function Recovery()
     mv $file_trash $file_old
 }
 
+function SetTrashPath()
+{
+    isHave=`cat $CONFIG_FILE | grep "TRASH_DIR"`
+    echo "isHave=[$isHave]"
+    if [ "" != "$isHave" ]
+    then
+        sed -i '/TRASH_DIR/d' $CONFIG_FILE
+        echo "TRASH_DIR=$1" >> $CONFIG_FILE
+    else
+        echo "TRASH_DIR=$1" >> $CONFIG_FILE
+    fi
+}
+
+function ViewProfile()
+{
+    cat $CONFIG_FILE
+}
+
 # 显示删除历史记录
 function History_SHOW()
 {
@@ -133,36 +173,44 @@ function History_CLEAN()
 function opt_process()
 {
     #echo "opt_process --> " $@
-    args=`getopt -u -o "hcsdr:" -l "help,clean,history,history-clean,recovery:" -- "$@"`
+    args=`getopt -u -o "" -l "help,clean,history,history-clean,recovery:,trashpath:,view-profile" -- "$@"`
     set -- ${args}
     while [ -n "$1" ]
     do
         case $1 in
-            -h|--help)
-                Usage
-                shift
-                ;;
-            -c|--clean)
-                Clean
-                History_CLEAN
-                shift
-                ;;
-            -s|--history)
-                History_SHOW
-                shift
-                ;;
+            --help)
+            Usage
+            shift
+            ;;
+            --clean)
+            Clean
+            History_CLEAN
+            shift
+            ;;
+            --history)
+            History_SHOW
+            shift
+            ;;
             #-d|--history-clean)
             #    History_CLEAN
             #    shift
             #    ;;
-            -r|--recovery)
-                Recovery $2
-                shift
-                ;;
+            --recovery)
+            Recovery $2
+            shift
+            ;;
+            --trashpath)
+            SetTrashPath $2
+            shift
+            ;;
+            --view-profile)
+            ViewProfile
+            shift
+            ;;
             *)
-                Usage
-                shift
-                ;;
+            Usage
+            shift
+            ;;
         esac
         shift
     done
@@ -193,7 +241,7 @@ elif [ $isCommand -eq 1 -a $isFile -eq 1 ] # 同时存在命令参数和文件
 then
     echo "this command can't run with command and file"
     exit
-#else
+    #else
     # echo "Start Delete File ..."
 fi
 ##############################################################
@@ -246,7 +294,7 @@ done
 
 # 将本次删除记录到历史文件中
 echo -e "$HISTORY_NUMBER $DATE $TIME del $@ $path_command" >> $HISTORY_FILE
-    
+
 # echo "Finished ..."
 
 exit 0

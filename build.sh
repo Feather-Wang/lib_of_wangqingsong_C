@@ -1,11 +1,9 @@
-wqs_PATH="$HOME/lib_of_wangqingsong_C"
-wqs_NEWPATH="$PATH"
-
-Config_PATH="$HOME/.bashrc"
+WQS_PATH="$HOME/lib_of_wangqingsong_C"
+WQS_NEWPATH="$PATH"
 
 #添加环境变量：代码目录
-wqs_CODE=${wqs_PATH}/wqs_function
-export CODE=${wqs_CODE}
+export CODE=${WQS_PATH}/wqs_function
+#export WQS_PATH=$WQS_PATH
 
 # 添加自定义命令
 . $HOME/lib_of_wangqingsong_C/tool.sh
@@ -16,9 +14,9 @@ export CODE=${wqs_CODE}
 
 
 #更新PATH环境变量
-if [ "$wqs_NEWPATH" != "$PATH" ]
+if [ "$WQS_NEWPATH" != "$PATH" ]
 then
-	export PATH=$wqs_NEWPATH
+	export PATH=$WQS_NEWPATH
 fi
 
 # 更新当前系统时间，需要联网，针对虚拟机做的，虚拟机使用休眠功能时，系统时间会与真实时间脱节
