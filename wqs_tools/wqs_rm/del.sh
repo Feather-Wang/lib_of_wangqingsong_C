@@ -90,7 +90,7 @@ function Recovery()
     file_old=""
 
     name_old=""
-    name_trash=""
+    time_trash=""
     path_trash=""
     path_old=""
 
@@ -100,42 +100,38 @@ function Recovery()
         echo "there is not $@ history"
         return 1
     fi
+        
+    str=`echo "$line" | cut -d ' ' -f 2`
+    path_trash="$TRASH_DIR/$str"
+    str=`echo "$line" | cut -d ' ' -f 3`
+    time_trash="$str"
+    num_line=`echo "$line" | awk '{print NF}'`
+    str=`echo "$line" | cut -d ' ' -f $num_line`
+    path_old="$str"
 
-    for((i=1;i<=6;i++))
+
+    for((i=5;i<$num_line;i++))
     do
-        str=`echo "$line" | cut -d ' ' -f $i`
-        if [ $i -eq 2 ]
+        name_old=`echo "$line" | cut -d ' ' -f $i`
+        name_trash="${name_old}_${time_trash}"
+
+        file_old="$path_old/$name_old"
+        file_trash="$path_trash/$name_trash"
+
+        if [ -e $file_old ]
         then
-            path_trash="$TRASH_DIR/$str"
-        elif [ $i -eq 3 ]
-        then
-            name_trash="$str"
-        elif [ $i -eq 5 ]
-        then
-            name_old="$str"
-            name_trash="${str}_${name_trash}"
-        elif [ $i -eq 6 ]
-        then
-            path_old="$str"
+            echo "$file_old is exist"
+            return 2
         fi
+
+        if [ ! -e $file_trash ]
+        then
+            echo "$file_trash is already deleted"
+            return 3
+        fi
+
+        mv $file_trash $file_old
     done
-
-    file_old="$path_old/$name_old"
-    file_trash="$path_trash/$name_trash"
-
-    if [ -e $file_old ]
-    then
-        echo "$file_old is exist"
-        return 2
-    fi
-
-    if [ ! -e $file_trash ]
-    then
-        echo "$file_trash is already deleted"
-        return 3
-    fi
-
-    mv $file_trash $file_old
 }
 
 function SetTrashPath()
