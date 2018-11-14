@@ -55,9 +55,10 @@ function Usage()
     echo "--clean		        delete trash and history"
     echo "--history              show command history"
     #echo "--history-clean        delete the history"
-    echo "--recovery=num      recovery file, num is the number in history, e.g. del -r1 or del --recovery=1"
+    echo "-r|--recovery=num      recovery file, num is the number in history, e.g. del -r1 or del --recovery=1"
     echo "--trashpath=<path>                  set the trash directory, the init path is \$HOME/trash_wqs"
     echo "--view-profile        view profile"
+    echo "--size                view trash path size"
 }
 
 # 清理$TRASH_DIR目录，保留5天内的删除文件
@@ -79,6 +80,19 @@ function Clean()
         num=`expr $num - 1`
         #echo "num="$num
     done
+}
+
+# 清空历史记录
+function History_CLEAN()
+{
+    rm -f $HISTORY_FILE
+    touch $HISTORY_FILE
+}
+
+# 显示删除历史记录
+function History_SHOW()
+{
+    cat $HISTORY_FILE
 }
 
 # 恢复删除文件，具有以下功能
@@ -151,24 +165,16 @@ function ViewProfile()
     cat $CONFIG_FILE
 }
 
-# 显示删除历史记录
-function History_SHOW()
+function ShowSize()
 {
-    cat $HISTORY_FILE
-}
-
-# 清空历史记录
-function History_CLEAN()
-{
-    rm -f $HISTORY_FILE
-    touch $HISTORY_FILE
+    du -s $TRASH_DIR -h
 }
 
 # 处理命令参数，然后调用相应的处理函数
 function opt_process()
 {
     #echo "opt_process --> " $@
-    args=`getopt -u -o "h" --long "help,clean,history,history-clean,recovery:,trashpath:,view-profile" -- "$@"`
+    args=`getopt -u -o "hr:" --long "help,clean,history,history-clean,recovery:,trashpath:,view-profile,size" -- "$@"`
     set -- ${args}
     while [ -n "$1" ]
     do
@@ -190,7 +196,7 @@ function opt_process()
             #    History_CLEAN
             #    shift
             #    ;;
-            --recovery)
+            -r|--recovery)
             Recovery $2
             shift
             ;;
@@ -200,6 +206,10 @@ function opt_process()
             ;;
             --view-profile)
             ViewProfile
+            shift
+            ;;
+            --size)
+            ShowSize
             shift
             ;;
             --)
