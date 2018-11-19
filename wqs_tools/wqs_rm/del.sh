@@ -168,6 +168,7 @@ function ViewProfile()
 function ShowSize()
 {
     du -s $TRASH_DIR -h
+    df -h
 }
 
 # 处理命令参数，然后调用相应的处理函数
