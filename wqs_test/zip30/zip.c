@@ -1109,52 +1109,65 @@ local int DisplayRunningStats()
     char tempstrg[100];
 
     if (mesg_line_started) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
         fprintf(mesg, "\n");
         mesg_line_started = 0;
     }
     if (logfile_line_started) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
         fprintf(logfile, "\n");
         logfile_line_started = 0;
     }
     if (display_volume) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
         if (noisy) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
             fprintf(mesg, "%lu>%lu: ", current_in_disk + 1, current_disk + 1);
             mesg_line_started = 1;
         }
         if (logall) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
             fprintf(logfile, "%lu>%lu: ", current_in_disk + 1, current_disk + 1);
             logfile_line_started = 1;
         }
     }
     if (display_counts) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
         if (noisy) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
             fprintf(mesg, "%3ld/%3ld ", files_so_far, files_total - files_so_far);
             mesg_line_started = 1;
         }
         if (logall) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
             fprintf(logfile, "%3ld/%3ld ", files_so_far, files_total - files_so_far);
             logfile_line_started = 1;
         }
     }
     if (display_bytes) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
         /* since file sizes can change as we go, use bytes_so_far from
            initial scan so all adds up */
         WriteNumString(bytes_so_far, tempstrg);
         if (noisy) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
             fprintf(mesg, "[%4s", tempstrg);
             mesg_line_started = 1;
         }
         if (logall) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
             fprintf(logfile, "[%4s", tempstrg);
             logfile_line_started = 1;
         }
         if (bytes_total >= bytes_so_far) {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
             WriteNumString(bytes_total - bytes_so_far, tempstrg);
             if (noisy)
                 fprintf(mesg, "/%4s] ", tempstrg);
             if (logall)
                 fprintf(logfile, "/%4s] ", tempstrg);
         } else {
+        printf("[Debug] DisplayRunningStats,[%s][%d]\n", __FILE__, __LINE__);
             WriteNumString(bytes_so_far - bytes_total, tempstrg);
             if (noisy)
                 fprintf(mesg, "-%4s] ", tempstrg);
@@ -1597,39 +1610,21 @@ int main(int argc, char **argv)
     /* so disk display starts at 1, will be updated when entries are read */
     current_in_disk = 0;
 
-    struct filelist_struct *pstr = filelist;
-    while( NULL != pstr )
-    {
-        //printf("pstr = [%s]\n", pstr->name);
-        pstr = pstr->next;
-    }
-
     /* Process file arguments from command line */
     if (filelist) 
     {
-        if (action == ARCHIVE) 
+        /* try find matching files on OS first then try find entries in archive */
+        for (; filelist; ) 
         {
-        } 
-        else 
-        {
-            /* try find matching files on OS first then try find entries in archive */
-            for (; filelist; ) 
-            {
-                r = PROCNAME(filelist->name);
-                free(filelist->name);
-                filearg = filelist;
-                filelist = filelist->next;
-                free(filearg);
-            }
+            //printf("[Debug] filename=[%s],%s,%d\n", filelist->name, __FILE__, __LINE__);
+            /*将文件名添加到found全局链表中，然后将filelist释放*/
+            r = PROCNAME(filelist->name);
+            free(filelist->name);
+            filearg = filelist;
+            filelist = filelist->next;
+            free(filearg);
         }
     }
-    pstr = filelist;
-    while( NULL != pstr )
-    {
-        printf("pstr = [%s]\n", pstr->name);
-        pstr = pstr->next;
-    }
-
 
     k = 0;                        /* Initialize marked count */
     scan_started = 0;
@@ -1638,17 +1633,17 @@ int main(int argc, char **argv)
 
     scan_count = 0;
     scan_started = 0;
+    /*计算所有压缩文件的总大小，并且把单个大小写入到found里每个单元中*/
     for (f = found; f != NULL;) {
         tf = 0;
-        if (action != DELETE && action != FRESHEN) {
-            printf("---------------------------------\n");
-            tf = filetime(f->name, (ulg *)NULL, (zoff_t *)&usize, NULL);
-        }
+        //printf("[Debug] zip,[%s][%d] will to do filetime\n", __FILE__, __LINE__);
+        tf = filetime(f->name, (ulg *)NULL, (zoff_t *)&usize, NULL);
         //printf("[Debug] f->name=[%s], size=[%d]\n", f->name, usize);
         /* ??? */
         files_total++;
         f->usize = 0;
         if (usize != (uzoff_t) -1 && usize != (uzoff_t) -2) {
+            //printf("[Debug] zip,[%s][%d]\n", __FILE__, __LINE__);
             bytes_total += usize;
             f->usize = usize;
         }
@@ -1670,9 +1665,9 @@ int main(int argc, char **argv)
         int yd;
         int i;
 
+        /*创建一个临时的压缩包文件，并把打开的文件描述符赋给yd*/
         /* create path by stripping name and appending template */
-        if ((tempzip = malloc(strlen(zipfile) + 12)) == NULL) {
-        }
+        tempzip = malloc(strlen(zipfile) + 12);
         strcpy(tempzip, zipfile);
         //printf("[Debug] %d, tempzip=[%s]\n", __LINE__, tempzip);
         for(i = strlen(tempzip); i > 0; i--) {
@@ -1687,35 +1682,26 @@ int main(int argc, char **argv)
         y = fdopen(yd, FOPW_TMP);
     }
 
+    /*申请一个ZBSZ大小的内存，ZBSZ为16834大小，并且设置上面打开的临时文件的文件大小为ZBSZ，并且将zipbuf设置为该文件的实际内存内容*/
     zipbuf = (char *)malloc(ZBSZ);
     setvbuf(y, zipbuf, _IOFBF, ZBSZ);
 
     /* If not seekable set some flags 3/14/05 EG */
     output_seekable = 1;
-    if (!is_seekable(y)) {
-    }
-
-    /* if archive exists, not streaming and not deleting or growing, copy
-       any bytes at beginning */
-    if (strcmp(zipfile, "-") != 0 && !d)  /* this must go *after* set[v]buf */
-    {
-        //printf("[Debug] %d, zipbeg=[%x]\n", __LINE__, zipbeg);
-        /* copy anything before archive */
-        if (in_file && zipbeg && (r = bfcopy(zipbeg)) != ZE_OK) {
-        }
-        tempzn = zipbeg;
-    }
+    /*移动文件指针到文件末尾*/
+    is_seekable(y);
 
     o = 0;                                /* no ZE_OPEN errors yet */
-
-
     w = &zfiles;
 
-    fprintf(stderr, "zip diagnostic: fcount=%u\n", (unsigned)fcount);
+    fprintf(stderr, "\n-------------------------------------------------\nzip diagnostic: fcount=%u\n", (unsigned)fcount);
+    /*fexpel()释放f，并返回链表的下一个单元的指针*/
     for (f = found; f != NULL; f = fexpel(f))
     {
+        printf("[Debug] -------------------------------------------------------------\n");
         uzoff_t len;
         /* add a new zfiles entry and set the name */
+        /*申请一个新的文件句柄，将f的所有信息都拷贝到该文件句柄中，后面对文件信息的获取都来自于该文件句柄*/
         z = (struct zlist far *)farmalloc(sizeof(struct zlist));
         z->nxt = NULL;
         z->name = f->name;
@@ -1732,15 +1718,8 @@ int main(int argc, char **argv)
            set bit 11 in the General Purpose Bit Flag */
         {
             int is_ascii = 0;
-
             is_ascii = is_ascii_string(f->uname);
-
-            if (z->uname == NULL) {
-                if (!is_ascii)
-                    z->uname = f->uname;
-                else
-                    free(f->uname);
-            }
+            free(f->uname);
         }
         f->uname = NULL;
 
@@ -1759,62 +1738,40 @@ int main(int argc, char **argv)
         //printf("[Debug] [%d] z->oname=[%s]\n", __LINE__, z->oname);
 
         /* zip it up */
-        DisplayRunningStats();
+        /*在./zip -e a.zip zip.c zip.h zip.txt命令运行过程中，DisplayRunningStats()函数内部没有执行内容*/
+        //DisplayRunningStats();
         if (noisy)
         {
+            /*主要就是设置了mesg_line_started为1*/
+            //printf("[Debug] zip,[%s][%d]\n", __FILE__, __LINE__);
             fprintf(mesg, "  adding: %s", z->oname);
             mesg_line_started = 1;
             fflush(mesg);
         }
         /* initial scan */
         len = f->usize;
-        if ((r = zipup(z)) != ZE_OK  && r != ZE_OPEN && r != ZE_MISS)
-        {
-        }
-        if (r == ZE_OPEN || r == ZE_MISS)
-        {
-        }
-        else
-        {
-            files_so_far++;
-            /* current size of file (just before reading) */
-            good_bytes_so_far += z->len;
-            /* size of file on initial scan */
-            bytes_so_far += len;
-            *w = z;
-            w = &z->nxt;
-            zcount++;
-        }
+        /*核心都是在zipup函数中进行的*/
+        r = zipup(z);
+        files_so_far++;
+        /* current size of file (just before reading) */
+        good_bytes_so_far += z->len;
+        bytes_so_far += len;
+        /*这两个长度都是文件的大小*/
+        //printf("[Debug] zip,[%s][%d], z->len=[%d]\n", __FILE__, __LINE__, z->len);
+        //printf("[Debug] zip,[%s][%d], f->usize=[%d]\n", __FILE__, __LINE__, f->usize);
+        /* size of file on initial scan */
+        /*不知道w在这里有什么用，注释掉后貌似没影响*/
+        /*
+        *w = z;
+        w = &z->nxt;
+        */
+        zcount++;
     }
+
     if (key != NULL)
     {
         free((zvoid *)key);
         key = NULL;
-    }
-
-    if (comadd)
-    {
-        e = malloc(MAXCOM + 1);
-        for (z = zfiles; z != NULL; z = z->nxt)
-            if (z->mark)
-            {
-                if (noisy)
-                    fprintf(mesg, "Enter comment for %s:\n", z->oname);
-                if (fgets(e, MAXCOM+1, comment_stream) != NULL)
-                {
-                    if ((p = malloc((extent)(k = strlen(e))+1)) == NULL)
-                    {
-                        free((zvoid *)e);
-                        ZIPERR(ZE_MEM, "was reading comment lines");
-                    }
-                    strcpy(p, e);
-                    if (p[k-1] == '\n')
-                        p[--k] = 0;
-                    z->comment = p;
-                    /* zip64 support 09/05/2003 R.Nausedat */
-                    z->com = (extent)k;
-                }
-            }
     }
 
     diag("writing central directory");
@@ -1834,45 +1791,30 @@ int main(int argc, char **argv)
         }
     }
 
-    if (k == 0)
-        zipwarn("zip file empty", "");
     t = tempzn - c;               /* compute length of central */
-    diag("writing end of central directory");
 
-    if ((r = putend(k, t, c, zcomlen, zcomment)) != ZE_OK) {
-        ZIPERR(r, tempzip);
-    }
+    r = putend(k, t, c, zcomlen, zcomment);
 
-    if (fclose(y)) {
-        ZIPERR(d ? ZE_WRITE : ZE_TEMP, tempzip);
-    }
+        printf("[Debug] [%s][%d],d=[%d]\n", __FILE__, __LINE__, d);
+    fclose(y);
     y = NULL;
     /* Free some memory before spawning unzip */
     lm_free();
     /* Test new zip file before overwriting old one or removing input files */
     if (test)
+    {
         check_zipfile(tempzip, argv[0]);
+    }
     /* Replace old zip file with new zip file, leaving only the new one */
     if (strcmp(zipfile, "-") && !d)
     {
+        printf("[Debug] [%s][%d]\n", __FILE__, __LINE__);
         diag("replacing old zip file with new zip file");
-        if ((r = replace(out_path, tempzip)) != ZE_OK)
-        {
-            zipwarn("new zip file left as: ", tempzip);
-            free((zvoid *)tempzip);
-            tempzip = NULL;
-            ZIPERR(r, "was replacing the original zip file");
-        }
+        /*将临时压缩文件改名为压缩文件名*/
+        r = replace(out_path, tempzip);
         free((zvoid *)tempzip);
     }
     tempzip = NULL;
-    if (zip_attributes && strcmp(zipfile, "-")) {
-        setfileattr(out_path, zip_attributes);
-    }
-    if (strcmp(zipfile, "-")) {
-        set_filetype(out_path);
-    }
-
 
     free((zvoid *) zipbuf);
     RETURN(finish(o ? ZE_OPEN : ZE_OK));

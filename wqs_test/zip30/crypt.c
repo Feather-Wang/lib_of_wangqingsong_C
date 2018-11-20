@@ -117,9 +117,14 @@ void init_keys(__G__ passwd)
     __GDEF
     ZCONST char *passwd;        /* password string with which to modify keys */
 {
+    printf("[Debug] init_keys, key=[%x]\n", key[0]);
     GLOBAL(keys[0]) = 305419896L;
     GLOBAL(keys[1]) = 591751049L;
     GLOBAL(keys[2]) = 878082192L;
+    printf("[Debug] init_keys, 305419896L=[%x]\n", 305419896L);
+    printf("[Debug] init_keys, 591751049L=[%x]\n", 591751049L);
+    printf("[Debug] init_keys, 878082192L=[%x]\n", 878082192L);
+    printf("[Debug] init_keys, key=[%x]\n", key[0]);
     while (*passwd != '\0') {
         update_keys(__G__ (int)*passwd);
         passwd++;
@@ -147,10 +152,13 @@ void crypthead(passwd, crc)
      * output of rand() to get less predictability, since rand() is
      * often poorly implemented.
      */
+    /*第一次进入该函数时生成随机种子*/
     if (++calls == 1) {
         srand((unsigned)time(NULL) ^ ZCR_SEED2);
     }
+    printf("[Debug] crypthead, key=[%s]\n", key);
     init_keys(passwd);
+    printf("[Debug] crypthead, key=[%s]\n", key);
     for (n = 0; n < RAND_HEAD_LEN-2; n++) {
         c = (rand() >> 7) & 0xff;
         header[n] = (uch)zencode(c, t);

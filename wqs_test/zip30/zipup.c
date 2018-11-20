@@ -159,8 +159,8 @@ local int suffixes(a, s)
    name), an encryption header if encrypting, the compressed data
    and possibly an extended local header. */
 
-int zipup(z)
-    struct zlist far *z;    /* zip entry to compress */
+int zipup(zipfileinfo)
+    struct zlist far *zipfileinfo;    /* zip entry to compress */
     /* Compress the file z->name into the zip entry described by *z and write
        it to the file *y. Encrypt if requested.  Return an error code in the
        ZE_ class.  Also, update tempzn by the number of bytes written. */
@@ -172,7 +172,7 @@ int zipup(z)
     char *b;              /* malloc'ed file buffer */
     extent k = 0;         /* result of zread */
     int l = 0;            /* true if this file is a symbolic link */
-    int m;                /* method for this entry */
+    int m = method;                /* method for this entry */
 
     zoff_t o = 0, p;      /* offsets in zip file */
     zoff_t q = (zoff_t) -3; /* size returned by filetime */
@@ -191,122 +191,107 @@ int zipup(z)
 
     //printf("\n[Debug] [%d] zipup() start\n", __LINE__);
 
-    z->nam = strlen(z->iname);
-    isdir = z->iname[z->nam-1] == (char)0x2f; /* ascii[(unsigned)('/')] */
+    zipfileinfo->nam = strlen(zipfileinfo->iname);
+    isdir = zipfileinfo->iname[zipfileinfo->nam-1] == (char)0x2f; /* ascii[(unsigned)('/')] */
 
     file_binary = -1;      /* not set, set after first read */
     file_binary_final = 0; /* not set, set after first read */
 
-    tim = filetime(z->name, &a, &q, &f_utim);
-    if (tim == 0 || q == (zoff_t) -3)
-        return ZE_OPEN;
+    tim = filetime(zipfileinfo->name, &a, &q, &f_utim);
 
-    /* q is set to -1 if the input file is a device, -2 for a volume label */
-    if (q == (zoff_t) -2) {
-        isdir = 1;
-        q = 0;
-    } else if (isdir != ((a & MSDOS_DIR_ATTR) != 0)) {
-        /* don't overwrite a directory with a file and vice-versa */
-        return ZE_MISS;
-    }
     /* reset dot_count for each file */
     if (!display_globaldots)
+    {
+        //printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
         dot_count = -1;
+    }
 
     /* display uncompressed size */
     uq = ((uzoff_t) q > (uzoff_t) -3) ? 0 : (uzoff_t) q;
 
-    /* initial z->len so if error later have something */
-    z->len = uq;
+    /* initial zipfileinfo->len so if error later have something */
+    zipfileinfo->len = uq;
 
-    z->att = (ush)UNKNOWN; /* will be changed later */
-    z->atx = 0; /* may be changed by set_extra_field() */
+    zipfileinfo->att = (ush)UNKNOWN; /* will be changed later */
+    zipfileinfo->atx = 0; /* may be changed by set_extra_field() */
 
-    z->extra = z->cextra = NULL;
-    z->ext = z->cext = 0;
+    zipfileinfo->extra = zipfileinfo->cextra = NULL;
+    zipfileinfo->ext = zipfileinfo->cext = 0;
 
     window_size = 0L;
 
-    m = special != NULL && suffixes(z->name, special) ? STORE : method;
+    /* create extra field and change zipfileinfo->att and zipfileinfo->atx if desired */
+    set_extra_field(zipfileinfo, &f_utim);
 
+    l = issymlnk(a);
 
-    /* Open file to zip up unless it is stdin */
-    if (strcmp(z->name, "-") == 0)
-    {
-    }
-    else
-    {
-        if (extra_fields) {
-            /* create extra field and change z->att and z->atx if desired */
-            set_extra_field(z, &f_utim);
-        }
-        l = issymlnk(a);
-        if (l) {
-        }
-        else if (isdir) { /* directory */
-        }
-        else {
-            if ((ifile = zopen(z->name, fhow)) == fbad)
-                return ZE_OPEN;
-        }
+    if ((ifile = zopen(zipfileinfo->name, fhow)) == fbad)
+        return ZE_OPEN;
 
-        z->tim = tim;
-
-    } /* strcmp(z->name, "-") == 0 */
-
+    zipfileinfo->tim = tim;
 
     if (q == 0)
         m = STORE;
     if (m == BEST)
         m = DEFLATE;
 
-    z->vem = (ush)(dosify ? 20 : OS_CODE + Z_MAJORVER * 10 + Z_MINORVER);
+    zipfileinfo->vem = (ush)(dosify ? 20 : OS_CODE + Z_MAJORVER * 10 + Z_MINORVER);
 
-    z->ver = (ush)(m == STORE ? 10 : 20); /* Need PKUNZIP 2.0 except for store */
-    z->crc = 0;  /* to be updated later */
+    zipfileinfo->ver = (ush)(m == STORE ? 10 : 20); /* Need PKUNZIP 2.0 except for store */
+    zipfileinfo->crc = 0;  /* to be updated later */
     /* Assume first that we will need an extended local header: */
     if (isdir)
+    {
+        printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
         /* If dir then q = 0 and extended header not needed */
-        z->flg = 0;
+        zipfileinfo->flg = 0;
+    }
     else
-        z->flg = 8;  /* to be updated later */
+    {
+        printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
+        zipfileinfo->flg = 8;  /* to be updated later */
+    }
 #if CRYPT
     if (!isdir && key != NULL) {
-        z->flg |= 1;
+        printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
+        zipfileinfo->flg |= 1;
         /* Since we do not yet know the crc here, we pretend that the crc
          * is the modification time:
          */
-        z->crc = z->tim << 16;
+        zipfileinfo->crc = zipfileinfo->tim << 16;
+        printf("[Debug] zipup(),[%s][%d], tim=[%x], crc=[%x], flg=[%x]\n", __FILE__, __LINE__, zipfileinfo->tim, zipfileinfo->crc, zipfileinfo->flg);
         /* More than pretend.  File is encrypted using crypt header with that. */
     }
 #endif /* CRYPT */
-    z->lflg = z->flg;
-    z->how = (ush)m;                              /* may be changed later  */
-    z->siz = (zoff_t)(m == STORE && q >= 0 ? q : 0); /* will be changed later */
-    z->len = (zoff_t)(q != -1L ? q : 0);          /* may be changed later  */
-    if (z->att == (ush)UNKNOWN) {
-        z->att = BINARY;                    /* set sensible value in header */
+    zipfileinfo->lflg = zipfileinfo->flg;
+    zipfileinfo->how = (ush)m;                              /* may be changed later  */
+    zipfileinfo->siz = (zoff_t)(m == STORE && q >= 0 ? q : 0); /* will be changed later */
+    zipfileinfo->len = (zoff_t)(q != -1L ? q : 0);          /* may be changed later  */
+    if (zipfileinfo->att == (ush)UNKNOWN) {
+        printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
+        zipfileinfo->att = BINARY;                    /* set sensible value in header */
         set_type = 1;
     }
     /* Attributes from filetime(), flag bits from set_extra_field(): */
-    z->atx = dosify ? a & 0xff : a | (z->atx & 0x0000ff00);
+    zipfileinfo->atx = dosify ? a & 0xff : a | (zipfileinfo->atx & 0x0000ff00);
 
-    r = putlocal(z, PUTLOCAL_WRITE);
+    r = putlocal(zipfileinfo, PUTLOCAL_WRITE);
 
     /* now get split information set by bfwrite() */
-    z->off = current_local_offset;
+    zipfileinfo->off = current_local_offset;
 
     /* disk local header was written to */
-    z->dsk = current_local_disk;
+    zipfileinfo->dsk = current_local_disk;
 
-    tempzn += 4 + LOCHEAD + z->nam + z->ext;
-
+    tempzn += 4 + LOCHEAD + zipfileinfo->nam + zipfileinfo->ext;
 
 #if CRYPT
     if (!isdir && key != NULL) {
-        crypthead(key, z->crc);
-        z->siz += RAND_HEAD_LEN;  /* to be updated later */
+        printf("[Debug] zipup(),[%s][%d], key=[%s]\n", __FILE__, __LINE__, key);
+        crypthead(key, zipfileinfo->crc);
+        zipfileinfo->siz += RAND_HEAD_LEN;  /* to be updated later */
         tempzn += RAND_HEAD_LEN;
+        printf("[Debug] zipup(),[%s][%d], tim=[%x], crc=[%x], flg=[%x]\n", __FILE__, __LINE__, zipfileinfo->tim, zipfileinfo->crc, zipfileinfo->flg);
     }
 #endif /* CRYPT */
     ferror(y);
@@ -323,19 +308,20 @@ int zipup(z)
 
     if (isdir) {
         /* nothing to write */
+        printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
     }
     else if (m != STORE) {
-        if (set_type) z->att = (ush)UNKNOWN;
+        printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
+        if (set_type) zipfileinfo->att = (ush)UNKNOWN;
         /* ... is finally set in file compression routine */
-        //printf("\n[Debug] [%d] zipup() start\n", __LINE__);
         {
             /*压缩文件，在压缩的过程中，获取文件原本大小，并返回压缩后的大小*/
-            s = filecompress(z, &m);
+            s = filecompress(zipfileinfo, &m);
         }
     }
     if (ifile != fbad)
     {
-        //printf("\n[Debug] [%d] zipup() start\n", __LINE__);
+        printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
         zclose(ifile);
     }
 
@@ -344,70 +330,92 @@ int zipup(z)
 
     if (isdir)
     {
+        printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
     }
     else
     {
+        printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
         /* Try to rewrite the local header with correct information */
-        z->crc = crc;
-        z->siz = s;
+        zipfileinfo->crc = crc;
+        zipfileinfo->siz = s;
 #if CRYPT
         if (!isdir && key != NULL)
-            z->siz += RAND_HEAD_LEN;
-#endif /* CRYPT */
-        z->len = isize;
-        /* if can seek back to local header */
-        if (use_descriptors || zfseeko(y, z->off, SEEK_SET))
         {
+            printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
+            zipfileinfo->siz += RAND_HEAD_LEN;
+        }
+#endif /* CRYPT */
+        zipfileinfo->len = isize;
+        /* if can seek back to local header */
+        if (use_descriptors || zfseeko(y, zipfileinfo->off, SEEK_SET))
+        {
+            printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
         } 
         else 
         {
-            z->how = (ush)m;
+            printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
+            zipfileinfo->how = (ush)m;
             switch (m)
             {
                 case STORE:
                 case DEFLATE:
-                    //printf("\n[Debug] [%d] zipup() start\n", __LINE__);
-                    z->ver = 20; break;
+                    printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
+                    zipfileinfo->ver = 20; break;
             }
 
-            /* deflate may have set compression level bit markers in z->flg,
+            /* deflate may have set compression level bit markers in zipfileinfo->flg,
                and we can't think of any reason central and local flags should
                be different. */
-            z->lflg = z->flg;
+            zipfileinfo->lflg = zipfileinfo->flg;
 
             /* if local header in another split, putlocal will close it */
-            if ((r = putlocal(z, PUTLOCAL_REWRITE)) != ZE_OK)
+            if ((r = putlocal(zipfileinfo, PUTLOCAL_REWRITE)) != ZE_OK)
+            {
+                printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
                 return r;
+            }
 
             if (zfseeko(y, bytes_this_split, SEEK_SET))
+            {
+                printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
                 return ZE_READ;
+            }
 
-            if ((z->flg & 1) != 0) {
-                //printf("\n[Debug] [%d] zipup() start\n", __LINE__);
+            if ((zipfileinfo->flg & 1) != 0) {
+                printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
                 /* encrypted file, extended header still required */
-                if ((r = putextended(z)) != ZE_OK)
+                if ((r = putextended(zipfileinfo)) != ZE_OK)
+                {
+                    printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
                     return r;
+                }
                 if (zip64_entry)
+                {
+                    printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
                     tempzn += 24L;
+                }
                 else
+                {
+                    printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
                     tempzn += 16L;
+                }
             }
         }
     } /* isdir */
     /* Free the local extra field which is no longer needed */
-    if (z->ext) {
-        if (z->extra != z->cextra) {
-            //printf("\n[Debug] [%d] zipup() start\n", __LINE__);
-            free((zvoid *)(z->extra));
-            z->extra = NULL;
+    if (zipfileinfo->ext) {
+        if (zipfileinfo->extra != zipfileinfo->cextra) {
+            printf("[Debug] zipup(),[%s][%d]\n", __FILE__, __LINE__);
+            free((zvoid *)(zipfileinfo->extra));
+            zipfileinfo->extra = NULL;
         }
-        z->ext = 0;
+        zipfileinfo->ext = 0;
     }
 
     /* Display statistics */
     if (noisy)
     {
-        //printf("\n[Debug] [%d] zipup() [%d%%][oldsize=%d:compress size=%d]\n", __LINE__, percent(isize, s), isize, s);
+        printf("[Debug] [%d] zipup() [%d%%][oldsize=%d:compress size=%d]\n", __LINE__, percent(isize, s), isize, s);
         if (m == DEFLATE)
             fprintf(mesg, " (deflated %d%%)\n", percent(isize, s));
         else
@@ -433,62 +441,62 @@ local unsigned file_read(buf, size)
     char *b;
     zoff_t isize_prev;    /* Previous isize.  Used for overflow check. */
 
-        if (translate_eol == 0) {
-            len = zread(ifile, buf, size);
-            if (len == (unsigned)EOF || len == 0) return len;
-        } else if (translate_eol == 1) {
-            /* translate_eol == 1 */
-            /* Transform LF to CR LF */
-            size >>= 1;
-            b = buf+size;
-            size = len = zread(ifile, b, size);
-            if (len == (unsigned)EOF || len == 0) return len;
+    if (translate_eol == 0) {
+        len = zread(ifile, buf, size);
+        if (len == (unsigned)EOF || len == 0) return len;
+    } else if (translate_eol == 1) {
+        /* translate_eol == 1 */
+        /* Transform LF to CR LF */
+        size >>= 1;
+        b = buf+size;
+        size = len = zread(ifile, b, size);
+        if (len == (unsigned)EOF || len == 0) return len;
 
-            /* check buf for binary - 12/16/04 */
-            if (file_binary == -1) {
-                /* first read */
-                file_binary = is_text_buf(b, size) ? 0 : 1;
+        /* check buf for binary - 12/16/04 */
+        if (file_binary == -1) {
+            /* first read */
+            file_binary = is_text_buf(b, size) ? 0 : 1;
+        }
+
+        if (file_binary != 1) {
+            {
+                do {
+                    if ((*buf++ = *b++) == '\n') *(buf-1) = CR, *buf++ = LF, len++;
+                } while (--size != 0);
             }
+            buf -= len;
+        } else { /* do not translate binary */
+            memcpy(buf, b, size);
+        }
 
-            if (file_binary != 1) {
-                {
-                    do {
-                        if ((*buf++ = *b++) == '\n') *(buf-1) = CR, *buf++ = LF, len++;
-                    } while (--size != 0);
-                }
+    } else {
+        /* translate_eol == 2 */
+        /* Transform CR LF to LF and suppress final ^Z */
+        b = buf;
+        size = len = zread(ifile, buf, size-1);
+        if (len == (unsigned)EOF || len == 0) return len;
+
+        /* check buf for binary - 12/16/04 */
+        if (file_binary == -1) {
+            /* first read */
+            file_binary = is_text_buf(b, size) ? 0 : 1;
+        }
+
+        if (file_binary != 1) {
+            buf[len] = '\n'; /* I should check if next char is really a \n */
+            {
+                do {
+                    if (( *buf++ = *b++) == CR && *b == LF) buf--, len--;
+                } while (--size != 0);
+            }
+            if (len == 0) {
+                zread(ifile, buf, 1); len = 1; /* keep single \r if EOF */
+            } else {
                 buf -= len;
-            } else { /* do not translate binary */
-                memcpy(buf, b, size);
-            }
-
-        } else {
-            /* translate_eol == 2 */
-            /* Transform CR LF to LF and suppress final ^Z */
-            b = buf;
-            size = len = zread(ifile, buf, size-1);
-            if (len == (unsigned)EOF || len == 0) return len;
-
-            /* check buf for binary - 12/16/04 */
-            if (file_binary == -1) {
-                /* first read */
-                file_binary = is_text_buf(b, size) ? 0 : 1;
-            }
-
-            if (file_binary != 1) {
-                buf[len] = '\n'; /* I should check if next char is really a \n */
-                {
-                    do {
-                        if (( *buf++ = *b++) == CR && *b == LF) buf--, len--;
-                    } while (--size != 0);
-                }
-                if (len == 0) {
-                    zread(ifile, buf, 1); len = 1; /* keep single \r if EOF */
-                } else {
-                    buf -= len;
-                    if (buf[len-1] == CTRLZ) len--; /* suppress final ^Z */
-                }
+                if (buf[len-1] == CTRLZ) len--; /* suppress final ^Z */
             }
         }
+    }
     crc = crc32(crc, (uch *) buf, len);
     /* 2005-05-23 SMS.
        Increment file size.  A small-file program reading a large file may

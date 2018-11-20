@@ -5,7 +5,7 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.7	//
 $	tags	/^to	LICENSE	\/^       limited to, labeling of the altered versions with the names "Info-ZIP"$\/;"	v	file:$/;"	v
-$	zipnote	/^/;"	v
+$	zipsplit	/^fÁèAˆD$é÷ÿÿf„/;"	v
 $0	match.S	/^        adc     $0,%eax             \/* eax = carry ? len+1 : len *\/$/;"	v
 $1	match.S	/^        subb    $1,%cl              \/* set carry if cl == 0 (cannot use DEC) *\/$/;"	v
 $15	crc_i386.S	/^                andl    $15, %ecx         \/* ecx = len % 16   *\/$/;"	v
@@ -18,32 +18,26 @@ ADJUST_TM	timezone.c	724;"	d	file:
 ALIGNMENT	crc_i386.S	65;"	d	file:
 ALIGNMENT	match.S	47;"	d	file:
 ARCHIVE	zip.c	38;"	d	file:
-ARG_FILE_ERR	fileio.c	2582;"	d	file:
-ASCII	zip.h	214;"	d
-ASMV	tailor.h	169;"	d
-ASM_CRC	tailor.h	165;"	d
+ARG_FILE_ERR	fileio.c	2475;"	d	file:
+ASCII	zip.h	183;"	d
 ATH_BEO_UNX	ttyio.h	19;"	d
 Amiga	INSTALL	/^     wide range of systems:  Unix, VMS, MSDOS, OS\/2, NT, Amiga, Atari,$/;"	v
 April	README.CR	/^lic domain.  Zcrypt was originally written in Europe and, as of April 2000,$/;"	v
-Assert	zip.h	565;"	d
-Assert	zip.h	581;"	d
+Assert	zip.h	428;"	d
 Atari	INSTALL	/^     wide range of systems:  Unix, VMS, MSDOS, OS\/2, NT, Amiga, Atari,$/;"	v
-BEST	zip.h	328;"	d
-BFWRITE_CENTRALHEADER	zip.h	983;"	d
-BFWRITE_DATA	zip.h	981;"	d
-BFWRITE_HEADER	zip.h	984;"	d
-BFWRITE_LOCALHEADER	zip.h	982;"	d
-BIG_MEM	tailor.h	500;"	d
-BINARY	zip.h	213;"	d
+BEST	zip.h	268;"	d
+BFWRITE_CENTRALHEADER	zip.h	624;"	d
+BFWRITE_DATA	zip.h	622;"	d
+BFWRITE_HEADER	zip.h	625;"	d
+BFWRITE_LOCALHEADER	zip.h	623;"	d
+BINARY	zip.h	182;"	d
 BL_CODES	trees.c	154;"	d	file:
-BZIP2	zip.h	331;"	d
+BZIP2	zip.h	271;"	d
 BeOS	INSTALL	/^     BeOS, VM\/CMS, ...  You will need Unzip 5.0p1 or later (under any$/;"	v
 Buf_size	trees.c	364;"	d	file:
 C	INSTALL	/^     Supported compilers are Microsoft Visual C++, Borland C++, Watcom C\/C++,$/;"	v
 C	INSTALL	/^     for Microsoft, Borland C++ and Turbo C, Watcom C\/C++ and the various$/;"	v
-CBSZ	tailor.h	449;"	d
-CBSZ	tailor.h	454;"	d
-CBSZ	tailor.h	459;"	d
+CBSZ	tailor.h	110;"	d
 CC	unix/configure	/^CC=${1-cc}$/;"	v
 CENATT	zipfile.c	85;"	d	file:
 CENATX	zipfile.c	86;"	d	file:
@@ -53,7 +47,7 @@ CENDAT	zipfile.c	77;"	d	file:
 CENDSK	zipfile.c	84;"	d	file:
 CENEXT	zipfile.c	82;"	d	file:
 CENFLG	zipfile.c	74;"	d	file:
-CENHEAD	zip.h	141;"	d
+CENHEAD	zip.h	125;"	d
 CENHOW	zipfile.c	75;"	d	file:
 CENLEN	zipfile.c	80;"	d	file:
 CENNAM	zipfile.c	81;"	d	file:
@@ -76,17 +70,15 @@ CFLAGS_OPT	unix/configure	/^        CFLAGS_OPT='-O3'$/;"	v
 CFLAGS_OPT	unix/configure	/^    CFLAGS_OPT='-O3'$/;"	v
 CFLAGS_OPT	unix/configure	/^  CFLAGS_OPT='-xO3'$/;"	v
 CFLAGS_OPT_TRY	unix/configure	/^      CFLAGS_OPT_TRY="+O3 +Onolimit"$/;"	v
-CLEN	tailor.h	348;"	d
-CLEN	tailor.h	358;"	d
+CLEN	tailor.h	70;"	d
 CMS	INSTALL	/^     BeOS, VM\/CMS, ...  You will need Unzip 5.0p1 or later (under any$/;"	v
-COMPILER_NAME	unix/unix.c	516;"	d	file:
-COMPILE_DATE	unix/unix.c	522;"	d	file:
-CR	zip.h	265;"	d
+COMPILER_NAME	unix/unix.c	399;"	d	file:
+COMPILE_DATE	unix/unix.c	405;"	d	file:
+CR	zip.h	234;"	d
 CRC32	crc32.h	27;"	d
 CRC32UPD	crc32.h	26;"	d
-CRCVAL_INITIAL	zip.h	288;"	d
+CRCVAL_INITIAL	zip.h	251;"	d
 CRC_32_TAB	crc32.h	24;"	d
-CRC_TABLE_ONLY	zip.h	96;"	d
 CRC_TBLS	crc32.c	28;"	d	file:
 CRYPT	crypt.h	39;"	d
 CRY_CRC_TAB	crypt.c	78;"	d	file:
@@ -95,7 +87,7 @@ CR_MAJORVER	crypt.h	41;"	d
 CR_MINORVER	crypt.h	42;"	d
 CR_RELEASE	crypt.h	45;"	d
 CR_VERSION_DATE	crypt.h	44;"	d
-CTRLZ	zip.h	266;"	d
+CTRLZ	zip.h	235;"	d
 Code	trees.c	231;"	d	file:
 D	deflate.o	/^ELF/;"	v
 DAYSPERLYEAR	timezone.c	65;"	d	file:
@@ -106,7 +98,7 @@ DEFCPYRT	zip.c	18;"	d	file:
 DEFCPYRT	zipcloak.c	25;"	d	file:
 DEFCPYRT	zipnote.c	20;"	d	file:
 DEFCPYRT	zipsplit.c	19;"	d	file:
-DEFLATE	zip.h	330;"	d
+DEFLATE	zip.h	270;"	d
 DEFSIZ	zipsplit.c	23;"	d	file:
 DELETE	zip.c	33;"	d	file:
 DIRSEP_CHR	util.c	26;"	d	file:
@@ -116,12 +108,11 @@ DO1	crc32.c	121;"	d	file:
 DO2	crc32.c	122;"	d	file:
 DO4	crc32.c	123;"	d	file:
 DO8	crc32.c	124;"	d	file:
-DOSTIME_2038_01_18	zip.h	295;"	d
-DOSTIME_MINIMUM	zip.h	294;"	d
+DOSTIME_2038_01_18	zip.h	254;"	d
+DOSTIME_MINIMUM	zip.h	253;"	d
 DW_MAJORVER	revision.h	27;"	d
 DW_MINORVER	revision.h	28;"	d
 DW_PATCHLEVEL	revision.h	29;"	d
-DYN_ALLOC	tailor.h	504;"	d
 DYN_TREES	trees.c	169;"	d	file:
 D_CODES	trees.c	151;"	d	file:
 Dad	trees.c	232;"	d	file:
@@ -132,54 +123,54 @@ Do_CRC_4lword	crc_i386.S	186;"	d	file:
 Do_CRC_byte	crc_i386.S	131;"	d	file:
 Do_CRC_byteof	crc_i386.S	136;"	d	file:
 Do_CRC_lword	crc_i386.S	183;"	d	file:
-EB_C_UT_SIZE	unix/unix.c	457;"	d	file:
-EB_DEFLAT_EXTRA	zip.h	240;"	d
-EB_HEADSIZE	zip.h	236;"	d
-EB_ID	zip.h	237;"	d
-EB_LEN	zip.h	238;"	d
-EB_L_UT_SIZE	unix/unix.c	456;"	d	file:
-EB_MEMCMPR_HSIZ	zip.h	239;"	d
-EB_UT_FLAGS	zip.h	251;"	d
-EB_UT_FL_ATIME	zip.h	254;"	d
-EB_UT_FL_CTIME	zip.h	255;"	d
-EB_UT_FL_MTIME	zip.h	253;"	d
-EB_UT_LEN	zip.h	256;"	d
-EB_UT_MINLEN	zip.h	250;"	d
-EB_UT_TIME1	zip.h	252;"	d
-EB_UX2_GID	zip.h	260;"	d
-EB_UX2_MINLEN	zip.h	258;"	d
-EB_UX2_UID	zip.h	259;"	d
-EB_UX2_VALID	zip.h	261;"	d
-EB_UX_ATIME	zip.h	243;"	d
-EB_UX_FULLSIZE	zip.h	246;"	d
-EB_UX_GID	zip.h	248;"	d
-EB_UX_MINLEN	zip.h	242;"	d
-EB_UX_MTIME	zip.h	244;"	d
-EB_UX_UID	zip.h	247;"	d
-EC64LOC	zip.h	143;"	d
-EC64REC	zip.h	144;"	d
-EF_ACL	zip.h	224;"	d
-EF_AOSVS	zip.h	229;"	d
-EF_ATHEOS	zip.h	227;"	d
-EF_BEOS	zip.h	226;"	d
-EF_C_UNIX_SIZE	unix/unix.c	463;"	d	file:
-EF_IZUNIX	zip.h	220;"	d
-EF_IZUNIX2	zip.h	221;"	d
-EF_L_UNIX_SIZE	unix/unix.c	462;"	d	file:
-EF_MVS	zip.h	219;"	d
-EF_NTSD	zip.h	225;"	d
-EF_OS2EA	zip.h	223;"	d
-EF_QDOS	zip.h	228;"	d
-EF_SIZE_MAX	zip.h	235;"	d
-EF_SPARK	zip.h	230;"	d
-EF_TANDEM	zip.h	232;"	d
-EF_THEOS	zip.h	231;"	d
-EF_TIME	zip.h	222;"	d
-EF_VMCMS	zip.h	218;"	d
+EB_C_UT_SIZE	unix/unix.c	340;"	d	file:
+EB_DEFLAT_EXTRA	zip.h	209;"	d
+EB_HEADSIZE	zip.h	205;"	d
+EB_ID	zip.h	206;"	d
+EB_LEN	zip.h	207;"	d
+EB_L_UT_SIZE	unix/unix.c	339;"	d	file:
+EB_MEMCMPR_HSIZ	zip.h	208;"	d
+EB_UT_FLAGS	zip.h	220;"	d
+EB_UT_FL_ATIME	zip.h	223;"	d
+EB_UT_FL_CTIME	zip.h	224;"	d
+EB_UT_FL_MTIME	zip.h	222;"	d
+EB_UT_LEN	zip.h	225;"	d
+EB_UT_MINLEN	zip.h	219;"	d
+EB_UT_TIME1	zip.h	221;"	d
+EB_UX2_GID	zip.h	229;"	d
+EB_UX2_MINLEN	zip.h	227;"	d
+EB_UX2_UID	zip.h	228;"	d
+EB_UX2_VALID	zip.h	230;"	d
+EB_UX_ATIME	zip.h	212;"	d
+EB_UX_FULLSIZE	zip.h	215;"	d
+EB_UX_GID	zip.h	217;"	d
+EB_UX_MINLEN	zip.h	211;"	d
+EB_UX_MTIME	zip.h	213;"	d
+EB_UX_UID	zip.h	216;"	d
+EC64LOC	zip.h	127;"	d
+EC64REC	zip.h	128;"	d
+EF_ACL	zip.h	193;"	d
+EF_AOSVS	zip.h	198;"	d
+EF_ATHEOS	zip.h	196;"	d
+EF_BEOS	zip.h	195;"	d
+EF_C_UNIX_SIZE	unix/unix.c	346;"	d	file:
+EF_IZUNIX	zip.h	189;"	d
+EF_IZUNIX2	zip.h	190;"	d
+EF_L_UNIX_SIZE	unix/unix.c	345;"	d	file:
+EF_MVS	zip.h	188;"	d
+EF_NTSD	zip.h	194;"	d
+EF_OS2EA	zip.h	192;"	d
+EF_QDOS	zip.h	197;"	d
+EF_SIZE_MAX	zip.h	204;"	d
+EF_SPARK	zip.h	199;"	d
+EF_TANDEM	zip.h	201;"	d
+EF_THEOS	zip.h	200;"	d
+EF_TIME	zip.h	191;"	d
+EF_VMCMS	zip.h	187;"	d
 ENDBEG	zipfile.c	91;"	d	file:
 ENDCOM	zipfile.c	96;"	d	file:
 ENDDSK	zipfile.c	90;"	d	file:
-ENDHEAD	zip.h	142;"	d
+ENDHEAD	zip.h	126;"	d
 ENDOFF	zipfile.c	95;"	d	file:
 ENDSIG	zipfile.c	49;"	d	file:
 ENDSIZ	zipfile.c	94;"	d	file:
@@ -190,95 +181,92 @@ EOF	WHATSNEW	/^- On VMS, changed -V (\/VMS) processing to truncate file at EOF, 
 EPOCH_WDAY	timezone.c	70;"	d	file:
 EPOCH_YEAR	timezone.c	71;"	d	file:
 EQUAL	deflate.c	218;"	d	file:
-EXIT	tailor.h	866;"	d
+EXIT	tailor.h	198;"	d
 EXTCRC	zipfile.c	67;"	d	file:
 EXTLEN	zipfile.c	69;"	d	file:
 EXTLOCSIG	zipfile.c	50;"	d	file:
 EXTSIZ	zipfile.c	68;"	d	file:
 Echon	ttyio.c	/^void Echon(__G)$/;"	f
 Etq1	fileio.o	/^é#÷ÿÿ@·¾/;"	v
-FALSE	tailor.h	304;"	d
+FALSE	tailor.h	51;"	d
 FAST	deflate.c	96;"	d	file:
 FIRST_GOOD_YEAR	timezone.c	73;"	d	file:
 FIXSCAN_BUFSIZE	zipfile.c	1836;"	d	file:
 FLUSH_BLOCK	deflate.c	424;"	d	file:
-FNMAX	zip.h	123;"	d
-FNMAX	zip.h	125;"	d
-FOPM	tailor.h	414;"	d
+FNMAX	zip.h	112;"	d
+FOPM	tailor.h	95;"	d
 FOPM	unix/osdep.h	72;"	d
-FOPR	tailor.h	413;"	d
+FOPR	tailor.h	94;"	d
 FOPR	unix/osdep.h	71;"	d
-FOPR_EX	tailor.h	426;"	d
-FOPR_EX	tailor.h	428;"	d
-FOPW	tailor.h	415;"	d
+FOPR_EX	tailor.h	103;"	d
+FOPW	tailor.h	96;"	d
 FOPW	unix/osdep.h	73;"	d
-FOPW_TMP	tailor.h	419;"	d
-FORCE_UNIX_OVER_WIN32	tailor.h	19;"	d
+FOPW_TMP	tailor.h	98;"	d
 FREE	README.CR	/^    LIKE ANYTHING ELSE THAT IS FREE, ZIP, UNZIP AND THEIR ASSOCIATED$/;"	v
 FRESHEN	zip.c	37;"	d	file:
-FZOFFT_FMT	tailor.h	773;"	d
-FZOFFT_HEX_DOT_WID	tailor.h	784;"	d
-FZOFFT_HEX_WID	tailor.h	783;"	d
-FZOFFT_HEX_WID_VALUE	tailor.h	776;"	d
-FZOFFT_HEX_WID_VALUE	tailor.h	778;"	d
+FZOFFT_FMT	tailor.h	180;"	d
+FZOFFT_HEX_DOT_WID	tailor.h	185;"	d
+FZOFFT_HEX_WID	tailor.h	184;"	d
+FZOFFT_HEX_WID_VALUE	tailor.h	182;"	d
 FZOFFT_LEN	util.c	485;"	d	file:
 FZOFFT_NUM	util.c	484;"	d	file:
-Far	tailor.h	495;"	d
+Far	tailor.h	123;"	d
 Flag	WHATSNEW	/^  General Purpose Bit Flag, bit 11, UTF-8 flag, that indicates UTF-8$/;"	v
 Freq	trees.c	230;"	d	file:
+G	zipsplit	/^/;"	v
 GETNAM_MAX	fileio.c	58;"	d	file:
 GLOBAL	crypt.c	72;"	d	file:
 GLOBAL	ttyio.c	43;"	d	file:
 GLOBALS	globals.c	16;"	d	file:
 GTTY	ttyio.c	52;"	d	file:
-H	zip.o	/^/;"	v
 H	zipup.o	/^uÜH9ÊAD$ÿH‰óu×€/;"	v
+H9	zipsplit	/^/;"	v
 HASH_BITS	deflate.c	86;"	d	file:
 HASH_MASK	deflate.c	89;"	d	file:
 HASH_SIZE	deflate.c	88;"	d	file:
 HEAP_SIZE	trees.c	235;"	d	file:
 HOURSPERDAY	timezone.c	62;"	d	file:
 H_SHIFT	deflate.c	147;"	d	file:
-INCSTR	tailor.h	368;"	d
+INCSTR	tailor.h	77;"	d
 INDEX	zipsplit.c	30;"	d	file:
 INDEX	zipsplit.c	37;"	d	file:
 INDEX	zipsplit.c	43;"	d	file:
 INDEX	zipsplit.c	48;"	d	file:
 INSERT_STRING	deflate.c	247;"	d	file:
-IN_VALUE_LIST	fileio.c	2588;"	d	file:
+IN_VALUE_LIST	fileio.c	2481;"	d	file:
 IPos	deflate.c	/^typedef unsigned IPos;$/;"	t	file:
 IZTZ_GETLOCALETZINFO	timezone.c	51;"	d	file:
 IZ_COMPANY_NAME	revision.h	31;"	d
-IZ_IMP	tailor.h	204;"	d
+IZ_IMP	tailor.h	27;"	d
 IZ_PWLEN	crypt.h	61;"	d
-IZ_PW_CANCEL	zip.h	270;"	d
-IZ_PW_CANCELALL	zip.h	271;"	d
-IZ_PW_ENTERED	zip.h	269;"	d
-IZ_PW_ERROR	zip.h	272;"	d
-IZ_PW_SKIPVERIFY	zip.h	273;"	d
+IZ_PW_CANCEL	zip.h	239;"	d
+IZ_PW_CANCELALL	zip.h	240;"	d
+IZ_PW_ENTERED	zip.h	238;"	d
+IZ_PW_ERROR	zip.h	241;"	d
+IZ_PW_SKIPVERIFY	zip.h	242;"	d
 JULIAN_DAY	timezone.h	30;"	d
+K	a.zip	/^&ÐG“cY¸öa“ÓJfø@Ÿöö¤ÌëròÒ,ÖLBy»ñEpÈŠìsI¹Ý,Ìê€ñ»°m¡H*d“')œ±Ô•zÝ>Y˜Ð<k_5¾g$XrÉù&Phá$/;"	v
 KIND	README.CR	/^    UTILITIES ARE PROVIDED AS IS AND COME WITH NO WARRANTY OF ANY KIND,$/;"	v
 LARGE_FILE_SUPPORT	unix/osdep.h	14;"	d
 LAST_GOOD_YEAR	timezone.c	74;"	d	file:
-LAST_KNOWN_COMPMETHOD	zip.h	333;"	d
-LAST_KNOWN_COMPMETHOD	zip.h	335;"	d
+LAST_KNOWN_COMPMETHOD	zip.h	272;"	d
 LENGTH_CODES	trees.c	139;"	d	file:
-LF	zip.h	264;"	d
+LF	zip.h	233;"	d
 LFLAGS2	unix/configure	/^            LFLAGS2="${LFLAGS2} ${lf}"$/;"	v
 LFLAGS2	unix/configure	/^    LFLAGS2="${LFLAGS2} ${OPT}"$/;"	v
-LG	fileio.c	849;"	d	file:
+LG	fileio.c	753;"	d	file:
 LG	zipfile.c	34;"	d	file:
 LITERALS	trees.c	142;"	d	file:
 LIT_BUFSIZE	trees.c	174;"	d	file:
 LIT_BUFSIZE	trees.c	177;"	d	file:
 LIT_BUFSIZE	trees.c	179;"	d	file:
-LLG	fileio.c	850;"	d	file:
+LLG	fileio.c	754;"	d	file:
 LLG	zipfile.c	35;"	d	file:
 LOCCRC	zipfile.c	59;"	d	file:
 LOCDAT	zipfile.c	58;"	d	file:
 LOCEXT	zipfile.c	63;"	d	file:
 LOCFLG	zipfile.c	55;"	d	file:
-LOCHEAD	zip.h	140;"	d
+LOCHEAD	zip.h	124;"	d
 LOCHOW	zipfile.c	56;"	d	file:
 LOCLEN	zipfile.c	61;"	d	file:
 LOCNAM	zipfile.c	62;"	d	file:
@@ -286,162 +274,120 @@ LOCSIG	zipfile.c	47;"	d	file:
 LOCSIZ	zipfile.c	60;"	d	file:
 LOCTIM	zipfile.c	57;"	d	file:
 LOCVER	zipfile.c	54;"	d	file:
-LSSTAT	tailor.h	733;"	d
-LSSTAT	tailor.h	736;"	d
-LSSTAT	tailor.h	749;"	d
-LSSTAT	tailor.h	752;"	d
-LSSTATW	tailor.h	738;"	d
-LSSTATW	tailor.h	754;"	d
-LSTAT	tailor.h	732;"	d
-LSTAT	tailor.h	735;"	d
-LSTAT	tailor.h	748;"	d
-LSTAT	tailor.h	751;"	d
+LSSTAT	tailor.h	167;"	d
+LSTAT	tailor.h	166;"	d
 L_CODES	trees.c	148;"	d	file:
 Len	trees.c	233;"	d	file:
 Linux	TODO	/^- Extended attributes for Windows, Linux, and Mac OS X.$/;"	v
 Linux	WHATSNEW	/^- Extended attributes for Windows, Linux, and Mac OS X.$/;"	v
 MAKEF	unix/Makefile	/^MAKEF = -f unix\/Makefile$/;"	v
-MARK	zipnote.c	33;"	d	file:
-MARKE	zipnote.c	34;"	d	file:
-MARKZ	zipnote.c	35;"	d	file:
-MATCH	zip.h	129;"	d
+MARK	zipnote.c	28;"	d	file:
+MARKE	zipnote.c	29;"	d	file:
+MARKZ	zipnote.c	30;"	d	file:
+MATCH	zip.h	114;"	d
 MAXCOM	zip.c	29;"	d	file:
 MAX_BITS	trees.c	133;"	d	file:
 MAX_BL_BITS	trees.c	136;"	d	file:
 MAX_DIST	match.S	57;"	d	file:
-MAX_DIST	zip.h	116;"	d
-MAX_ESCAPE_BYTES	fileio.c	2223;"	d	file:
+MAX_DIST	zip.h	106;"	d
+MAX_ESCAPE_BYTES	fileio.c	2127;"	d	file:
 MAX_MATCH	match.S	55;"	d	file:
-MAX_MATCH	zip.h	100;"	d
-MBSCHR	tailor.h	352;"	d
-MBSCHR	tailor.h	362;"	d
-MBSRCHR	tailor.h	353;"	d
-MBSRCHR	tailor.h	363;"	d
-MB_CLEN	zip.h	1048;"	d
-MB_CLEN	zip.h	1052;"	d
-MB_NEXTCHAR	zip.h	1049;"	d
-MB_NEXTCHAR	zip.h	1053;"	d
+MAX_MATCH	zip.h	91;"	d
+MBSCHR	tailor.h	74;"	d
+MBSRCHR	tailor.h	75;"	d
+MB_CLEN	zip.h	683;"	d
+MB_NEXTCHAR	zip.h	684;"	d
 MET	zip.txt	/^              The  format is TTThhDDD, where TTT is the time zone such as MET,$/;"	v
 MINSPERHOUR	timezone.c	61;"	d	file:
 MIN_LOOKAHEAD	match.S	56;"	d	file:
-MIN_LOOKAHEAD	zip.h	111;"	d
+MIN_LOOKAHEAD	zip.h	101;"	d
 MIN_MATCH	match.S	54;"	d	file:
-MIN_MATCH	zip.h	99;"	d
+MIN_MATCH	zip.h	90;"	d
 MONSPERYEAR	timezone.c	68;"	d	file:
 MONTH_NTH_DAY_OF_WEEK	timezone.h	32;"	d
 MSDOS	INSTALL	/^     The steps for installation under VMS, MSDOS, OS\/2, NT, Amiga and$/;"	v
 MSDOS	INSTALL	/^     wide range of systems:  Unix, VMS, MSDOS, OS\/2, NT, Amiga, Atari,$/;"	v
 MSDOS	TODO	/^- on MSDOS, zip386.exe does not like "zip -bc: foo ..."$/;"	v
-MSDOS_DIR_ATTR	tailor.h	434;"	d
-MSDOS_HIDDEN_ATTR	tailor.h	433;"	d
-MULTIBYTE_GETOPTNS	zip.h	1043;"	d
-MY_ZCALLOC	tailor.h	878;"	d
+MSDOS_DIR_ATTR	tailor.h	108;"	d
+MSDOS_HIDDEN_ATTR	tailor.h	107;"	d
 Makefile	CHANGES	/^ 7. remove zilog entry from unix\/Makefile (Onno)$/;"	f
 Max	trees.c	464;"	d	file:
 NIL	deflate.c	93;"	d	file:
 NL	zipsplit.c	25;"	d	file:
 NL	zipsplit.c	27;"	d	file:
-NON_OPTION_ARG	fileio.c	2589;"	d	file:
-NO_PROTO	tailor.h	174;"	d
+NON_OPTION_ARG	fileio.c	2482;"	d	file:
 NT	INSTALL	/^     The steps for installation under VMS, MSDOS, OS\/2, NT, Amiga and$/;"	v
 NT	INSTALL	/^     wide range of systems:  Unix, VMS, MSDOS, OS\/2, NT, Amiga, Atari,$/;"	v
-NUM_HOSTS	tailor.h	853;"	d
+NUM_HOSTS	tailor.h	193;"	d
 OBJA	unix/configure	/^        OBJA="$OBJA crc_i386.o"$/;"	v
-OBUF_SZ	zipup.c	1082;"	d	file:
-OF	tailor.h	179;"	d
-OF	tailor.h	182;"	d
-OFT	tailor.h	180;"	d
-OFT	tailor.h	183;"	d
+OF	tailor.h	17;"	d
+OFT	tailor.h	18;"	d
 OFT	zipfile.c	/^char *get_extra_field( OFT( ush) tag,$/;"	f
+OFT	zipfile.c	/^int putend( OFT( uzoff_t) n,$/;"	f
 OFT	zipfile.c	/^local void append_ushort_to_mem( OFT( ush) usValue,$/;"	f
 OFT	zipfile.c	/^local void write_ushort_to_mem( OFT( ush) usValue,$/;"	f
 OPT	unix/configure	/^  OPT=""$/;"	v
-OPTIONERR_BUF_SIZE	fileio.c	2602;"	d	file:
+OPTIONERR_BUF_SIZE	fileio.c	2495;"	d	file:
 OS	INSTALL	/^     The steps for installation under VMS, MSDOS, OS\/2, NT, Amiga and$/;"	v
 OS	INSTALL	/^     wide range of systems:  Unix, VMS, MSDOS, OS\/2, NT, Amiga, Atari,$/;"	v
-OS_CODE	tailor.h	801;"	d
-OS_CODE	tailor.h	804;"	d
-OS_CODE	tailor.h	808;"	d
-OS_CODE	tailor.h	811;"	d
-OS_CODE	tailor.h	814;"	d
-OS_CODE	tailor.h	817;"	d
-OS_CODE	tailor.h	822;"	d
-OS_CODE	tailor.h	825;"	d
-OS_CODE	tailor.h	828;"	d
-OS_CODE	tailor.h	831;"	d
-OS_CODE	tailor.h	834;"	d
-OS_CODE	tailor.h	837;"	d
-OS_CODE	tailor.h	840;"	d
-OS_CODE	tailor.h	843;"	d
-OS_CODE	tailor.h	846;"	d
-OS_CODE	tailor.h	850;"	d
-OS_CODE	tailor.h	857;"	d
-OS_CODE	tailor.h	861;"	d
-OS_NAME	unix/unix.c	518;"	d	file:
+OS_CODE	tailor.h	196;"	d
+OS_NAME	unix/unix.c	401;"	d	file:
 O_BINARY	unix/zipup.h	15;"	d
 O_RDONLY	unix/zipup.h	12;"	d
 PAD	fileio.c	29;"	d	file:
 PAD	unix/unix.c	20;"	d	file:
-PAGESIZE	zipup.c	48;"	d	file:
 PARSE	WHATSNEW	/^- On VMS (recent, non-VAX), with SET PROCESS \/PARSE = EXTEND,$/;"	v
 PATHCUT	zipfile.c	261;"	d	file:
 PATH_END	unix/unix.c	21;"	d	file:
-PC_MAX_RND	zipup.c	276;"	d	file:
-PC_MAX_SAFE	zipup.c	275;"	d	file:
+PC_MAX_RND	zipup.c	101;"	d	file:
+PC_MAX_SAFE	zipup.c	100;"	d	file:
 PERR	ziperr.h	112;"	d
-POSTINCSTR	tailor.h	350;"	d
-POSTINCSTR	tailor.h	360;"	d
-PREINCSTR	tailor.h	349;"	d
-PREINCSTR	tailor.h	359;"	d
+POSTINCSTR	tailor.h	72;"	d
+PREINCSTR	tailor.h	71;"	d
 PROCNAME	zip.c	893;"	d	file:
 PUTBYTE	trees.c	409;"	d	file:
 PUTC	ttyio.c	41;"	d	file:
 PUTLG	zipfile.c	39;"	d	file:
 PUTLLG	zipfile.c	41;"	d	file:
-PUTLOCAL_REWRITE	zip.h	991;"	d
-PUTLOCAL_WRITE	zip.h	990;"	d
+PUTLOCAL_REWRITE	zip.h	632;"	d
+PUTLOCAL_WRITE	zip.h	631;"	d
 PUTSH	zipfile.c	38;"	d	file:
 PUTSHORT	trees.c	402;"	d	file:
 PWLEN	crypt.h	62;"	d
 Parse_TZ	timezone.c	/^static int Parse_TZ(name, sp)$/;"	f	file:
 Pos	deflate.c	/^  typedef ush Pos;$/;"	t	file:
 RAND_HEAD_LEN	crypt.h	63;"	d
-READ_REST_ARGS_VERBATIM	fileio.c	2592;"	d	file:
+READ_REST_ARGS_VERBATIM	fileio.c	2485;"	d	file:
 REPZ_11_138	trees.c	211;"	d	file:
 REPZ_3_10	trees.c	208;"	d	file:
 REP_3_6	trees.c	205;"	d	file:
-RETURN	tailor.h	869;"	d
+RETURN	tailor.h	199;"	d
 REVDATE	revision.h	25;"	d
 REV_BE	crc32.h	28;"	d
-ROUNDED_TIME	tailor.h	381;"	d
+ROUNDED_TIME	tailor.h	89;"	d
 Rcount	globals.c	/^unsigned Rcount = 0;            \/* number of -R include patterns *\/$/;"	v
 ReadNumString	util.c	/^uzoff_t ReadNumString( numstring )$/;"	f
-SBSZ	tailor.h	464;"	d
+SBSZ	tailor.h	113;"	d
 SCAN_BUFSIZE	zipfile.c	2529;"	d	file:
 SCAN_BUFSIZE	zipfile.c	2530;"	d	file:
 SECSPERDAY	timezone.c	67;"	d	file:
 SECSPERHOUR	timezone.c	66;"	d	file:
 SECSPERMIN	timezone.c	60;"	d	file:
-SEEK_CUR	tailor.h	300;"	d
-SEEK_SET	tailor.h	296;"	d
-SETLOCALE	tailor.h	355;"	d
-SETLOCALE	tailor.h	365;"	d
-SH	fileio.c	848;"	d	file:
+SETLOCALE	tailor.h	76;"	d
+SH	fileio.c	752;"	d	file:
 SH	zipfile.c	33;"	d	file:
-SKIP_VALUE_ARG	fileio.c	2585;"	d	file:
+SKIP_VALUE_ARG	fileio.c	2478;"	d	file:
 SLOW	deflate.c	97;"	d	file:
 SMALLEST	trees.c	563;"	d	file:
-SPLIT_MAXPATH	fileio.c	1233;"	d	file:
-SSTAT	tailor.h	726;"	d
-SSTAT	tailor.h	745;"	d
-SSTATW	tailor.h	728;"	d
-START_VALUE_LIST	fileio.c	2587;"	d	file:
+SPLIT_MAXPATH	fileio.c	1137;"	d	file:
+SSTAT	tailor.h	164;"	d
+SSTATW	tailor.h	165;"	d
+START_VALUE_LIST	fileio.c	2480;"	d	file:
 STATIC_TREES	trees.c	168;"	d	file:
-STOP_VALUE_LIST	fileio.c	2590;"	d	file:
-STORE	zip.h	329;"	d
+STOP_VALUE_LIST	fileio.c	2483;"	d	file:
+STORE	zip.h	269;"	d
 STORED_BLOCK	trees.c	167;"	d	file:
 STTY	ttyio.c	53;"	d	file:
-S_IFLNK	tailor.h	386;"	d
 SavLen	crc_i386.S	144;"	d	file:
 TB	zip30f.ann	/^  so many bytes read, settable from KB to TB, allowing progress to be$/;"	v
 TEMPL_FMT	zipsplit.c	31;"	d	file:
@@ -452,7 +398,7 @@ TEMPL_SIZ	zipsplit.c	32;"	d	file:
 TEMPL_SIZ	zipsplit.c	39;"	d	file:
 TEMPL_SIZ	zipsplit.c	45;"	d	file:
 TEMPL_SIZ	zipsplit.c	50;"	d	file:
-THIS_ARG_DONE	fileio.c	2586;"	d	file:
+THIS_ARG_DONE	fileio.c	2479;"	d	file:
 TMAX	zipsplit.c	90;"	d	file:
 TM_HOUR_MAX	timezone.c	713;"	d	file:
 TM_MDAY_MAX	timezone.c	710;"	d	file:
@@ -462,7 +408,7 @@ TM_SEC_MAX	timezone.c	719;"	d	file:
 TM_YEAR_BASE	timezone.c	72;"	d	file:
 TM_YEAR_MAX	timezone.c	704;"	d	file:
 TOO_FAR	deflate.c	100;"	d	file:
-TRUE	tailor.h	308;"	d
+TRUE	tailor.h	52;"	d
 TTThhDDD	zip.txt	/^              The  format is TTThhDDD, where TTT is the time zone such as MET,$/;"	v
 TZDEFAULT	timezone.c	58;"	d	file:
 TZDEFRULESTRING	timezone.c	57;"	d	file:
@@ -470,32 +416,17 @@ TZ_MAX_CHARS	timezone.h	24;"	d
 TZ_MAX_CHARS	timezone.h	26;"	d
 TZ_MAX_TIMES	timezone.h	21;"	d
 TZ_MAX_TYPES	timezone.h	22;"	d
-Trace	zip.h	567;"	d
-Trace	zip.h	573;"	d
-Trace	zip.h	582;"	d
-Tracec	zip.h	570;"	d
-Tracec	zip.h	576;"	d
-Tracec	zip.h	585;"	d
-Tracecv	zip.h	571;"	d
-Tracecv	zip.h	577;"	d
-Tracecv	zip.h	586;"	d
-Tracev	zip.h	568;"	d
-Tracev	zip.h	574;"	d
-Tracev	zip.h	583;"	d
-Tracevv	zip.h	569;"	d
-Tracevv	zip.h	575;"	d
-Tracevv	zip.h	584;"	d
-UNALIGNED_OK	tailor.h	442;"	d
-UNALIGNED_OK	tailor.h	445;"	d
-UNICODE_SUPPORT	tailor.h	35;"	d
-UNIX	tailor.h	23;"	d
-UNKNOWN	zip.h	212;"	d
+Trace	zip.h	429;"	d
+Tracec	zip.h	432;"	d
+Tracecv	zip.h	433;"	d
+Tracev	zip.h	430;"	d
+Tracevv	zip.h	431;"	d
+UNKNOWN	zip.h	181;"	d
 UPDATE	zip.c	36;"	d	file:
 UPDATE_HASH	deflate.c	237;"	d	file:
 USE_EF_UT_TIME	unix/osdep.h	79;"	d
 USE_POSIX_TERMIOS	ttyio.c	45;"	d	file:
 USE_STACKFRAME	crc_i386.S	84;"	d	file:
-USING_DEFAULT_LARGE_FILE_SUPPORT	tailor.h	160;"	d
 UTF8_BIT	zipfile.c	139;"	d	file:
 UTF8_PATH_EF_TAG	zipfile.c	133;"	d	file:
 UTIL	globals.c	17;"	d	file:
@@ -512,16 +443,14 @@ VMS	INSTALL	/^     The steps for installation under VMS, MSDOS, OS\/2, NT, Amiga
 VMS	INSTALL	/^     wide range of systems:  Unix, VMS, MSDOS, OS\/2, NT, Amiga, Atari,$/;"	v
 VMS	README	/^Testing for Zip 3.0 has focused mainly on Unix, VMS, Max OS X, and Win32,$/;"	v
 VMS_MSG_IDENT	ziperr.h	22;"	d
+W	zipsplit	/^/;"	v
 WILDCHR_MULTI	util.c	25;"	d	file:
 WILDCHR_SINGLE	util.c	24;"	d	file:
 WIN32	CHANGES	/^    WIN32, set z->vem to "OS_DOS | <real zip version number>".$/;"	v
-WIN32	tailor.h	26;"	d
 WMASK	deflate.c	90;"	d	file:
 WRBUFSIZ	zipnote.c	25;"	d	file:
-WRBUFSIZ	zipnote.c	28;"	d	file:
-WRBUFSIZ	zipnote.c	29;"	d	file:
 WSIZE	match.S	52;"	d	file:
-WSIZE	zip.h	104;"	d
+WSIZE	zip.h	94;"	d
 Win32	INSTALL	/^    This flag should be set automatically on Unix, Win32, and some$/;"	v
 Win32	README	/^Testing for Zip 3.0 has focused mainly on Unix, VMS, Max OS X, and Win32,$/;"	v
 Win32	README	/^create and read large files and archives.  On Unix, Win32, and some other$/;"	v
@@ -530,14 +459,11 @@ WriteNumString	util.c	/^int WriteNumString( num, outstring )$/;"	f
 X	README	/^Testing for Zip 3.0 has focused mainly on Unix, VMS, Max OS X, and Win32,$/;"	v
 XPG4	unix/README.OS390	/^XPG4, build environment, a Unix-style filesystem (called HFS), and$/;"	v
 YDAYS	timezone.c	76;"	d	file:
-ZBSZ	tailor.h	450;"	d
-ZBSZ	tailor.h	455;"	d
-ZBSZ	tailor.h	460;"	d
+ZBSZ	tailor.h	111;"	d
 ZCONST	ebcdic.h	49;"	d
-ZCONST	tailor.h	190;"	d
-ZCONST	tailor.h	193;"	d
+ZCONST	tailor.h	19;"	d
 ZCRYPT_INTERNAL	crypt.c	32;"	d	file:
-ZCR_SEED2	tailor.h	795;"	d
+ZCR_SEED2	tailor.h	191;"	d
 ZE_ABORT	ziperr.h	48;"	d
 ZE_BIG	ziperr.h	45;"	d
 ZE_COMPERR	ziperr.h	57;"	d
@@ -591,44 +517,35 @@ ZIP64_LARGE_FILE_HEAD_SIZE	zipfile.c	122;"	d	file:
 ZIP64_MIN_VER	zipfile.c	118;"	d	file:
 ZIP64_SUPPORT	unix/osdep.h	59;"	d
 ZIP64_SUPPORT	unix/osdep.h	63;"	d
-ZIPERR	tailor.h	873;"	d
+ZIPERR	tailor.h	201;"	d
 ZIPERRORS	ziperr.h	115;"	d
 ZIP_EF_HEADER_SIZE	zipfile.c	107;"	d	file:
 ZIP_UWORD16_MAX	zipfile.c	105;"	d	file:
 ZIP_UWORD32_MAX	zipfile.c	106;"	d	file:
-ZOFF_T_FORMAT_SIZE_PREFIX	tailor.h	142;"	d
-ZOFF_T_FORMAT_SIZE_PREFIX	tailor.h	153;"	d
 ZOFF_T_FORMAT_SIZE_PREFIX	unix/osdep.h	35;"	d
 ZOFF_T_FORMAT_SIZE_PREFIX	unix/osdep.h	37;"	d
 ZPATH_SEP	zipsplit.c	33;"	d	file:
 ZPATH_SEP	zipsplit.c	36;"	d	file:
 ZPATH_SEP	zipsplit.c	46;"	d	file:
 ZPATH_SEP	zipsplit.c	51;"	d	file:
-ZP_NEED_GEN_D2U_TIME	fileio.c	654;"	d	file:
-ZP_NEED_GEN_D2U_TIME	fileio.c	679;"	d	file:
-ZP_PW_ENTER	zip.h	276;"	d
-ZP_PW_VERIFY	zip.h	277;"	d
+ZP_NEED_GEN_D2U_TIME	fileio.c	552;"	d	file:
+ZP_NEED_GEN_D2U_TIME	fileio.c	577;"	d	file:
+ZP_PW_ENTER	zip.h	245;"	d
+ZP_PW_VERIFY	zip.h	246;"	d
 Z_BETALEVEL	revision.h	22;"	d
 Z_MAJORVER	revision.h	19;"	d
 Z_MINORVER	revision.h	20;"	d
 Z_PATCHLEVEL	revision.h	21;"	d
-Z_UINT4_DEFINED	tailor.h	393;"	d
-Z_UINT4_DEFINED	tailor.h	397;"	d
-Z_UINT4_DEFINED	tailor.h	401;"	d
-Z_UINT4_DEFINED	tailor.h	409;"	d
-_FILE_OFFSET_BITS	tailor.h	135;"	d
+Z_UINT4_DEFINED	tailor.h	92;"	d
 _FILE_OFFSET_BITS	unix/configure	354;"	d	file:
 _FILE_OFFSET_BITS	unix/configure	410;"	d	file:
 _FILE_OFFSET_BITS	unix/osdep.h	26;"	d
-_LARGEFILE64_SOURCE	tailor.h	134;"	d
 _LARGEFILE64_SOURCE	unix/configure	353;"	d	file:
 _LARGEFILE64_SOURCE	unix/configure	409;"	d	file:
 _LARGEFILE64_SOURCE	unix/osdep.h	25;"	d
-_LARGEFILE_SOURCE	tailor.h	133;"	d
 _LARGEFILE_SOURCE	unix/configure	352;"	d	file:
 _LARGEFILE_SOURCE	unix/configure	408;"	d	file:
 _LARGEFILE_SOURCE	unix/osdep.h	24;"	d
-_LARGE_FILES	tailor.h	136;"	d
 _LARGE_FILES	unix/configure	355;"	d	file:
 _LARGE_FILES	unix/configure	411;"	d	file:
 _LARGE_FILES	unix/osdep.h	27;"	d
@@ -641,7 +558,7 @@ _STD_LEAVE	crc_i386.S	99;"	d	file:
 __686	crc_i386.S	80;"	d	file:
 __CRC32_C	crc32.c	22;"	d	file:
 __DEFLATE_C	deflate.c	70;"	d	file:
-__EBCDIC	zip.h	215;"	d
+__EBCDIC	zip.h	184;"	d
 __FILEIO_C	fileio.c	14;"	d	file:
 __G	crypt.h	47;"	d
 __GDEF	crypt.h	49;"	d
@@ -764,7 +681,6 @@ bl_desc	trees.c	/^local tree_desc near bl_desc =$/;"	v
 bl_order	trees.c	/^local uch near bl_order[BL_CODES]$/;"	v
 bl_tree	trees.c	/^local ct_data near bl_tree[2*BL_CODES+1];$/;"	v
 block_start	deflate.c	/^long block_start;$/;"	v
-bstrm	zipup.c	/^local bz_stream bstrm;      \/* zlib's data interface structure *\/$/;"	v
 build_bl_tree	trees.c	/^local int build_bl_tree()$/;"	f
 build_tree	trees.c	/^local void build_tree(desc)$/;"	f
 bytes_prev_splits	globals.c	/^uzoff_t bytes_prev_splits = 0;    \/* total bytes written to all splits before this *\/$/;"	v
@@ -772,17 +688,11 @@ bytes_so_far	globals.c	/^uzoff_t bytes_so_far = 0;     \/* bytes processed so fa
 bytes_this_entry	globals.c	/^uzoff_t bytes_this_entry = 0;     \/* bytes written for this entry across all splits *\/$/;"	v
 bytes_this_split	globals.c	/^uzoff_t bytes_this_split = 0;     \/* bytes written to the current split *\/$/;"	v
 bytes_total	globals.c	/^uzoff_t bytes_total = 0;      \/* total bytes to process (from initial scan) *\/$/;"	v
-bz_compress_free	zipup.c	/^void bz_compress_free()$/;"	f
-bz_compress_init	zipup.c	/^local int bz_compress_init(pack_level)$/;"	f
 bz_internal_error	zbz2err.c	/^void bz_internal_error(errcode)$/;"	f
-bzfilecompress	zipup.c	/^local zoff_t bzfilecompress(z_entry, cmpr_method)$/;"	f
-bzipInit	zipup.c	/^local int bzipInit;         \/* flag: bzip2lib is initialized *\/$/;"	v
 c	CHANGES	/^ 1. Fix bug in QDOS patch that broke zipsplit.c (Onno, Paul)$/;"	f
 c	crypt.c	/^    int c;                      \/* byte of plain text *\/$/;"	v
-c	zipfile.c	/^  uzoff_t c;                \/* offset of central directory *\/$/;"	v
 capabilities	zip30.ann	/^  capabilities, but modifying existing programs to use the new dll$/;"	v
-case_map	tailor.h	212;"	d
-case_map	tailor.h	215;"	d
+case_map	tailor.h	33;"	d
 catalloc	zipnote.c	/^local int catalloc(a, s)$/;"	f
 cd_entries_this_disk	globals.c	/^uzoff_t cd_entries_this_disk = 0; \/* cd entries this disk *\/$/;"	v
 cd_start_disk	globals.c	/^ulg     cd_start_disk = (ulg)-1;  \/* central directory start disk *\/$/;"	v
@@ -797,7 +707,6 @@ check_match	deflate.c	418;"	d	file:
 check_unzip_version	zip.c	/^local int check_unzip_version(unzippath)$/;"	f
 check_zipfile	zip.c	/^local void check_zipfile(zipname, zippath)$/;"	f
 close_split	fileio.c	/^int close_split(disk_number, tempfile, temp_name)$/;"	f
-cma$tis_errno_get_addr	zip.h	360;"	d
 cmpr_bytelen	trees.c	/^local uzoff_t cmpr_bytelen;     \/* total byte length of compressed file *\/$/;"	v
 cmpr_len_bits	trees.c	/^local ulg cmpr_len_bits;        \/* number of bits past 'cmpr_bytelen' *\/$/;"	v
 code	WHATSNEW	/^  otherwise use base code, and compiling normally to enable Zip64 code$/;"	v
@@ -817,7 +726,6 @@ config::max_chain	deflate.c	/^   ush max_chain;$/;"	m	struct:config	file:	access
 config::max_lazy	deflate.c	/^   ush max_lazy;    \/* do not perform lazy search above this match length *\/$/;"	m	struct:config	file:	access:public
 config::nice_length	deflate.c	/^   ush nice_length; \/* quit search above this match length *\/$/;"	m	struct:config	file:	access:public
 configuration_table	deflate.c	/^local config configuration_table[10] = {$/;"	v
-const	tailor.h	191;"	d
 contents	zip.txt	/^       temporary file with the new contents, and only replace the old one when$/;"	v
 contributions	README	/^thoughts and contributions, etc., check out the new discussion forum.  This is$/;"	v
 copied	WHATSNEW	/^  since existing entries are copied, may be much faster.$/;"	v
@@ -872,7 +780,6 @@ daylight	timezone.c	/^int daylight = 0;$/;"	v
 decrypt_byte	crypt.c	/^int decrypt_byte(__G)$/;"	f
 decrypt_byte	crypt.h	57;"	d
 defined	CHANGES	/^ 2. Only call NLMsignals() in zip.c when NLM is defined (Mike, Onno)$/;"	f
-deflInit	zipup.c	/^local int deflInit = FALSE;   \/* flag: zlib deflate is initialized *\/$/;"	v
 deflate	deflate.c	/^uzoff_t deflate()$/;"	f
 deflate_fast	deflate.c	/^local uzoff_t deflate_fast()$/;"	f
 deletedir	unix/unix.c	/^int deletedir(d)$/;"	f
@@ -885,8 +792,7 @@ descmp	zipsplit.c	/^local int descmp(a, b)$/;"	f
 descriptions	CHANGES	/^ 7. windll: Fix some typos, descriptions (Christian)$/;"	f
 destroy	fileio.c	/^int destroy(f)$/;"	f
 detection	CHANGES	/^ 3. use #elif constructions for msdos,os2 and win32 compiler detection (Onno)$/;"	f
-diag	zip.h	564;"	d
-diag	zip.h	580;"	d
+diag	zip.h	427;"	d
 diff_mode	globals.c	/^int diff_mode = 0;            \/* 1=require --out and only store changed and add *\/$/;"	v
 different	zip.txt	/^       or size of the OS file is different, adding  new  files,  and  deleting$/;"	v
 directories	zip.txt	/^              the paths of entries, including directories, are stored as usual$/;"	v
@@ -945,20 +851,18 @@ environment	unix/README.OS390	/^XPG4, build environment, a Unix-style filesystem
 eofile	deflate.c	/^local int           eofile;        \/* flag set at end of input file *\/$/;"	v
 errbuf	globals.c	/^char errbuf[FNMAX+4081];$/;"	v
 error	zip.c	/^void error(h)$/;"	f
-error	zip.h	614;"	d
+error	zip.h	444;"	d
 esi	crc_i386.S	/^                testl   %esi, %esi           \/* >   return 0;                *\/$/;"	v
 esi	match.S	/^        mov     %esi,_match_start       \/* match_start = cur_match *\/$/;"	v
 eval	unix/configure	/^  elif eval "$CC -c _match.s >\/dev\/null 2>\/dev\/null" && [ -f _match.o ]; then$/;"	v
 ex2in	unix/unix.c	/^char *ex2in(x, isdir, pdosflag)$/;"	f
 executables	INSTALL	/^     most users define foreign command symbols for the Zip executables, like$/;"	v
-exit	zipnote.c	69;"	d	file:
 exit	zipsplit.c	40;"	d	file:
 expand_args	util.c	/^void expand_args(argcp, argvp)$/;"	f
 ext	zip.h	/^  ush nam, ext, cext, com;      \/* offset of ext must be >= LOCHEAD *\/$/;"	m	struct:zlist	access:public
 extension	README	/^file using an extension, such as .z02 as in the file name archive.z02, that$/;"	v
 extension	TODO	/^- For an sfx file without extension, "zip -A sfx" works but "zip sfx -A"$/;"	v
 extent	tailor.h	/^   typedef size_t extent;$/;"	t
-extent	tailor.h	/^   typedef unsigned int extent;$/;"	t
 extra	zip.h	/^  char *extra;                  \/* Extra field (set only if ext != 0) *\/$/;"	m	struct:zlist	access:public
 extra_base	trees.c	/^    int     extra_base;          \/* base index for extra_bits *\/$/;"	m	struct:tree_desc	file:	access:public
 extra_bits	trees.c	/^    int     near *extra_bits;    \/* extra bits for each code or NULL *\/$/;"	m	struct:tree_desc	file:	access:public
@@ -968,13 +872,9 @@ extra_fields	globals.c	/^int extra_fields = 1;         \/* 0=create minimum, 1=d
 extra_lbits	trees.c	/^local int near extra_lbits[LENGTH_CODES] \/* extra bits for each length code *\/$/;"	v
 f	ttyio.c	/^    int f;                    \/* file descriptor for which to turn echo off *\/$/;"	v
 fP	man/zip.1	/^\\fBk\\fP (kilobytes), \\fBm\\fP (megabytes), \\fBg\\fP (gigabytes), or \\fBt\\fP$/;"	f
-f_ibuf	zipup.c	/^local char *f_ibuf = NULL;$/;"	v
-f_obuf	zipup.c	/^local char *f_obuf = NULL;$/;"	v
-far	tailor.h	470;"	d
-far	tailor.h	474;"	d
-far	tailor.h	482;"	d
-farfree	tailor.h	491;"	d
-farmalloc	tailor.h	490;"	d
+far	tailor.h	116;"	d
+farfree	tailor.h	121;"	d
+farmalloc	tailor.h	120;"	d
 fbad	unix/zipup.h	18;"	d
 fc	trees.c	/^    } fc;$/;"	m	struct:ct_data	typeref:union:ct_data::__anon3	file:	access:public
 fcopy	fileio.c	/^int fcopy(f, g, n)$/;"	f
@@ -1007,7 +907,6 @@ files_so_far	globals.c	/^ulg files_so_far = 0;         \/* files processed so fa
 files_total	globals.c	/^ulg files_total = 0;          \/* files total to process *\/$/;"	v
 filesync	globals.c	/^int filesync = 0;       \/* 1=file sync, delete entries not on file system *\/$/;"	v
 filetime	unix/unix.c	/^ulg filetime(f, a, n, t)$/;"	f
-filetypes	zipup.c	/^local int filetypes(a, s)$/;"	f
 fill_window	deflate.c	/^local void fill_window()$/;"	f
 filter	fileio.c	/^int filter(name, casesensitive)$/;"	f
 filter	zip.txt	/^       as  a filter, compressing standard input to standard output.  For exam-$/;"	v
@@ -1031,16 +930,13 @@ flg	zip.h	/^  ush vem, ver, flg, how;$/;"	m	struct:zlist	access:public
 flist	zip.h	/^struct flist {$/;"	s
 flist::dosflag	zip.h	/^  int dosflag;                  \/* Set to force MSDOS file attributes *\/$/;"	m	struct:flist	access:public
 flist::iname	zip.h	/^  char *iname;                  \/* Internal file name after cleanup *\/$/;"	m	struct:flist	access:public
-flist::inamew	zip.h	/^  wchar_t *inamew;              \/* Windows wide character version of iname *\/$/;"	m	struct:flist	access:public
 flist::lst	zip.h	/^  struct flist far *far *lst;   \/* Pointer to link pointing here *\/$/;"	m	struct:flist	typeref:struct:flist::far	access:public
 flist::name	zip.h	/^  char *name;                   \/* Raw internal file name *\/$/;"	m	struct:flist	access:public
-flist::namew	zip.h	/^  wchar_t *namew;               \/* Windows wide character version of name *\/$/;"	m	struct:flist	access:public
 flist::nxt	zip.h	/^  struct flist far *nxt;        \/* Link to next name *\/$/;"	m	struct:flist	typeref:struct:flist::far	access:public
 flist::oname	zip.h	/^  char *oname;                  \/* Display version of internal name *\/$/;"	m	struct:flist	access:public
 flist::uname	zip.h	/^  char *uname;                  \/* UTF-8 name *\/$/;"	m	struct:flist	access:public
 flist::usize	zip.h	/^  uzoff_t usize;                \/* usize from initial scan *\/$/;"	m	struct:flist	access:public
 flist::zname	zip.h	/^  char *zname;                  \/* External version of internal name *\/$/;"	m	struct:flist	access:public
-flist::znamew	zip.h	/^  wchar_t *znamew;              \/* Windows wide character version of zname *\/$/;"	m	struct:flist	access:public
 flush_block	trees.c	/^uzoff_t flush_block(buf, stored_len, eof)$/;"	f
 flush_flg	trees.c	/^local int flush_flg;$/;"	v
 flush_outbuf	zipup.c	/^void flush_outbuf(o_buf, o_idx)$/;"	f
@@ -1051,7 +947,6 @@ format	tags	/^!_TAG_FILE_FORMAT	2	\/extended format; --format=1 will not append 
 found	globals.c	/^struct flist far *found = NULL;   \/* List of names found *\/$/;"	v	typeref:struct:far
 fqcmp	fileio.c	/^local int fqcmp(a, b)$/;"	f
 fqcmpz	fileio.c	/^local int fqcmpz(a, b)$/;"	f
-free	zip.h	590;"	d
 free_args	fileio.c	/^int free_args(args)$/;"	f
 freeup	zip.c	/^local void freeup()$/;"	f
 freq	trees.c	/^        ush  freq;       \/* frequency count *\/$/;"	m	union:ct_data::__anon3	file:	access:public
@@ -1105,8 +1000,7 @@ help_info	zipcloak.c	/^static ZCONST char *help_info[] = {$/;"	v	file:
 hidden_files	globals.c	/^int hidden_files = 0;         \/* process hidden and system files *\/$/;"	v
 how	zip.h	/^  ush vem, ver, flg, how;$/;"	m	struct:zlist	access:public
 however	INSTALL	/^  set the flags appropriately.  In some cases, however, you may need to$/;"	v
-huge	tailor.h	469;"	d
-huge	tailor.h	479;"	d
+huge	tailor.h	115;"	d
 i386	unix/Packaging/README	/^   Where:  $(arch) := system architecture, currently i386, sparc, or ppc.$/;"	v
 ibs	zip.txt	/^              dd if=\/dev\/nrst0  ibs=16k | funzip | tar xvf -$/;"	v
 icount	globals.c	/^unsigned icount = 0;            \/* number of include only patterns *\/$/;"	v
@@ -1114,11 +1008,8 @@ ideal	INSTALL	/^     if you see optimization for your system is not ideal, send 
 ifile	zipup.c	/^local ftype ifile;              \/* file to compress *\/$/;"	v
 implementations	INSTALL	/^     free GNU C implementations, respectively.  More detailed instructions$/;"	v
 in2ex	unix/unix.c	/^char *in2ex(n)$/;"	f
-in_buf	zipup.c	/^local char *in_buf;$/;"	v
 in_file	globals.c	/^FILE *in_file = NULL;         \/* current input file for splits *\/$/;"	v
-in_offset	zipup.c	/^local unsigned in_offset;$/;"	v
 in_path	globals.c	/^char *in_path = NULL;         \/* base name of input archive file *\/$/;"	v
-in_size	zipup.c	/^local unsigned in_size;     \/* size of current input buffer *\/$/;"	v
 in_split_path	globals.c	/^char *in_split_path = NULL;   \/* in split path *\/$/;"	v
 iname	zip.h	/^  char *iname;                  \/* Internal file name after cleanup (stored in archive) *\/$/;"	m	struct:zlist	access:public
 iname	zip.h	/^  char *iname;                  \/* Internal file name after cleanup *\/$/;"	m	struct:flist	access:public
@@ -1126,8 +1017,6 @@ inameLocal	zipfile.c	1172;"	d	file:
 inameLocal	zipfile.c	1176;"	d	file:
 inameLocal	zipfile.c	1279;"	d	file:
 inameLocal	zipfile.c	1283;"	d	file:
-inamew	zip.h	/^  wchar_t *inamew;              \/* Windows wide character version of iname *\/$/;"	m	struct:flist	access:public
-inamew	zip.h	/^  wchar_t *inamew;              \/* Windows wide character version of iname *\/$/;"	m	struct:zlist	access:public
 inaries	LICENSE	/^       be misrepresented as being the original source or, if binaries,$/;"	v	file:
 indexmade	zipsplit.c	/^local int indexmade = 0;        \/* true if index file made *\/$/;"	v
 indll	CHANGES	/^ 7. Updated VB examples for windll (Mike)$/;"	f
@@ -1146,7 +1035,6 @@ is_seekable	zipup.c	/^int is_seekable(y)$/;"	f
 is_signature	zipfile.c	/^local int is_signature(sig1, sig2)$/;"	f
 is_text_buf	util.c	/^int is_text_buf(buf_ptr, buf_size)$/;"	f
 isize	zipup.c	/^local zoff_t isize;         \/* input file size. global only for debugging *\/$/;"	v
-isize	zipup.c	/^zoff_t isize;               \/* input file size. global only for debugging *\/$/;"	v
 iso2oem	ebcdic.h	/^ZCONST uch Far iso2oem[] = {$/;"	v
 isshexp	util.c	/^char *isshexp(p)$/;"	f
 issymlnk	fileio.c	/^int issymlnk(a)$/;"	f
@@ -1169,7 +1057,7 @@ last	fileio.c	/^char *last(p, c)$/;"	f
 last_dist	trees.c	/^local unsigned last_dist;   \/* running index in d_buf *\/$/;"	v
 last_flags	trees.c	/^local unsigned last_flags;  \/* running index in flag_buf *\/$/;"	v
 last_lit	trees.c	/^local unsigned last_lit;    \/* running index in l_buf *\/$/;"	v
-lastchar	tailor.h	361;"	d
+lastchar	tailor.h	73;"	d
 lastfile	zip.c	/^struct filelist_struct *lastfile = NULL;  \/* last file in list *\/$/;"	v	typeref:struct:filelist_struct
 lastfilter	zip.c	/^struct filterlist_struct *lastfilter = NULL;  \/* last filter in list *\/$/;"	v	typeref:struct:filterlist_struct
 latest	zip.c	/^local int latest = 0;   \/* 1=set zip file time to time of latest file *\/$/;"	v
@@ -1180,10 +1068,6 @@ length_code	trees.c	/^local uch length_code[MAX_MATCH-MIN_MATCH+1];$/;"	v
 level	globals.c	/^int level = 6;          \/* 0=fastest compression, 9=best compression *\/$/;"	v
 lf	unix/configure	/^          lf='-Wl,-search_paths_first'$/;"	v
 lflg	zip.h	/^  ush att, lflg;                \/* offset of lflg must be >= LOCHEAD *\/$/;"	m	struct:zlist	access:public
-lib$establish	zip.h	361;"	d
-lib$get_foreign	zip.h	362;"	d
-lib$get_input	zip.h	363;"	d
-lib$sig_to_ret	zip.h	364;"	d
 library$	tags	/^functionality	LICENSE	\/^       modified or added functionality, and dynamic, shared, or static library$\/;"	v$/;"	v	file:
 library$	tags	/^shared	LICENSE	\/^       modified or added functionality, and dynamic, shared, or static library$\/;"	v$/;"	v	file:
 license	zip.c	/^local void license()$/;"	f
@@ -1195,7 +1079,7 @@ linkput	globals.c	/^int linkput = 0;              \/* 1=store symbolic links as 
 lm_free	deflate.c	/^void lm_free()$/;"	f
 lm_init	deflate.c	/^void lm_init (pack_level, flags)$/;"	f
 local	zip.h	82;"	d
-local_to_display_string	fileio.c	/^char *local_to_display_string(local_string)$/;"	f
+local_to_display_string	fileio.c	/^char *local_to_display_string(char *local_string)$/;"	f	signature:(char *local_string)
 local_to_escape_string	fileio.c	/^char *local_to_escape_string(local_string)$/;"	f
 local_to_utf8_string	fileio.c	/^char *local_to_utf8_string(local_string)$/;"	f
 local_to_wide_string	fileio.c	/^zwchar *local_to_wide_string(local_string)$/;"	f
@@ -1212,8 +1096,8 @@ longopt	zip.h	/^  char Far *longopt;        \/* char * to long option string *\/
 lookahead	deflate.c	/^local unsigned      lookahead;     \/* number of valid bytes ahead in window *\/$/;"	v
 lower	util.c	/^uch upper[256], lower[256];$/;"	v
 lst	zip.h	/^  struct flist far *far *lst;   \/* Pointer to link pointing here *\/$/;"	m	struct:flist	typeref:struct:flist::far	access:public
+m	a.zip	/^g;í²ÓW“lÎÉ»˜©»ÌMh9O`ß4/;"	v
 m	ttyio.c	/^    ZCONST char *m;             \/* prompt for password *\/$/;"	v
-m	zipfile.c	/^  extent m;                 \/* length of zip file comment (0 if none) *\/$/;"	v
 main	unix/configure	/^int main()$/;"	f
 main	zip.c	/^int main(int argc, char **argv)$/;"	f	signature:(int argc, char **argv)
 main	zipcloak.c	/^int main()$/;"	f
@@ -1230,8 +1114,6 @@ max_insert_length	deflate.c	174;"	d	file:
 max_lazy	deflate.c	/^   ush max_lazy;    \/* do not perform lazy search above this match length *\/$/;"	m	struct:config	file:	access:public
 max_lazy_match	deflate.c	/^local unsigned int max_lazy_match;$/;"	v
 max_length	trees.c	/^    int     max_length;          \/* max bit length for the codes *\/$/;"	m	struct:tree_desc	file:	access:public
-mem_read	zipup.c	/^local unsigned mem_read(b, bsize)$/;"	f
-memcompress	zipup.c	/^ulg memcompress(tgt, tgtsize, src, srcsize)$/;"	f
 mesg	globals.c	/^FILE *mesg;             \/* stdout by default, stderr for piping *\/$/;"	v
 mesg_line_started	globals.c	/^int mesg_line_started = 0;        \/* 1=started writing a line to mesg *\/$/;"	v
 method	globals.c	/^int method = BEST;      \/* one of BEST, DEFLATE (only), or STORE (only) *\/$/;"	v
@@ -1259,13 +1141,9 @@ name	ziperr.h	/^    char *name;$/;"	m	struct:__anon2	access:public
 name	zipsplit.c	/^local char *name;               \/* where name goes in path[] *\/$/;"	v
 name$	tags	/^archive	man\/zip.1	\/^In cmd, {} is replaced by the name of the temporary archive, otherwise the name$\/;"	v$/;"	v
 namecmp	util.c	/^int namecmp(string1, string2)$/;"	f
-namew	zip.h	/^  wchar_t *namew;               \/* Windows wide character version of name *\/$/;"	m	struct:flist	access:public
-namew	zip.h	/^  wchar_t *namew;               \/* Windows wide character version of name *\/$/;"	m	struct:zlist	access:public
-near	tailor.h	471;"	d
-near	tailor.h	475;"	d
-near	tailor.h	485;"	d
-nearfree	tailor.h	489;"	d
-nearmalloc	tailor.h	488;"	d
+near	tailor.h	117;"	d
+nearfree	tailor.h	119;"	d
+nearmalloc	tailor.h	118;"	d
 needed	zip30f.ann	/^  files on the file system, adding, updating, and deleting entries as needed,$/;"	v
 negatable	zip.h	/^  int  negatable;           \/* from above *\/$/;"	m	struct:option_struct	access:public
 newname	fileio.c	/^int newname(name, isdir, casesensitive)$/;"	f
@@ -1283,64 +1161,65 @@ null	unix/configure	/^  if \/usr\/bin\/hostinfo | grep NeXT > \/dev\/null; then$
 num_req_val_err	fileio.c	/^static ZCONST char Far num_req_val_err[] = "option %s requires number value";$/;"	v	file:
 nxt	zip.h	/^  struct flist far *nxt;        \/* Link to next name *\/$/;"	m	struct:flist	typeref:struct:flist::far	access:public
 nxt	zip.h	/^  struct zlist far *nxt;        \/* Pointer to next header in list *\/$/;"	m	struct:zlist	typeref:struct:zlist::far	access:public
-oERR	fileio.c	2571;"	d	file:
-oWARN	fileio.c	2570;"	d	file:
-o_AC	zip.c	1250;"	d	file:
-o_ARG_FILE_ERR	zip.h	1022;"	d
-o_AS	zip.c	1251;"	d	file:
-o_C2	zip.c	1252;"	d	file:
-o_C5	zip.c	1253;"	d	file:
-o_DF	zip.c	1259;"	d	file:
-o_FF	zip.c	1264;"	d	file:
-o_FI	zip.c	1265;"	d	file:
-o_FS	zip.c	1266;"	d	file:
-o_MM	zip.c	1275;"	d	file:
-o_NEGATABLE	zip.h	1013;"	d
-o_NON_OPTION_ARG	zip.h	1020;"	d
-o_NOT_NEGATABLE	zip.h	1012;"	d
-o_NO_OPTION_MATCH	zip.h	1017;"	d
-o_NO_VALUE	zip.h	1003;"	d
-o_NUMBER_VALUE	zip.h	1008;"	d
-o_ONE_CHAR_VALUE	zip.h	1007;"	d
-o_OPTIONAL_VALUE	zip.h	1005;"	d
-o_RE	zip.c	1277;"	d	file:
-o_REQUIRED_VALUE	zip.h	1004;"	d
-o_TT	zip.c	1288;"	d	file:
-o_UN	zip.c	1289;"	d	file:
-o_VALUE_LIST	zip.h	1006;"	d
-o_VV	zip.c	1291;"	d	file:
-o_db	zip.c	1254;"	d	file:
-o_dc	zip.c	1255;"	d	file:
-o_dd	zip.c	1256;"	d	file:
-o_des	zip.c	1257;"	d	file:
-o_df	zip.c	1258;"	d	file:
-o_dg	zip.c	1260;"	d	file:
-o_ds	zip.c	1261;"	d	file:
-o_du	zip.c	1262;"	d	file:
-o_dv	zip.c	1263;"	d	file:
-o_h2	zip.c	1267;"	d	file:
-o_ic	zip.c	1268;"	d	file:
-o_jj	zip.c	1269;"	d	file:
-o_la	zip.c	1270;"	d	file:
-o_lf	zip.c	1271;"	d	file:
-o_li	zip.c	1272;"	d	file:
-o_ll	zip.c	1273;"	d	file:
-o_mm	zip.c	1274;"	d	file:
-o_nw	zip.c	1276;"	d	file:
-o_sU	zip.c	1285;"	d	file:
-o_sb	zip.c	1278;"	d	file:
-o_sc	zip.c	1279;"	d	file:
-o_sd	zip.c	1280;"	d	file:
-o_sf	zip.c	1281;"	d	file:
-o_so	zip.c	1282;"	d	file:
-o_sp	zip.c	1283;"	d	file:
-o_su	zip.c	1284;"	d	file:
-o_sv	zip.c	1286;"	d	file:
-o_tt	zip.c	1287;"	d	file:
-o_ve	zip.c	1290;"	d	file:
-o_ws	zip.c	1292;"	d	file:
-o_ww	zip.c	1293;"	d	file:
-o_z64	zip.c	1294;"	d	file:
+o	zipsplit	/^/;"	v
+oERR	fileio.c	2464;"	d	file:
+oWARN	fileio.c	2463;"	d	file:
+o_AC	zip.c	1263;"	d	file:
+o_ARG_FILE_ERR	zip.h	663;"	d
+o_AS	zip.c	1264;"	d	file:
+o_C2	zip.c	1265;"	d	file:
+o_C5	zip.c	1266;"	d	file:
+o_DF	zip.c	1272;"	d	file:
+o_FF	zip.c	1277;"	d	file:
+o_FI	zip.c	1278;"	d	file:
+o_FS	zip.c	1279;"	d	file:
+o_MM	zip.c	1288;"	d	file:
+o_NEGATABLE	zip.h	654;"	d
+o_NON_OPTION_ARG	zip.h	661;"	d
+o_NOT_NEGATABLE	zip.h	653;"	d
+o_NO_OPTION_MATCH	zip.h	658;"	d
+o_NO_VALUE	zip.h	644;"	d
+o_NUMBER_VALUE	zip.h	649;"	d
+o_ONE_CHAR_VALUE	zip.h	648;"	d
+o_OPTIONAL_VALUE	zip.h	646;"	d
+o_RE	zip.c	1290;"	d	file:
+o_REQUIRED_VALUE	zip.h	645;"	d
+o_TT	zip.c	1301;"	d	file:
+o_UN	zip.c	1302;"	d	file:
+o_VALUE_LIST	zip.h	647;"	d
+o_VV	zip.c	1304;"	d	file:
+o_db	zip.c	1267;"	d	file:
+o_dc	zip.c	1268;"	d	file:
+o_dd	zip.c	1269;"	d	file:
+o_des	zip.c	1270;"	d	file:
+o_df	zip.c	1271;"	d	file:
+o_dg	zip.c	1273;"	d	file:
+o_ds	zip.c	1274;"	d	file:
+o_du	zip.c	1275;"	d	file:
+o_dv	zip.c	1276;"	d	file:
+o_h2	zip.c	1280;"	d	file:
+o_ic	zip.c	1281;"	d	file:
+o_jj	zip.c	1282;"	d	file:
+o_la	zip.c	1283;"	d	file:
+o_lf	zip.c	1284;"	d	file:
+o_li	zip.c	1285;"	d	file:
+o_ll	zip.c	1286;"	d	file:
+o_mm	zip.c	1287;"	d	file:
+o_nw	zip.c	1289;"	d	file:
+o_sU	zip.c	1298;"	d	file:
+o_sb	zip.c	1291;"	d	file:
+o_sc	zip.c	1292;"	d	file:
+o_sd	zip.c	1293;"	d	file:
+o_sf	zip.c	1294;"	d	file:
+o_so	zip.c	1295;"	d	file:
+o_sp	zip.c	1296;"	d	file:
+o_su	zip.c	1297;"	d	file:
+o_sv	zip.c	1299;"	d	file:
+o_tt	zip.c	1300;"	d	file:
+o_ve	zip.c	1303;"	d	file:
+o_ws	zip.c	1305;"	d	file:
+o_ww	zip.c	1306;"	d	file:
+o_z64	zip.c	1307;"	d	file:
 oco_no_mbc_err	fileio.c	/^static ZCONST char Far oco_no_mbc_err[] = "option %s does not support multibyte values";$/;"	v	file:
 oco_req_val_err	fileio.c	/^static ZCONST char Far oco_req_val_err[] = "option %s requires one character value";$/;"	v	file:
 oem2iso	ebcdic.h	/^ZCONST uch Far oem2iso[] = {$/;"	v
@@ -1368,7 +1247,6 @@ options	zipcloak.c	/^struct option_struct far options[] = {$/;"	v	typeref:struct
 options	zipnote.c	/^struct option_struct far options[] = {$/;"	v	typeref:struct:far
 options	zipsplit.c	/^struct option_struct far options[] = {$/;"	v	typeref:struct:far
 or	README	/^favorite port is broke, send us the details or, better, send bug fixes.  It's$/;"	v
-ots$cvt_tu_l	zip.h	365;"	d
 ouname	zip.h	/^  char *ouname;                 \/* Display version of zuname *\/$/;"	m	struct:zlist	access:public
 out_buf	trees.c	/^char *out_buf;$/;"	v
 out_buf	trees.c	/^local char *out_buf;$/;"	v
@@ -1414,8 +1292,7 @@ r_mon	timezone.h	/^    int             r_mon;      \/* month number of rule *\/$
 r_time	timezone.h	/^    long            r_time;     \/* transition time of rule *\/$/;"	m	struct:rule	access:public
 r_type	timezone.h	/^    int             r_type;     \/* type of rule--JULIAN_DAY etc *\/$/;"	m	struct:rule	access:public
 r_week	timezone.h	/^    int             r_week;     \/* week number of rule *\/$/;"	m	struct:rule	access:public
-rdsymlnk	zip.h	698;"	d
-rdsymlnk	zip.h	701;"	d
+rdsymlnk	zip.h	494;"	d
 read	globals.o	/^/;"	v
 read	zip30f.ann	/^  so many bytes read, settable from KB to TB, allowing progress to be$/;"	v
 read_Unicode_Path_entry	zipfile.c	/^local void read_Unicode_Path_entry(pZipListEntry)$/;"	f
@@ -1429,7 +1306,6 @@ real_timezone_is_set	timezone.c	/^int real_timezone_is_set = FALSE;       \/* se
 recmatch	util.c	/^local int recmatch(p, s, cs)$/;"	f
 recurse	globals.c	/^int recurse = 0;        \/* 1=recurse into directories encountered *\/$/;"	v
 releases	Betas_Readme.txt	/^All code, including releases, are released under the Info-ZIP license.$/;"	v
-remain	zipup.c	/^local ulg remain;$/;"	v
 rename_split	zip.c	/^int rename_split(temp_name, out_path)$/;"	f
 rename_split	zipcloak.c	/^int rename_split(temp_name, out_path)$/;"	f
 rename_split	zipnote.c	/^int rename_split(temp_name, out_path)$/;"	f
@@ -1447,7 +1323,6 @@ rule::r_time	timezone.h	/^    long            r_time;     \/* transition time of
 rule::r_type	timezone.h	/^    int             r_type;     \/* type of rule--JULIAN_DAY etc *\/$/;"	m	struct:rule	access:public
 rule::r_week	timezone.h	/^    int             r_week;     \/* week number of rule *\/$/;"	m	struct:rule	access:public
 rules	TODO	/^- zip and unzip should use the same pattern matching rules, particularly$/;"	v
-s	zipfile.c	/^  uzoff_t s;                \/* size of central directory *\/$/;"	v
 safer	zip.txt	/^              a  new  archive name is safer, avoids mismatches between archive$/;"	v
 scan_count	globals.c	/^uzoff_t scan_count = 0; \/* Used for Scanning files ... message *\/$/;"	v
 scan_delay	globals.c	/^time_t scan_delay = 5;  \/* seconds before display Scanning files message *\/$/;"	v
@@ -1494,7 +1369,6 @@ sigbuf	zipfile.c	/^local char sigbuf[4];   \/* signature found *\/$/;"	v
 simple	zipsplit.c	/^local extent simple(a, n, c, d)$/;"	f
 siz	zip.h	/^  uzoff_t siz, len;             \/* zip64 support 08\/29\/2003 R.Nausedat *\/$/;"	m	struct:zlist	access:public
 size	man/zip.1	/^archive reaches the specified split size, that split is closed and the next split$/;"	v
-size_t	tailor.h	/^   typedef unsigned int size_t;$/;"	t
 skip_current_disk	globals.c	/^ulg     skip_current_disk = 0;  \/* if != 0 and fix then skip entries on this disk *\/$/;"	v
 skip_this_disk	globals.c	/^ulg skip_this_disk = 0;$/;"	v
 sliding	deflate.c	/^local int sliding;$/;"	v
@@ -1518,33 +1392,13 @@ static_len	trees.c	/^local ulg static_len;     \/* bit length of current block w
 static_ltree	trees.c	/^local ct_data near static_ltree[L_CODES+2];$/;"	v
 static_tree	trees.c	/^    ct_data near *static_tree;   \/* corresponding static tree or NULL *\/$/;"	m	struct:tree_desc	file:	access:public
 statism	timezone.c	/^static struct state statism;$/;"	v	typeref:struct:state	file:
-stderr	zip.h	561;"	d
-stderr	zip.h	562;"	d
 stores	zip.txt	/^       port wide characters, zip now stores, in addition to the standard local$/;"	v
-str$concat	zip.h	366;"	d
-str$find_first_substring	zip.h	367;"	d
-str$free1_dx	zip.h	368;"	d
-strchr	tailor.h	260;"	d
 string	ziperr.h	/^    char *string;$/;"	m	struct:__anon1	access:public
 string	ziperr.h	/^    char *string;$/;"	m	struct:__anon2	access:public
-strrchr	tailor.h	256;"	d
 strstart	deflate.c	/^      unsigned near strstart;      \/* start of string to insert *\/$/;"	v
 suffixes	zipup.c	/^local int suffixes(a, s)$/;"	f
 support	WHERE	/^     Zip 2.31 release, all official binaries include encryption support; the$/;"	v
 swlicense	revision.h	/^ZCONST char * far swlicense[] = {$/;"	v
-sys$asctim	zip.h	369;"	d
-sys$assign	zip.h	370;"	d
-sys$bintim	zip.h	371;"	d
-sys$close	zip.h	372;"	d
-sys$connect	zip.h	373;"	d
-sys$dassgn	zip.h	374;"	d
-sys$display	zip.h	375;"	d
-sys$getjpiw	zip.h	376;"	d
-sys$open	zip.h	377;"	d
-sys$parse	zip.h	378;"	d
-sys$qiow	zip.h	379;"	d
-sys$read	zip.h	380;"	d
-sys$search	zip.h	381;"	d
 system	WHATSNEW	/^  system, adding updating, and deleting entries as needed.  This$/;"	v
 systems	LICENSE	/^       systems, existing ports with new graphical interfaces, versions with$/;"	v
 systems	tags	/^systems	LICENSE	\/^       systems, existing ports with new graphical interfaces, versions with$\/;"	v$/;"	v
@@ -1567,14 +1421,12 @@ tfreeall	zipsplit.c	/^local void tfreeall()$/;"	f
 then	INSTALL	/^     the sources.  First step, then, is to unpack Zip.  The following$/;"	v
 tim	zip.h	/^  ulg tim, crc;$/;"	m	struct:zlist	access:public
 time	Betas_Readme.txt	/^We take suggestions, bug fixes, and patches at any time, so send them in.$/;"	v
-time_t	tailor.h	/^   typedef long time_t;$/;"	t
 timecnt	timezone.h	/^    int             timecnt;$/;"	m	struct:state	access:public
 timezone	timezone.c	/^long timezone = 0;$/;"	v
 to	LICENSE	/^       limited to, labeling of the altered versions with the names "Info-ZIP"$/;"	v	file:
 to	LICENSE	/^    3. Altered versions--including, but not limited to, ports to new operating$/;"	v
 to	tags	/^to	LICENSE	\/^       limited to, labeling of the altered versions with the names "Info-ZIP"$\/;"	v	file:$/;"	v
-to_up	tailor.h	213;"	d
-to_up	tailor.h	216;"	d
+to_up	tailor.h	34;"	d
 total_cd_entries	globals.c	/^uzoff_t total_cd_entries = 0;     \/* total cd entries in new\/updated archive *\/$/;"	v
 total_disks	globals.c	/^ulg     total_disks = 0;        \/* total disks in archive *\/$/;"	v
 translate_eol	globals.c	/^int translate_eol = 0;  \/* Translate end-of-line LF -> CR LF *\/$/;"	v
@@ -1630,11 +1482,8 @@ utf8_to_escape_string	fileio.c	/^char *utf8_to_escape_string(utf8_string)$/;"	f
 utf8_to_local_string	fileio.c	/^char *utf8_to_local_string(utf8_string)$/;"	f
 utf8_to_ucs4_string	fileio.c	/^local int utf8_to_ucs4_string(utf8, ucs4buf, buflen)$/;"	f
 utf8_to_wide_string	fileio.c	/^zwchar *utf8_to_wide_string(utf8_string)$/;"	f
-uzoff_t	tailor.h	/^    typedef unsigned long long uzoff_t;  \/* unsigned zoff_t (12\/29\/04 EG) *\/$/;"	t
-uzoff_t	tailor.h	/^    typedef unsigned long uzoff_t;$/;"	t
 uzoff_t	unix/osdep.h	/^  typedef unsigned long long uzoff_t;$/;"	t
 uzoff_t	unix/osdep.h	/^  typedef unsigned long uzoff_t;$/;"	t
-valloc	zipup.c	51;"	d	file:
 value_type	zip.h	/^  int  value_type;          \/* from above *\/$/;"	m	struct:option_struct	access:public
 vem	zip.h	/^  ush vem, ver, flg, how;$/;"	m	struct:zlist	access:public
 ver	zip.h	/^  ush vem, ver, flg, how;$/;"	m	struct:zlist	access:public
@@ -1645,42 +1494,34 @@ version_info	zipcloak.c	/^local void version_info()$/;"	f
 version_info	zipnote.c	/^local void version_info()$/;"	f
 version_info	zipsplit.c	/^local void version_info()$/;"	f
 version_local	unix/unix.c	/^void version_local()$/;"	f
-void	tailor.h	245;"	d
 volume_label	globals.c	/^int volume_label = 0;         \/* add volume label *\/$/;"	v
 wide_char_to_escape_string	fileio.c	/^char *wide_char_to_escape_string(wide_char)$/;"	f
 wide_to_escape_string	fileio.c	/^char *wide_to_escape_string(wide_string)$/;"	f
 wide_to_local_string	fileio.c	/^char *wide_to_local_string(wide_string)$/;"	f
-wide_to_mb_default_string	zip.h	919;"	d
+wide_to_mb_default_string	zip.h	580;"	d
 wide_to_utf8_string	fileio.c	/^char *wide_to_utf8_string(wide_string)$/;"	f
 wild_stop_at_dir	globals.c	/^   int wild_stop_at_dir = 0; \/* default wildcards do include \/ in matches *\/$/;"	v
 win32	CHANGES	/^ 3. Fix NTSD_EAS link time failures with win32 (Paul)$/;"	f
 window	deflate.c	/^  uch    window[2L*WSIZE];$/;"	v
-window	zipup.c	/^local uch *window = NULL;   \/* Used to read all input file at once *\/$/;"	v
 window_size	deflate.c	/^ulg window_size;$/;"	v
-window_size	zipup.c	/^local ulg window_size;      \/* size of said window *\/$/;"	v
 with	zip.txt	/^       can have a value (option argument) specified by preceeding  it  with  =$/;"	v
 with$	tags	/^systems	LICENSE	\/^       systems, existing ports with new graphical interfaces, versions with$\/;"	v$/;"	v
 write_int64_to_mem	zipfile.c	/^local void write_int64_to_mem(l64Value,pPtr)$/;"	f
 write_string_to_mem	zipfile.c	/^local void write_string_to_mem(strValue, pPtr)$/;"	f
 write_ulong_to_mem	zipfile.c	/^local void write_ulong_to_mem(uValue, pPtr)$/;"	f
-wuname	zip.h	/^  char *wuname;                 \/* Converted back ouname for Win32 *\/$/;"	m	struct:zlist	access:public
 xample	WHATSNEW	/^  for example, and this approach creates archives that should be$/;"	v
 xample	zip.txt	/^       Be aware that console windows on Win32 and Unix, for example, sometimes$/;"	v
 xample	zip.txt	/^       between splits to allow changing removable media, for example, but read$/;"	v
 xenix	INSTALL	/^     att6300, coherent, cray_v3, minix, sco_x286, xenix, zilog.$/;"	v
+y	a.zip	/^–]ˆ0ØuÇ÷@^®;ÖŸz·¹/;"	v
 y	globals.c	/^FILE *y = NULL;               \/* output file now global so can change in splits *\/$/;"	v
 year_lengths	timezone.c	/^static ZCONST int   year_lengths[2] = {$/;"	v	file:
 yr_days	timezone.c	/^static ZCONST int    yr_days[2][MONSPERYEAR+1] = {$/;"	v	file:
-z	zipfile.c	/^  char *z;                  \/* zip file comment if m != 0 *\/$/;"	v
-z_stat	tailor.h	/^  typedef struct stat z_stat;$/;"	t	typeref:struct:stat
 z_stat	unix/osdep.h	/^  typedef struct stat z_stat;$/;"	t	typeref:struct:stat
-z_uint4	tailor.h	/^           typedef unsigned short   z_uint4;$/;"	t
-z_uint4	tailor.h	/^         typedef unsigned long    z_uint4;$/;"	t
-z_uint4	tailor.h	/^       typedef unsigned int     z_uint4;$/;"	t
 z_uint4	tailor.h	/^  typedef ulg                z_uint4;$/;"	t
 zbcmp	zipfile.c	/^local int zbcmp(n, z)$/;"	f
-zcalloc	tailor.h	883;"	d
-zcfree	tailor.h	885;"	d
+zcalloc	tailor.h	204;"	d
+zcfree	tailor.h	206;"	d
 zclose	unix/zipup.h	22;"	d
 zcomlen	globals.c	/^ush zcomlen;                      \/* Length of zip file comment *\/$/;"	v
 zcomment	globals.c	/^char *zcomment = NULL;            \/* Zip file comment (not zero-terminated) *\/$/;"	v
@@ -1688,38 +1529,12 @@ zcount	globals.c	/^extent zcount;                    \/* Number of files in zip 
 zdecode	crypt.h	71;"	d
 zencode	crypt.h	68;"	d
 zerr	unix/zipup.h	23;"	d
-zfdopen	tailor.h	558;"	d
-zfdopen	tailor.h	578;"	d
-zfdopen	tailor.h	608;"	d
-zfdopen	tailor.h	628;"	d
-zfdopen	tailor.h	655;"	d
-zfdopen	tailor.h	682;"	d
-zfdopen	tailor.h	714;"	d
+zfdopen	tailor.h	162;"	d
 zfiles	globals.c	/^struct zlist far *zfiles = NULL;  \/* Pointer to list of files in zip file *\/$/;"	v	typeref:struct:far
-zfopen	tailor.h	557;"	d
-zfopen	tailor.h	577;"	d
-zfopen	tailor.h	607;"	d
-zfopen	tailor.h	627;"	d
-zfopen	tailor.h	654;"	d
-zfopen	tailor.h	681;"	d
-zfopen	tailor.h	713;"	d
-zfseeko	tailor.h	543;"	d
-zfseeko	tailor.h	550;"	d
-zfseeko	tailor.h	571;"	d
-zfseeko	tailor.h	621;"	d
-zfseeko	tailor.h	711;"	d
-zfstat	tailor.h	538;"	d
-zfstat	tailor.h	567;"	d
-zfstat	tailor.h	595;"	d
-zfstat	tailor.h	617;"	d
-zfstat	tailor.h	642;"	d
-zfstat	tailor.h	669;"	d
-zfstat	tailor.h	709;"	d
-zftello	tailor.h	546;"	d
-zftello	tailor.h	553;"	d
-zftello	tailor.h	574;"	d
-zftello	tailor.h	624;"	d
-zftello	tailor.h	712;"	d
+zfopen	tailor.h	161;"	d
+zfseeko	tailor.h	155;"	d
+zfstat	tailor.h	151;"	d
+zftello	tailor.h	158;"	d
 zfwrite	crypt.c	/^unsigned zfwrite(buf, item_size, nb)$/;"	f
 zgetline	zipnote.c	/^local char *zgetline(buf, size)$/;"	f
 zip	unix/README.OS390	/^If GNU make is not available, the existing makefile can create zip, but will$/;"	v
@@ -1742,7 +1557,6 @@ ziperr	zip.c	/^void ziperr(c, h)$/;"	f
 ziperr	zipcloak.c	/^void ziperr(c, h)$/;"	f
 ziperr	zipcloak.c	/^void ziperr(code, msg)$/;"	f
 ziperr	zipnote.c	/^void ziperr(c, h)$/;"	f
-ziperr	zipnote.c	61;"	d	file:
 ziperr	zipsplit.c	/^void ziperr(c, h)$/;"	f
 ziperr	zipsplit.c	57;"	d	file:
 ziperrors	ziperr.h	/^} ziperrors[ZE_MAXERR + 1] = {$/;"	v	typeref:struct:__anon1
@@ -1763,15 +1577,12 @@ zipstatb	fileio.c	/^local z_stat zipstatb;             \/* now use z_stat global
 zipstate	fileio.c	/^local int zipstate = -1;$/;"	v
 zipstdout	zip.c	/^local void zipstdout()$/;"	f
 ziptyp	zipfile.c	/^char *ziptyp(s)$/;"	f
-zipup	zipup.c	/^int zipup(z)$/;"	f
+zipup	zipup.c	/^int zipup(zipfileinfo)$/;"	f
 zipwarn	zip.c	/^void zipwarn(a, b)$/;"	f
 zipwarn	zipcloak.c	/^void zipwarn(msg1, msg2)$/;"	f
 zipwarn	zipnote.c	/^void zipwarn(a, b)$/;"	f
-zipwarn	zipnote.c	62;"	d	file:
 zipwarn	zipsplit.c	/^void zipwarn(a, b)$/;"	f
 zipwarn	zipsplit.c	58;"	d	file:
-zl_deflate_free	zipup.c	/^void zl_deflate_free()$/;"	f
-zl_deflate_init	zipup.c	/^local int zl_deflate_init(pack_level)$/;"	f
 zlist	zip.h	/^struct zlist {$/;"	s
 zlist::att	zip.h	/^  ush att, lflg;                \/* offset of lflg must be >= LOCHEAD *\/$/;"	m	struct:zlist	access:public
 zlist::atx	zip.h	/^  ulg atx;$/;"	m	struct:zlist	access:public
@@ -1788,13 +1599,11 @@ zlist::extra	zip.h	/^  char *extra;                  \/* Extra field (set only i
 zlist::flg	zip.h	/^  ush vem, ver, flg, how;$/;"	m	struct:zlist	access:public
 zlist::how	zip.h	/^  ush vem, ver, flg, how;$/;"	m	struct:zlist	access:public
 zlist::iname	zip.h	/^  char *iname;                  \/* Internal file name after cleanup (stored in archive) *\/$/;"	m	struct:zlist	access:public
-zlist::inamew	zip.h	/^  wchar_t *inamew;              \/* Windows wide character version of iname *\/$/;"	m	struct:zlist	access:public
 zlist::len	zip.h	/^  uzoff_t siz, len;             \/* zip64 support 08\/29\/2003 R.Nausedat *\/$/;"	m	struct:zlist	access:public
 zlist::lflg	zip.h	/^  ush att, lflg;                \/* offset of lflg must be >= LOCHEAD *\/$/;"	m	struct:zlist	access:public
 zlist::mark	zip.h	/^  int mark;                     \/* Marker for files to operate on *\/$/;"	m	struct:zlist	access:public
 zlist::nam	zip.h	/^  ush nam, ext, cext, com;      \/* offset of ext must be >= LOCHEAD *\/$/;"	m	struct:zlist	access:public
 zlist::name	zip.h	/^  char *name;                   \/* File name in zip file *\/$/;"	m	struct:zlist	access:public
-zlist::namew	zip.h	/^  wchar_t *namew;               \/* Windows wide character version of name *\/$/;"	m	struct:zlist	access:public
 zlist::nxt	zip.h	/^  struct zlist far *nxt;        \/* Pointer to next header in list *\/$/;"	m	struct:zlist	typeref:struct:zlist::far	access:public
 zlist::off	zip.h	/^  uzoff_t off;$/;"	m	struct:zlist	access:public
 zlist::oname	zip.h	/^  char *oname;                  \/* Display version of name used in messages *\/$/;"	m	struct:zlist	access:public
@@ -1805,24 +1614,12 @@ zlist::trash	zip.h	/^  int trash;                    \/* Marker for files to del
 zlist::uname	zip.h	/^  char *uname;                  \/* UTF-8 version of iname *\/$/;"	m	struct:zlist	access:public
 zlist::vem	zip.h	/^  ush vem, ver, flg, how;$/;"	m	struct:zlist	access:public
 zlist::ver	zip.h	/^  ush vem, ver, flg, how;$/;"	m	struct:zlist	access:public
-zlist::wuname	zip.h	/^  char *wuname;                 \/* Converted back ouname for Win32 *\/$/;"	m	struct:zlist	access:public
 zlist::zname	zip.h	/^  char *zname;                  \/* External version of internal name *\/$/;"	m	struct:zlist	access:public
-zlist::znamew	zip.h	/^  wchar_t *znamew;              \/* Windows wide character version of zname *\/$/;"	m	struct:zlist	access:public
 zlist::zuname	zip.h	/^  char *zuname;                 \/* Escaped Unicode zname from uname *\/$/;"	m	struct:zlist	access:public
-zlstat	tailor.h	539;"	d
-zlstat	tailor.h	568;"	d
-zlstat	tailor.h	596;"	d
-zlstat	tailor.h	618;"	d
-zlstat	tailor.h	643;"	d
-zlstat	tailor.h	670;"	d
-zlstat	tailor.h	710;"	d
+zlstat	tailor.h	152;"	d
 zname	zip.h	/^  char *zname;                  \/* External version of internal name *\/$/;"	m	struct:flist	access:public
 zname	zip.h	/^  char *zname;                  \/* External version of internal name *\/$/;"	m	struct:plist	access:public
 zname	zip.h	/^  char *zname;                  \/* External version of internal name *\/$/;"	m	struct:zlist	access:public
-znamew	zip.h	/^  wchar_t *znamew;              \/* Windows wide character version of zname *\/$/;"	m	struct:flist	access:public
-znamew	zip.h	/^  wchar_t *znamew;              \/* Windows wide character version of zname *\/$/;"	m	struct:zlist	access:public
-zoff_t	tailor.h	/^    typedef long zoff_t;$/;"	t
-zoff_t	tailor.h	/^    typedef off_t zoff_t;$/;"	t
 zoff_t	unix/osdep.h	/^  typedef long zoff_t;$/;"	t
 zoff_t	unix/osdep.h	/^  typedef off_t zoff_t;$/;"	t
 zopen	unix/zipup.h	20;"	d
@@ -1830,15 +1627,8 @@ zqcmp	zipfile.c	/^local int zqcmp(a, b)$/;"	f
 zread	unix/zipup.h	21;"	d
 zsearch	zipfile.c	/^struct zlist far *zsearch(n)$/;"	f
 zsort	globals.c	/^struct zlist far **zsort;         \/* List of files sorted by name *\/$/;"	v	typeref:struct:far
-zstat	tailor.h	537;"	d
-zstat	tailor.h	566;"	d
-zstat	tailor.h	589;"	d
-zstat	tailor.h	616;"	d
-zstat	tailor.h	636;"	d
-zstat	tailor.h	663;"	d
-zstat	tailor.h	708;"	d
+zstat	tailor.h	150;"	d
 zstdin	unix/zipup.h	24;"	d
-zstrm	zipup.c	/^local z_stream zstrm;         \/* zlib's data interface structure *\/$/;"	v
 ztimbuf	tailor.h	/^typedef struct ztimbuf {$/;"	s
 ztimbuf	tailor.h	/^} ztimbuf;$/;"	t	typeref:struct:ztimbuf
 ztimbuf::actime	tailor.h	/^    time_t actime;              \/* new access time *\/$/;"	m	struct:ztimbuf	access:public
@@ -1847,20 +1637,6 @@ zubcmp	zipfile.c	/^local int zubcmp(n, z)$/;"	f
 zuname	zip.h	/^  char *zuname;                 \/* Escaped Unicode zname from uname *\/$/;"	m	struct:zlist	access:public
 zuqcmp	zipfile.c	/^local int zuqcmp(a, b)$/;"	f
 zusort	globals.c	/^  struct zlist far **zusort;      \/* List of files sorted by zuname *\/$/;"	v	typeref:struct:far
-zvoid	tailor.h	/^   typedef char zvoid;$/;"	t
 zvoid	tailor.h	/^   typedef void zvoid;$/;"	t
-zvoid	tailor.h	249;"	d
-zw_stat	tailor.h	593;"	d
-zw_stat	tailor.h	640;"	d
-zw_stat	tailor.h	667;"	d
-zw_stat	tailor.h	718;"	d
 zwchar	zip.h	/^  typedef unsigned long zwchar;$/;"	t
-zwchar_to_wchar_t_default_char	zip.h	916;"	d
-zwfstat	tailor.h	591;"	d
-zwfstat	tailor.h	638;"	d
-zwfstat	tailor.h	665;"	d
-zwfstat	tailor.h	716;"	d
-zwstat	tailor.h	592;"	d
-zwstat	tailor.h	639;"	d
-zwstat	tailor.h	666;"	d
-zwstat	tailor.h	717;"	d
+zwchar_to_wchar_t_default_char	zip.h	577;"	d
