@@ -171,11 +171,16 @@ function ShowSize()
     df -h
 }
 
+function RealRm()
+{
+    rm -r $1
+}
+
 # 处理命令参数，然后调用相应的处理函数
 function opt_process()
 {
     #echo "opt_process --> " $@
-    args=`getopt -u -o "hr:" --long "help,clean,history,history-clean,recovery:,trashpath:,view-profile,size" -- "$@"`
+    args=`getopt -u -o "hr:" --long "help,clean,history,history-clean,recovery:,trashpath:,view-profile,size,rm:" -- "$@"`
     set -- ${args}
     while [ -n "$1" ]
     do
@@ -211,6 +216,10 @@ function opt_process()
             ;;
             --size)
             ShowSize
+            shift
+            ;;
+            --rm)
+            RealRm $2
             shift
             ;;
             --)
