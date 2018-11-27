@@ -22,6 +22,7 @@ ngx_uint_t         ngx_max_module;
 static ngx_uint_t  ngx_modules_n;
 
 
+/*将要加载的模块保存到ngx_modules数组中，ngx_module_names定义是objs/ngx_modules.c中*/
 ngx_int_t
 ngx_preinit_modules(void)
 {

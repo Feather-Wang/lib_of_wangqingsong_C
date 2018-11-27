@@ -1,4 +1,4 @@
-#define NGX_CONFIGURE " --prefix=/home/jeff/test/test/install_nginx --without-http_rewrite_module --without-http_gzip_module"
+#define NGX_CONFIGURE " --prefix=/home/jeff/test/test/install_nginx/ --without-http_rewrite_module"
 
 #ifndef NGX_COMPILER
 #define NGX_COMPILER  "gcc 4.3.4 [gcc-4_3-branch revision 152973] (SUSE Linux) "
@@ -303,6 +303,11 @@
 #endif
 
 
+#ifndef NGX_HTTP_GZIP
+#define NGX_HTTP_GZIP  1
+#endif
+
+
 #ifndef NGX_HTTP_SSI
 #define NGX_HTTP_SSI  1
 #endif
@@ -328,8 +333,38 @@
 #endif
 
 
+#ifndef NGX_OPENSSL_MD5
+#define NGX_OPENSSL_MD5  1
+#endif
+
+
+#ifndef NGX_HAVE_OPENSSL_MD5_H
+#define NGX_HAVE_OPENSSL_MD5_H  1
+#endif
+
+
+#ifndef NGX_HAVE_MD5
+#define NGX_HAVE_MD5  1
+#endif
+
+
+#ifndef NGX_HAVE_SHA1
+#define NGX_HAVE_SHA1  1
+#endif
+
+
+#ifndef NGX_HAVE_OPENSSL_SHA1_H
+#define NGX_HAVE_OPENSSL_SHA1_H  1
+#endif
+
+
+#ifndef NGX_ZLIB
+#define NGX_ZLIB  1
+#endif
+
+
 #ifndef NGX_PREFIX
-#define NGX_PREFIX  "/home/jeff/test/test/install_nginx/"
+#define NGX_PREFIX  "/home/jeff/test/test/install_nginx//"
 #endif
 
 

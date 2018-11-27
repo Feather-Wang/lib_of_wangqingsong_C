@@ -77,6 +77,7 @@ ngx_time_init(void)
 }
 
 
+/*更新时间相关的全局变量*/
 void
 ngx_time_update(void)
 {

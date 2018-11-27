@@ -281,6 +281,7 @@ main(int argc, char *const *argv)
         return 1;
     }
 
+    /*对上下文结构体变量进行初始化，最后cycle会赋值给ngx_cycle全局变量*/
     cycle = ngx_init_cycle(&init_cycle);
     if (cycle == NULL) {
         if (ngx_test_config) {
@@ -291,6 +292,7 @@ main(int argc, char *const *argv)
         return 1;
     }
 
+    /*检查配置文件，检查完毕后nginx就会退出*/
     if (ngx_test_config) {
         if (!ngx_quiet_mode) {
             ngx_log_stderr(0, "configuration file %s test is successful",
@@ -317,6 +319,7 @@ main(int argc, char *const *argv)
         return 0;
     }
 
+    /*如果使用了-s参数，则直接执行ngx_signal_process()函数发送信号*/
     if (ngx_signal) {
         return ngx_signal_process(cycle, ngx_signal);
     }
@@ -327,12 +330,14 @@ main(int argc, char *const *argv)
 
     ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);
 
+    /*ngx_process初始值为0，也就是NGX_PROCESS_SINGLE*/
     if (ccf->master && ngx_process == NGX_PROCESS_SINGLE) {
         ngx_process = NGX_PROCESS_MASTER;
     }
 
 #if !(NGX_WIN32)
 
+    /*信号初始化*/
     if (ngx_init_signals(cycle->log) != NGX_OK) {
         return 1;
     }
@@ -452,9 +457,8 @@ ngx_add_inherited_sockets(ngx_cycle_t *cycle)
     ngx_int_t         s;
     ngx_listening_t  *ls;
 
-    /*获取环境变量NGINX的信息*/
+    /*获取环境变量NGINX的信息，这个环境变量是可选项*/
     inherited = (u_char *) getenv(NGINX_VAR);
-    printf("ngx_add_inherited_sockets = [%s]\n", inherited);
 
     if (inherited == NULL) {
         return NGX_OK;
@@ -507,6 +511,7 @@ ngx_add_inherited_sockets(ngx_cycle_t *cycle)
 }
 
 
+/*查看环境变量里是否有"TZ"，如果没用的话，就添加上一个*/
 char **
 ngx_set_environment(ngx_cycle_t *cycle, ngx_uint_t *last)
 {

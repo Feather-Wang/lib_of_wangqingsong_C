@@ -441,6 +441,7 @@ ngx_log_open_default(ngx_cycle_t *cycle)
 }
 
 
+/*让stderr也指向logs/error.log*/
 ngx_int_t
 ngx_log_redirect_stderr(ngx_cycle_t *cycle)
 {

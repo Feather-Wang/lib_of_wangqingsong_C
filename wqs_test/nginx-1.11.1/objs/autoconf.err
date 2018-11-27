@@ -192,7 +192,7 @@ cc -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -o objs/autotest objs/autotest.c
 ----------------------------------------
 checking for crypt()
 
-/tmp/ccpiXRKM.o: In function `main':
+/tmp/ccNGV6ZI.o: In function `main':
 autotest.c:(.text+0xf): undefined reference to `crypt'
 collect2: ld returned 1 exit status
 ----------
@@ -300,7 +300,7 @@ checking for statvfs()
 ----------------------------------------
 checking for dlopen()
 
-/tmp/ccvHvlvk.o: In function `main':
+/tmp/ccKoE6Y7.o: In function `main':
 autotest.c:(.text+0xf): undefined reference to `dlopen'
 autotest.c:(.text+0x1e): undefined reference to `dlsym'
 collect2: ld returned 1 exit status
@@ -607,7 +607,7 @@ checking for time_t size
 ----------------------------------------
 checking for setproctitle()
 
-/tmp/ccjSQpdm.o: In function `main':
+/tmp/ccLMCNhG.o: In function `main':
 autotest.c:(.text+0xf): undefined reference to `setproctitle'
 collect2: ld returned 1 exit status
 ----------
@@ -668,7 +668,7 @@ checking for System V shared memory
 ----------------------------------------
 checking for POSIX semaphores
 
-/tmp/ccZ67BS0.o: In function `main':
+/tmp/ccGpYsWj.o: In function `main':
 autotest.c:(.text+0x17): undefined reference to `sem_init'
 autotest.c:(.text+0x2e): undefined reference to `sem_destroy'
 collect2: ld returned 1 exit status
@@ -797,27 +797,6 @@ cc -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -o objs/autotest objs/autotest.c -lmd5
 ----------------------------------------
 checking for md5 in system OpenSSL crypto library
 
-objs/autotest.c:4:25: error: openssl/md5.h: No such file or directory
-objs/autotest.c: In function 'main':
-objs/autotest.c:7: error: 'MD5_CTX' undeclared (first use in this function)
-objs/autotest.c:7: error: (Each undeclared identifier is reported only once
-objs/autotest.c:7: error: for each function it appears in.)
-objs/autotest.c:7: error: expected ';' before 'md5'
-objs/autotest.c:7: error: 'md5' undeclared (first use in this function)
-----------
-
-#include <sys/types.h>
-#include <unistd.h>
-#include <openssl/md5.h>
-
-int main() {
-    MD5_CTX md5; MD5_Init(&md5);
-    return 0;
-}
-
-----------
-cc -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -o objs/autotest objs/autotest.c -lcrypto
-----------
 
 ----------------------------------------
 checking for sha1 in system md library
@@ -847,24 +826,7 @@ cc -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -o objs/autotest objs/autotest.c -lmd
 ----------------------------------------
 checking for sha1 in system OpenSSL crypto library
 
-objs/autotest.c:4:25: error: openssl/sha.h: No such file or directory
-objs/autotest.c: In function 'main':
-objs/autotest.c:7: error: 'SHA_CTX' undeclared (first use in this function)
-objs/autotest.c:7: error: (Each undeclared identifier is reported only once
-objs/autotest.c:7: error: for each function it appears in.)
-objs/autotest.c:7: error: expected ';' before 'sha1'
-objs/autotest.c:7: error: 'sha1' undeclared (first use in this function)
-----------
 
-#include <sys/types.h>
-#include <unistd.h>
-#include <openssl/sha.h>
+----------------------------------------
+checking for zlib library
 
-int main() {
-    SHA_CTX sha1; SHA1_Init(&sha1);
-    return 0;
-}
-
-----------
-cc -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -o objs/autotest objs/autotest.c -lcrypto
-----------

@@ -33,6 +33,7 @@ static ngx_connection_t  dumb;
 /* STUB */
 
 
+/*初始化cycle结构体，该结构体是核心结构体，保存了nginx中的上下文信息，最后初始化好的结构体变量指针会赋值给ngx_cycle全局结构体变量*/
 ngx_cycle_t *
 ngx_init_cycle(ngx_cycle_t *old_cycle)
 {
@@ -59,11 +60,13 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
     tp = ngx_timeofday();
     tp->sec = 0;
 
+    /*初始化时间相关的全局变量*/
     ngx_time_update();
 
 
     log = old_cycle->log;
 
+    /*创建内存池pool*/
     pool = ngx_create_pool(NGX_CYCLE_POOL_SIZE, log);
     if (pool == NULL) {
         return NULL;
@@ -1001,7 +1004,10 @@ ngx_delete_pidfile(ngx_cycle_t *cycle)
     }
 }
 
-
+/*
+ * 该函数中主要是做了获取master进程的PID，默认是从logs/nginx.pid中读取的，读取后调用ngx_os_signal_process()函数来发送参数携带的信号指令
+ * 在ngx_os_signal_process()会根据传入的信号名跟预定好的数组中的信息对比，然后向获取到的PID发送指定的信号，进程接收到信号后会调用预定好的回调函数来设置对应的全局变量来影响程序的运行
+ * */
 ngx_int_t
 ngx_signal_process(ngx_cycle_t *cycle, char *sig)
 {

@@ -9,21 +9,21 @@
 #include <ngx_core.h>
 
 
-ngx_int_t
+    ngx_int_t
 ngx_daemon(ngx_log_t *log)
 {
     int  fd;
 
     switch (fork()) {
-    case -1:
-        ngx_log_error(NGX_LOG_EMERG, log, ngx_errno, "fork() failed");
-        return NGX_ERROR;
+        case -1:
+            ngx_log_error(NGX_LOG_EMERG, log, ngx_errno, "fork() failed");
+            return NGX_ERROR;
 
-    case 0:
-        break;
+        case 0:
+            break;
 
-    default:
-        exit(0);
+        default:
+            exit(0);
     }
 
     ngx_pid = ngx_getpid();
@@ -38,7 +38,7 @@ ngx_daemon(ngx_log_t *log)
     fd = open("/dev/null", O_RDWR);
     if (fd == -1) {
         ngx_log_error(NGX_LOG_EMERG, log, ngx_errno,
-                      "open(\"/dev/null\") failed");
+                "open(\"/dev/null\") failed");
         return NGX_ERROR;
     }
 
