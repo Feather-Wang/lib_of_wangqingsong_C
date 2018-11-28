@@ -1,6 +1,3 @@
-[submodule "vim"]
-	path = vim
-	url = https://github.com/Feather-Wang/vim.git
 [submodule "lib_package"]
 	path = lib_package
 	url = https://github.com/Feather-Wang/lib_package.git
