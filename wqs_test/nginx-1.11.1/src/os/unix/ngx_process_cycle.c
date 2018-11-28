@@ -127,6 +127,7 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
 
     ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);
 
+    /*启动工作进程*/
     ngx_start_worker_processes(cycle, ccf->worker_processes,
                                NGX_PROCESS_RESPAWN);
     ngx_start_cache_manager_processes(cycle, 0);
@@ -355,6 +356,7 @@ ngx_start_worker_processes(ngx_cycle_t *cycle, ngx_int_t n, ngx_int_t type)
 
     for (i = 0; i < n; i++) {
 
+        /*打开主进程和工作进程通信的管道，并fork出子进程，在子进程中运行ngx_worker_process_cycle函数*/
         ngx_spawn_process(cycle, ngx_worker_process_cycle,
                           (void *) (intptr_t) i, "worker process", type);
 
@@ -731,6 +733,7 @@ ngx_worker_process_cycle(ngx_cycle_t *cycle, void *data)
     ngx_process = NGX_PROCESS_WORKER;
     ngx_worker = worker;
 
+    /*工作进程初始化，主要是根据cycle中的信息初始化一些设置，以及将监听管道的handler加入到event中*/
     ngx_worker_process_init(cycle, worker);
 
     ngx_setproctitle("worker process");
@@ -933,6 +936,8 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
     ngx_last_process = 0;
 #endif
 
+    /*添加管道读取事件，回调函数ngx_channel_handler中，无限循环从管道中读取数据，根据数据内容设置一些全局变量开关*/
+    /*添加事件使用ngx_event_actions.add*/
     if (ngx_add_channel_event(cycle, ngx_channel, NGX_READ_EVENT,
                               ngx_channel_handler)
         == NGX_ERROR)

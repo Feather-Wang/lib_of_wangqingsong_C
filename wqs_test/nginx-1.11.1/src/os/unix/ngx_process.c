@@ -110,6 +110,7 @@ ngx_spawn_process(ngx_cycle_t *cycle, ngx_spawn_proc_pt proc, void *data,
     }
 
 
+    /*打开主进程和工作进程通信的管道*/
     if (respawn != NGX_PROCESS_DETACHED) {
 
         /* Solaris 9 still has no AF_LOCAL */
