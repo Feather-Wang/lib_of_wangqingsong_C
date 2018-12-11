@@ -505,5 +505,5 @@ echo "" | awk '{ts_system=systime();print "system is --> "strftime("%c", ts_syst
 # %Z	时区(PDT) 
 # %%	百分号(%)
 
-# 判断第四列是否为数字和字母'u'的组合，并打印出整行
-lsof -p 11667 | awk '{if($4 ~ /^[0-9u]+$/) print $0;}'
+# 判断第四列是否为数字，并打印出整行
+lsof -p 11667 | awk '{if($4 ~ /[0-9]/) print $0;}'
