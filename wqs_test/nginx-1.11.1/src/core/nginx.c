@@ -183,18 +183,26 @@ static char        *ngx_signal;
 static char **ngx_os_environ;
 
 
+/*ngx_cdecl:该宏定义，用于显式声明应使用的调用约定，它在跨平台移植时游泳，在Linux版本中，该宏被定义为空*/
 int ngx_cdecl
 main(int argc, char *const *argv)
 {
     ngx_buf_t        *b;
     ngx_log_t        *log;
     ngx_uint_t        i;
+    /*
+     * cycle, init_cycle
+     * 由于Nginx服务器支持平滑升级，因此在整个main()函数的实现过程中会涉及两个ngx_cycle_t结构体，按照程序中的声明，我们分别称它们为init_cycle结构和cycle结构。
+     * 在平滑升级服务器的情况中，init_cycle结构负责保存升级前的信息，cycle结构负责保存升级后的信息。在其他情况下，init_cycle结构中将只保存必要的程序信息，最后会完全转移到cycle结构中。cycle结构中会备份旧的init_cycle结构的所有信息
+     * */
     ngx_cycle_t      *cycle, init_cycle;
     ngx_conf_dump_t  *cd;
     ngx_core_conf_t  *ccf;
 
+    /*ngx_debug_init()在FreeBSD和MacOSX平台下有确切的执行过程，在其他情况下定义为空*/
     ngx_debug_init();
 
+    /*ngx_strerror_init用于初始化Nginx服务器自定义的标准错误输出列表，这在初始化Nginx日志输出之前是有用的*/
     if (ngx_strerror_init() != NGX_OK) {
         return 1;
     }
@@ -215,9 +223,11 @@ main(int argc, char *const *argv)
 
     /* TODO */ ngx_max_sockets = -1;
 
+    /*作用：初始化自身的时钟管理机制*/
     ngx_time_init();
 
 #if (NGX_PCRE)
+    /*完成支持正则表达式的准备工作*/
     ngx_regex_init();
 #endif
 
@@ -231,6 +241,7 @@ main(int argc, char *const *argv)
 
     /* STUB */
 #if (NGX_OPENSSL)
+    /*如果配置使用Nginx服务器的SSL功能，使用ngx_ssl_init()完成支持SSL功能的准备工作*/
     ngx_ssl_init(log);
 #endif
 
@@ -239,11 +250,12 @@ main(int argc, char *const *argv)
      * ngx_process_options()
      */
 
+    /*init_cycle初始化，并将前面初始化的日志结构赋值给init_cycle.log*/
     ngx_memzero(&init_cycle, sizeof(ngx_cycle_t));
     init_cycle.log = log;
     ngx_cycle = &init_cycle;
 
-    /*创建内存池*/
+    /*创建内存池，供init_cycle使用*/
     init_cycle.pool = ngx_create_pool(1024, log);
     if (init_cycle.pool == NULL) {
         return 1;
@@ -268,20 +280,23 @@ main(int argc, char *const *argv)
      * ngx_crc32_table_init() requires ngx_cacheline_size set in ngx_os_init()
      */
 
-    /*初始化一个做循环冗余校验的表，成功，则让ngx_crc32_table_short指向表所在的内存*/
+    /*初始化一个做循环冗余校验的表，方便以后在用到循环冗余校验时可以采用高效的查表法。成功，则让ngx_crc32_table_short指向表所在的内存*/
     if (ngx_crc32_table_init() != NGX_OK) {
         return 1;
     }
 
+    /*继承已有的socket的信息，从NGINX环境变量中获取socket套接字，并保存到init_cycle.listening中，并调用ngx_set_inherited_sockets()进行套接字其他成员的初始化*/
     if (ngx_add_inherited_sockets(&init_cycle) != NGX_OK) {
         return 1;
     }
 
+    /*初始化ngx_modules模块全局变量*/
     if (ngx_preinit_modules() != NGX_OK) {
         return 1;
     }
 
     /*对上下文结构体变量进行初始化，最后cycle会赋值给ngx_cycle全局变量*/
+    /*建立新的cycle结构*/
     cycle = ngx_init_cycle(&init_cycle);
     if (cycle == NULL) {
         if (ngx_test_config) {
@@ -450,6 +465,7 @@ ngx_show_version_info(void)
  * 1、获取NGINX_VAR环境变量
  * 2、初始化cycle->listening，从内存池申请内存
  * */
+/*继承已有的socket的信息，从NGINX环境变量中获取socket套接字，并保存到init_cycle.listening中，并调用ngx_set_inherited_sockets()进行套接字其他成员的初始化*/
 static ngx_int_t
 ngx_add_inherited_sockets(ngx_cycle_t *cycle)
 {
@@ -457,7 +473,6 @@ ngx_add_inherited_sockets(ngx_cycle_t *cycle)
     ngx_int_t         s;
     ngx_listening_t  *ls;
 
-    /*获取环境变量NGINX的信息，这个环境变量是可选项*/
     inherited = (u_char *) getenv(NGINX_VAR);
 
     if (inherited == NULL) {
@@ -475,6 +490,7 @@ ngx_add_inherited_sockets(ngx_cycle_t *cycle)
         return NGX_ERROR;
     }
 
+    /*将NGINX环境变量中的值一个一个添加到cycle->listening中*/
     for (p = inherited, v = p; *p; p++) {
         if (*p == ':' || *p == ';') {
             s = ngx_atoi(v, p - v);
@@ -505,6 +521,7 @@ ngx_add_inherited_sockets(ngx_cycle_t *cycle)
                       " environment variable, ignoring", v);
     }
 
+    /*标记继承工作结束*/
     ngx_inherited = 1;
 
     return ngx_set_inherited_sockets(cycle);
@@ -889,7 +906,7 @@ ngx_save_argv(ngx_cycle_t *cycle, int argc, char *const *argv)
  * 2、保存nginx的安装目录到cycle->prefix中
  * 3、保存nginx当前使用的配置文件的绝对路径到cycle->conf_file中
  * 4、保存-g配置的临时全局配置项到cycle->conf_param中
- * 5、如果命令行中带有-t或-T选项，则把cycle->log的日志级别改为NGX_LOG_INFO，该级别在ngx_log_init()中被设置为NGX_LOG_NOTICE
+ * 5、如果命令行中带有-t或-T选项，则把cycle->log的日志级别改为NGX_LOG_INFO，该级别在ngx_log_init()中被设置为NGX_LOG_NOTICE了
  * */
 static ngx_int_t
 ngx_process_options(ngx_cycle_t *cycle)
@@ -996,6 +1013,7 @@ ngx_core_module_create_conf(ngx_cycle_t *cycle)
 {
     ngx_core_conf_t  *ccf;
 
+    /*从内存池给core模块配置结构体申请空间*/
     ccf = ngx_pcalloc(cycle->pool, sizeof(ngx_core_conf_t));
     if (ccf == NULL) {
         return NULL;
@@ -1012,6 +1030,7 @@ ngx_core_module_create_conf(ngx_cycle_t *cycle)
      *     ccf->cpu_affinity = NULL;
      */
 
+    /*初始化core模块配置结构体的成员变量*/
     ccf->daemon = NGX_CONF_UNSET;
     ccf->master = NGX_CONF_UNSET;
     ccf->timer_resolution = NGX_CONF_UNSET_MSEC;
@@ -1034,7 +1053,7 @@ ngx_core_module_create_conf(ngx_cycle_t *cycle)
     return ccf;
 }
 
-
+/*核心模块的初始化函数*/
 static char *
 ngx_core_module_init_conf(ngx_cycle_t *cycle, void *conf)
 {
@@ -1049,6 +1068,7 @@ ngx_core_module_init_conf(ngx_cycle_t *cycle, void *conf)
 
 #if (NGX_HAVE_CPU_AFFINITY)
 
+    /*定义了Nginx在多核CPU上的调度规则*/
     if (!ccf->cpu_affinity_auto
         && ccf->cpu_affinity_n
         && ccf->cpu_affinity_n != 1
@@ -1064,13 +1084,16 @@ ngx_core_module_init_conf(ngx_cycle_t *cycle, void *conf)
 
 
     if (ccf->pid.len == 0) {
+        /*设置Nginx进程的PID*/
         ngx_str_set(&ccf->pid, NGX_PID_PATH);
     }
 
+    /*判断Nginx进程PID文件的路径是否完整*/
     if (ngx_conf_full_name(cycle, &ccf->pid, 0) != NGX_OK) {
         return NGX_CONF_ERROR;
     }
 
+    /*更新旧进程PID文件中的数据*/
     ccf->oldpid.len = ccf->pid.len + sizeof(NGX_OLDPID_EXT);
 
     ccf->oldpid.data = ngx_pnalloc(cycle->pool, ccf->oldpid.len);
@@ -1088,6 +1111,7 @@ ngx_core_module_init_conf(ngx_cycle_t *cycle, void *conf)
         struct group   *grp;
         struct passwd  *pwd;
 
+        /*获取运行Nginx的用户的相关信息*/
         ngx_set_errno(0);
         pwd = getpwnam(NGX_USER);
         if (pwd == NULL) {
@@ -1096,9 +1120,11 @@ ngx_core_module_init_conf(ngx_cycle_t *cycle, void *conf)
             return NGX_CONF_ERROR;
         }
 
+        /*保存Nginx运行用户的相关信息*/
         ccf->username = NGX_USER;
         ccf->user = pwd->pw_uid;
 
+        /*获取Nginx运行用户组的相关信息*/
         ngx_set_errno(0);
         grp = getgrnam(NGX_GROUP);
         if (grp == NULL) {
@@ -1107,11 +1133,13 @@ ngx_core_module_init_conf(ngx_cycle_t *cycle, void *conf)
             return NGX_CONF_ERROR;
         }
 
+        /*保存Nginx运行用户组的ID*/
         ccf->group = grp->gr_gid;
     }
 
 
     if (ccf->lock_file.len == 0) {
+        /*保存新的nginx.lock文件的路径*/
         ngx_str_set(&ccf->lock_file, NGX_LOCK_PATH);
     }
 
@@ -1125,6 +1153,7 @@ ngx_core_module_init_conf(ngx_cycle_t *cycle, void *conf)
     lock_file = cycle->old_cycle->lock_file;
 
     if (lock_file.len) {
+        /*更新旧的nginx.lock文件*/
         lock_file.len--;
 
         if (ccf->lock_file.len != lock_file.len
@@ -1144,13 +1173,14 @@ ngx_core_module_init_conf(ngx_cycle_t *cycle, void *conf)
         }
 
     } else {
+        /*没有创建好的nginx.locl文件，重新创建*/
         cycle->lock_file.len = ccf->lock_file.len + 1;
         cycle->lock_file.data = ngx_pnalloc(cycle->pool,
                                       ccf->lock_file.len + sizeof(".accept"));
         if (cycle->lock_file.data == NULL) {
             return NGX_CONF_ERROR;
         }
-
+        /*使用原nginx.lock文件信息*/
         ngx_memcpy(ngx_cpymem(cycle->lock_file.data, ccf->lock_file.data,
                               ccf->lock_file.len),
                    ".accept", sizeof(".accept"));

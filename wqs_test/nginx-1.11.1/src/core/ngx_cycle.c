@@ -33,7 +33,9 @@ static ngx_connection_t  dumb;
 /* STUB */
 
 
-/*初始化cycle结构体，该结构体是核心结构体，保存了nginx中的上下文信息，最后初始化好的结构体变量指针会赋值给ngx_cycle全局结构体变量*/
+/*
+ * ngx_init_cycle()函数包含800多行源码，完成了对init_cycle结构中大多数重要成员的一系列初始化工作。传入该函数的init_cycle结构是前面刚刚初始化过部分成员的ngx_cycle_t结构，在本函数中将在新建立的内存池上重新给ngx_cycle_t结构分配内存，用cycle变量指向该内存区域，并把init_cycle中刚才已经初始化了的成员转移到新的结构中。
+ * */
 ngx_cycle_t *
 ngx_init_cycle(ngx_cycle_t *old_cycle)
 {
@@ -53,32 +55,35 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
     ngx_core_module_t   *module;
     char                 hostname[NGX_MAXHOSTNAMELEN];
 
+    /*根据Nginx服务器运行系统平台的不同初始化时区*/
     ngx_timezone_update();
 
-    /* force localtime update with a new timezone */
-
+    /*获取时间缓存中的时间，实际上是一个宏变量，指向全局变量ngx_cached_time，该变量指向时间缓存中最新缓存的时间，该时间会在ngx_time_update()中进行更新*/
     tp = ngx_timeofday();
     tp->sec = 0;
 
-    /*初始化时间相关的全局变量*/
+    /*更新缓存时间*/
     ngx_time_update();
 
 
     log = old_cycle->log;
 
-    /*创建内存池pool*/
+    /*创建新的内存池，内存池的大小NGX_CYCLE_POOL_SIZE，在编译时，如果该宏没有定义，则将该宏指向NGX_DEFAULT_POOL_SIZE，NGX_DEFAULT_POOL_SIZE为(16*1024)*/
+    /*该内存池将为Nginx服务器程序运行的整个生命周期提供内存分配和管理*/
     pool = ngx_create_pool(NGX_CYCLE_POOL_SIZE, log);
     if (pool == NULL) {
         return NULL;
     }
     pool->log = log;
 
+    /*为新的cycle结构分配空间*/
     cycle = ngx_pcalloc(pool, sizeof(ngx_cycle_t));
     if (cycle == NULL) {
         ngx_destroy_pool(pool);
         return NULL;
     }
 
+    /*将内存池、log对象、就的cycle结构都添加到新的cycle结构成员中*/
     cycle->pool = pool;
     cycle->log = log;
     cycle->old_cycle = old_cycle;
@@ -214,20 +219,24 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
 
     ngx_strlow(cycle->hostname.data, (u_char *) hostname, cycle->hostname.len);
 
-
+    /*为cycle结构中的模块数组modules分配空间，并将全局模块数组ngx_modules以及数组成员数量ngx_modules_n拷贝到cycle结构中*/
     if (ngx_cycle_modules(cycle) != NGX_OK) {
         ngx_destroy_pool(pool);
         return NULL;
     }
 
-
+    /*获取core模块，获取core模块的上下文*/
+    /*core模块时Nginx服务器运行的核心*/
     for (i = 0; cycle->modules[i]; i++) {
+        /*筛选出core模块*/
         if (cycle->modules[i]->type != NGX_CORE_MODULE) {
             continue;
         }
 
         module = cycle->modules[i]->ctx;
 
+        /*调用create_conf完成对core模块上下文结构的建立工作*/
+        /*create_conf是一个函数指针，实际指向ngx_core_module_create_conf()函数，用于对core模块的ngx_core_conf_t结构的各个成员进行空间分配和置零（置空）*/
         if (module->create_conf) {
             rv = module->create_conf(cycle);
             if (rv == NULL) {
@@ -241,7 +250,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
 
     senv = environ;
 
-
+    /*从内存池中为ngx_conf_t结构申请内存*/
     ngx_memzero(&conf, sizeof(ngx_conf_t));
     /* STUB: init array ? */
     conf.args = ngx_array_create(pool, 10, sizeof(ngx_str_t));
@@ -250,6 +259,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         return NULL;
     }
 
+    /*创建临时内存池，用于解析配置文件时使用，配置文件解析完毕后会释放*/
     conf.temp_pool = ngx_create_pool(NGX_CYCLE_POOL_SIZE, log);
     if (conf.temp_pool == NULL) {
         ngx_destroy_pool(pool);
@@ -268,12 +278,14 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
     log->log_level = NGX_LOG_DEBUG_ALL;
 #endif
 
+    /*内部解析Nginx配置文件，实际上解析的是补充配置文件*/
     if (ngx_conf_param(&conf) != NGX_CONF_OK) {
         environ = senv;
         ngx_destroy_cycle_pools(&conf);
         return NULL;
     }
 
+    /*第二次解析配置文件，通过cycle->conf_file可以获得配置文件信息，这次是对Nginx标准配置文件进行解析*/
     if (ngx_conf_parse(&conf, &cycle->conf_file) != NGX_CONF_OK) {
         environ = senv;
         ngx_destroy_cycle_pools(&conf);
@@ -285,6 +297,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
                        cycle->conf_file.data);
     }
 
+    /*过滤出核心模块，如果核心模块设置了init_conf函数指针，则调用init_conf指向的初始化函数进行，核心模块中该函数指针实际指向的是ngx_core_module_init_conf()函数*/
     for (i = 0; cycle->modules[i]; i++) {
         if (cycle->modules[i]->type != NGX_CORE_MODULE) {
             continue;
@@ -325,6 +338,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
 
         old_ccf = (ngx_core_conf_t *) ngx_get_conf(old_cycle->conf_ctx,
                                                    ngx_core_module);
+        /*判断旧的Nginx程序PID与当前的程序PID是否相同，如果不同，会创建新的PID文件，并将旧的删除*/
         if (ccf->pid.len != old_ccf->pid.len
             || ngx_strcmp(ccf->pid.data, old_ccf->pid.data) != 0)
         {
@@ -334,6 +348,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
                 goto failed;
             }
 
+            /*删除旧的PID文件*/
             ngx_delete_pidfile(old_cycle);
         }
     }
@@ -1061,7 +1076,7 @@ ngx_signal_process(ngx_cycle_t *cycle, char *sig)
 
 }
 
-
+/*测试lockfile文件*/
 static ngx_int_t
 ngx_test_lockfile(u_char *file, ngx_log_t *log)
 {

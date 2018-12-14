@@ -60,7 +60,7 @@ static char  *months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 /*
- * 作用：初始化时间变量
+ * 作用：初始化自身的时钟管理机制
  * */
 void
 ngx_time_init(void)

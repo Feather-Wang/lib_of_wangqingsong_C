@@ -185,7 +185,7 @@ IOV_MAX	os/unix/ngx_posix_config.h	104;"	d
 ISA	http/modules/perl/nginx.pm	/^our @ISA = qw(Exporter);$/;"	v
 LF	core/ngx_core.h	95;"	d
 MakeMaker	http/modules/perl/Makefile.PL	/^use ExtUtils::MakeMaker;$/;"	m	class:ExtUtils	file:
-NGINX_VAR	core/nginx.h	22;"	d
+NGINX_VAR	core/nginx.h	23;"	d
 NGINX_VER	core/nginx.h	14;"	d
 NGINX_VERSION	core/nginx.h	13;"	d
 NGINX_VER_BUILD	core/nginx.h	17;"	d
@@ -984,7 +984,7 @@ NGX_NONE	core/ngx_output_chain.c	27;"	d	file:
 NGX_NONE	http/ngx_http_request.h	49;"	d
 NGX_NO_RESOLVER	core/ngx_resolver.h	35;"	d
 NGX_OK	core/ngx_core.h	36;"	d
-NGX_OLDPID_EXT	core/nginx.h	23;"	d
+NGX_OLDPID_EXT	core/nginx.h	24;"	d
 NGX_ONESHOT_EVENT	event/ngx_event.h	346;"	d
 NGX_ONESHOT_EVENT	event/ngx_event.h	360;"	d
 NGX_ONESHOT_EVENT	event/ngx_event.h	370;"	d
@@ -3733,7 +3733,6 @@ backlog	stream/ngx_stream.h	/^    int                     backlog;$/;"	m	struct:
 backslash	mail/ngx_mail.h	/^    unsigned                backslash:1;$/;"	m	struct:__anon393	access:public
 backup	http/ngx_http_upstream.h	/^    unsigned                         backup:1;$/;"	m	struct:__anon211	access:public
 backup	stream/ngx_stream_upstream.h	/^    unsigned                           backup:1;$/;"	m	struct:__anon284	access:public
-before	core/.ngx_module.c.swp	/^/;"	v
 before_body	http/modules/ngx_http_addition_filter_module.c	/^    ngx_str_t     before_body;$/;"	m	struct:__anon28	file:	access:public
 before_body_sent	http/modules/ngx_http_addition_filter_module.c	/^    ngx_uint_t    before_body_sent;$/;"	m	struct:__anon29	file:	access:public
 binary_include	http/modules/ngx_http_geo_module.c	/^    unsigned                         binary_include:1;$/;"	m	struct:__anon162	file:	access:public
@@ -4883,7 +4882,6 @@ http_state	http/ngx_http_request.h	/^    unsigned                          http_
 http_version	http/modules/ngx_http_proxy_module.c	/^    ngx_uint_t                     http_version;$/;"	m	struct:__anon96	file:	access:public
 http_version	http/ngx_http.h	/^    ngx_uint_t           http_version;$/;"	m	struct:__anon22	access:public
 http_version	http/ngx_http_request.h	/^    ngx_uint_t                        http_version;$/;"	m	struct:ngx_http_request_s	access:public
-i	core/.ngx_module.c.swp	/^/;"	v
 i	http/modules/perl/nginx.xs	/^    int                  i;$/;"	v
 i	http/modules/perl/nginx.xs	/^    ngx_uint_t                  i, hash;$/;"	v
 i	http/modules/perl/nginx.xs	/^    ngx_uint_t                  i, n, hash;$/;"	v
@@ -5293,7 +5291,6 @@ lowcase_header	http/ngx_http_request.h	/^    u_char                            l
 lowcase_index	http/ngx_http_request.h	/^    ngx_uint_t                        lowcase_index;$/;"	m	struct:ngx_http_request_s	access:public
 lowcase_key	core/ngx_hash.h	/^    u_char           *lowcase_key;$/;"	m	struct:__anon327	access:public
 lowcase_key	http/modules/perl/nginx.xs	/^    u_char                     *p, *lowcase_key, *value, sep;$/;"	v
-m	core/.ngx_module.c.swp	/^/;"	v
 mail_state	mail/ngx_mail.h	/^    ngx_uint_t              mail_state;$/;"	m	struct:__anon393	access:public
 main	core/nginx.c	/^main(int argc, char *const *argv)$/;"	f	signature:(int argc, char *const *argv)
 main	http/ngx_http_cache.h	/^    u_char                           main[NGX_HTTP_CACHE_KEY_LEN];$/;"	m	struct:ngx_http_cache_s	access:public
@@ -11375,7 +11372,6 @@ rules_un	http/modules/ngx_http_access_module.c	/^    ngx_array_t      *rules_un;
 rules_un	stream/ngx_stream_access_module.c	/^    ngx_array_t      *rules_un;  \/* array of ngx_stream_access_rule_un_t *\/$/;"	m	struct:__anon262	file:	access:public
 run	http/modules/ngx_http_log_module.c	/^    ngx_http_log_op_run_pt      run;$/;"	m	struct:__anon90	file:	access:public
 run	http/modules/ngx_http_log_module.c	/^    ngx_http_log_op_run_pt      run;$/;"	m	struct:ngx_http_log_op_s	file:	access:public
-rv	core/.ngx_module.c.swp	/^/;"	v
 rwlock	http/ngx_http_upstream_round_robin.h	/^    ngx_atomic_t                    rwlock;$/;"	m	struct:ngx_http_upstream_rr_peers_s	access:public
 rwlock	stream/ngx_stream_upstream_round_robin.h	/^    ngx_atomic_t                     rwlock;$/;"	m	struct:ngx_stream_upstream_rr_peers_s	access:public
 safari	http/ngx_http_request.h	/^    unsigned                          safari:1;$/;"	m	struct:__anon12	access:public

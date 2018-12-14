@@ -1,0 +1,4 @@
+0001 2018_12_11 18:11:40 del OpenFileNum.sh /home/jeff/test
+0002 2018_12_14 08:47:35 del 1 /home/jeff/lib_of_wangqingsong_C/wqs_test/nginx-1.11.1/src
+0003 2018_12_14 08:47:47 del core/.ngx_connection.c.swp /home/jeff/lib_of_wangqingsong_C/wqs_test/nginx-1.11.1/src
+0004 2018_12_14 08:48:55 del core/ngx_connection.c~ /home/jeff/lib_of_wangqingsong_C/wqs_test/nginx-1.11.1/src

@@ -19,6 +19,7 @@
 #define NGINX_VER_BUILD    NGINX_VER
 #endif
 
+/*NGINX：环境变量名称，存放已有的文件描述符，用冒号或者分号隔开，每个文件描述符是整数值*/
 #define NGINX_VAR          "NGINX"
 #define NGX_OLDPID_EXT     ".oldbin"
 

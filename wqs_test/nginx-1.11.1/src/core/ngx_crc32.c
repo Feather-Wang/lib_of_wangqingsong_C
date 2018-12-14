@@ -103,7 +103,7 @@ uint32_t *ngx_crc32_table_short = ngx_crc32_table16;
 
 /*
  * 作用：
- * 初始化一个做循环冗余校验的表，成功，则让ngx_crc32_table_short指向表所在的内存*/
+ * 初始化一个做循环冗余校验的表，方便以后在用到循环冗余校验时可以采用高效的查表法。成功，则让ngx_crc32_table_short指向表所在的内存*/
 ngx_int_t
 ngx_crc32_table_init(void)
 {

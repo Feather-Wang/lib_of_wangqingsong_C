@@ -22,7 +22,8 @@ ngx_uint_t         ngx_max_module;
 static ngx_uint_t  ngx_modules_n;
 
 
-/*将要加载的模块保存到ngx_modules数组中，ngx_module_names定义是objs/ngx_modules.c中*/
+/*将要加载的模块保存到ngx_modules数组中，
+ * ngx_modules、ngx_module_names定义是objs/ngx_modules.c中*/
 ngx_int_t
 ngx_preinit_modules(void)
 {
@@ -39,7 +40,8 @@ ngx_preinit_modules(void)
     return NGX_OK;
 }
 
-
+/*为模块数组分配信息，模块大小为全局变量ngx_max_module控制，该变量在ngx_preinit_modules中被设置*/
+/*将全局模块数组ngx_modules中保存的模块信息拷贝到之前分配的模块数组中，将模块数量全局变量ngx_modules_n赋值给cycle->modules_n*/
 ngx_int_t
 ngx_cycle_modules(ngx_cycle_t *cycle)
 {

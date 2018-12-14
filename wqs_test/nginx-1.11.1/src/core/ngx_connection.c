@@ -128,6 +128,18 @@ ngx_clone_listening(ngx_conf_t *cf, ngx_listening_t *ls)
 }
 
 
+/*
+ * 遍历cycle->listening中的socket元素，并获取以下元素，保存到结构体对应的成员中
+ * sockaddr：socket路径的相关信息
+ * addr_text_max_len：根据socket的类型获取地址最大长度，比如IPv4的地址，点分十进制表示法的最大地址是255.255.255.255，则addr_text_max_len的值就是sizeof("255.255.255.255")-1
+ * addr_text：保存地址的点分十进制信息
+ * backlog：
+ * type：socket类型
+ * rcvbuf：接收缓冲区大小
+ * sndbuf：发送缓冲区的大小
+ * reuseport：
+ * fastopen：快速发送开关
+ * */
 ngx_int_t
 ngx_set_inherited_sockets(ngx_cycle_t *cycle)
 {
@@ -376,7 +388,7 @@ ngx_set_inherited_sockets(ngx_cycle_t *cycle)
     return NGX_OK;
 }
 
-
+/*打开socket套接字*/
 ngx_int_t
 ngx_open_listening_sockets(ngx_cycle_t *cycle)
 {

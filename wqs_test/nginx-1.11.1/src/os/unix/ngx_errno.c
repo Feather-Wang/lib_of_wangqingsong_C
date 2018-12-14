@@ -45,7 +45,7 @@ ngx_strerror(ngx_err_t err, u_char *errstr, size_t size)
  * 作用：创建一个ngx_str_t数组，存放操作系统的错误码和错误信息列表
  * 重要的变量：
  * ngx_sys_errlist：全局变量，ngx_str_t数组，用来存放错误码和错误信息列表
- * NGX_SYS_NERR：操作系统的错误码数量
+ * NGX_SYS_NERR：操作系统的错误码数量，其定义在objs/ngx_auto_config.h中
  * */
 ngx_int_t
 ngx_strerror_init(void)

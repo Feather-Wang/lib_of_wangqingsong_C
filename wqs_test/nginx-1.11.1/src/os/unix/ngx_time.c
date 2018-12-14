@@ -21,6 +21,7 @@
  * Solaris does not test /etc/TIMEZONE change too and no workaround available.
  */
 
+/*初始化时区*/
 void
 ngx_timezone_update(void)
 {

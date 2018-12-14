@@ -31,11 +31,11 @@ ngx_os_io_t ngx_os_io = {
 
 /*作用：
  * 获取系统资源参数，设置以下变量的值：
- * ngx_pagesize
- * ngx_pagesize_shift
- * ngx_ncpu
- * ngx_cacheline_size
- * ngx_max_sockets
+ * ngx_pagesize         内存页的大小
+ * ngx_pagesize_shift   ngx_pagesize的值实际占用的位数
+ * ngx_ncpu             CPU的个数
+ * ngx_cacheline_size   默认缓存大小
+ * ngx_max_sockets      支持打开的最大网络套接字数量
  * */
 ngx_int_t
 ngx_os_init(ngx_log_t *log)

@@ -58,6 +58,7 @@ static ngx_uint_t argument_number[] = {
 };
 
 
+/*内部解析Nginx配置文件*/
 char *
 ngx_conf_param(ngx_conf_t *cf)
 {
@@ -72,10 +73,12 @@ ngx_conf_param(ngx_conf_t *cf)
         return NGX_CONF_OK;
     }
 
+    /*以下为初始化解析配置文件时要用到的保存配置信息的结构体和指示解析位置的"游标"*/
     ngx_memzero(&conf_file, sizeof(ngx_conf_file_t));
 
     ngx_memzero(&b, sizeof(ngx_buf_t));
 
+    /*以下为初始化解析配置文件时用到的位置标识*/
     b.start = param->data;
     b.pos = param->data;
     b.last = param->data + param->len;
@@ -89,6 +92,7 @@ ngx_conf_param(ngx_conf_t *cf)
     cf->conf_file = &conf_file;
     cf->conf_file->buffer = &b;
 
+    /*执行具体的配置文件解析工作，第二个参数为NULL，说明此次解析的内容为补充配置*/
     rv = ngx_conf_parse(cf, NULL);
 
     cf->conf_file = NULL;
@@ -203,7 +207,9 @@ ngx_conf_parse(ngx_conf_t *cf, ngx_str_t *filename)
     }
 
 
+    /*这里解析指令的方式是"读取一条、检查一条、解析一条"的方式解析配置文件，这里的一条是以分号或者花括号"{"、"}"为单位，如果遇到嵌套的花括号，则先处理嵌套的指令*/
     for ( ;; ) {
+        /*将配置文件中当前的一条配置指令读取到内存中，判断配置语法是否使用正确，并将该指令保存到cycle->args数组中*/
         rc = ngx_conf_read_token(cf);
 
         /*
@@ -253,6 +259,7 @@ ngx_conf_parse(ngx_conf_t *cf, ngx_str_t *filename)
 
         /* rc == NGX_OK || rc == NGX_CONF_BLOCK_START */
 
+        /*如果该指令定义了自定义处理函数，则调用自定义处理函数进行解析*/
         if (cf->handler) {
 
             /*
@@ -280,6 +287,7 @@ ngx_conf_parse(ngx_conf_t *cf, ngx_str_t *filename)
         }
 
 
+        /*调用指令的处理函数*/
         rc = ngx_conf_handler(cf, rc);
 
         if (rc == NGX_ERROR) {
@@ -315,7 +323,13 @@ done:
     return NGX_CONF_OK;
 }
 
-
+/*完成配置文件的解析工作，last参数是ngx_conf_read_token()的返回值*/
+/*函数的主体是两个嵌套的for循环结构，具体的解析工作包含以下几点
+ * 1、根据cf->module_type成员查找特定类型的模块
+ * 2、遍历模块的指令数组ngx_modules[i]->commands，匹配指令名称和类型
+ * 3、检查指令的参数个数
+ * 4、执行该条指令，即使配置生效
+ * */
 static ngx_int_t
 ngx_conf_handler(ngx_conf_t *cf, ngx_int_t last)
 {
@@ -329,6 +343,7 @@ ngx_conf_handler(ngx_conf_t *cf, ngx_int_t last)
 
     found = 0;
 
+    /*循环所有的模块，查看指令名称是否在模块支持的指令集内*/
     for (i = 0; cf->cycle->modules[i]; i++) {
 
         cmd = cf->cycle->modules[i]->commands;
@@ -336,6 +351,7 @@ ngx_conf_handler(ngx_conf_t *cf, ngx_int_t last)
             continue;
         }
 
+        /*遍历模块的指令数组ngx_modules[i]->commands，匹配指令名称和类型*/
         for ( /* void */ ; cmd->name.len; cmd++) {
 
             if (name->len != cmd->name.len) {
@@ -348,6 +364,7 @@ ngx_conf_handler(ngx_conf_t *cf, ngx_int_t last)
 
             found = 1;
 
+            /*避免解析不同模块中的相同指令*/
             if (cf->cycle->modules[i]->type != NGX_CONF_MODULE
                 && cf->cycle->modules[i]->type != cf->module_type)
             {
@@ -355,7 +372,7 @@ ngx_conf_handler(ngx_conf_t *cf, ngx_int_t last)
             }
 
             /* is the directive's location right ? */
-
+            /*在上端代码检查通过的基础上，下面的三个if判断通过指令的类型和last值判定当前指令是否配置在正确的地方*/
             if (!(cmd->type & cf->cmd_type)) {
                 continue;
             }
@@ -375,27 +392,31 @@ ngx_conf_handler(ngx_conf_t *cf, ngx_int_t last)
             }
 
             /* is the directive's argument count right ? */
-
+            /*判断指令的参数的类型*/
             if (!(cmd->type & NGX_CONF_ANY)) {
 
+                /*布尔类型*/
                 if (cmd->type & NGX_CONF_FLAG) {
 
                     if (cf->args->nelts != 2) {
                         goto invalid;
                     }
 
+                    /*1个以上参数*/
                 } else if (cmd->type & NGX_CONF_1MORE) {
 
                     if (cf->args->nelts < 2) {
                         goto invalid;
                     }
 
+                    /*2个以上参数*/
                 } else if (cmd->type & NGX_CONF_2MORE) {
 
                     if (cf->args->nelts < 3) {
                         goto invalid;
                     }
 
+                    /*少于允许的最多参数*/
                 } else if (cf->args->nelts > NGX_CONF_MAX_ARGS) {
 
                     goto invalid;
@@ -407,7 +428,7 @@ ngx_conf_handler(ngx_conf_t *cf, ngx_int_t last)
             }
 
             /* set up the directive's configuration context */
-
+            /*获取cycle结构中对应的模块信息，然后调用指令中的set函数指针指向的处理函数执行当前配置指令，使配置生效*/
             conf = NULL;
 
             if (cmd->type & NGX_DIRECT_CONF) {
@@ -463,7 +484,22 @@ invalid:
 }
 
 
-static ngx_int_t
+/*将配置文件中当前的一条配置指令读取到内存中，判断配置语法是否使用正确，并将该指令保存到cycle->args数组中*/
+/*该函数通常可以检查以下几类情况语法是否正确
+ * 1、配置指令末尾的分号";"是否遗漏
+ * 2、用于形成配置块作用域的花括号"{}"是否匹配
+ * 3、注释符号、转移符号以及其他符号使用是否符合规范
+ * */
+/*
+ * ngx_conf_read_token() may return
+ *
+ *    NGX_ERROR             there is error
+ *    NGX_OK                the token terminated by ";" was found
+ *    NGX_CONF_BLOCK_START  the token terminated by "{" was found
+ *    NGX_CONF_BLOCK_DONE   the "}" was found
+ *    NGX_CONF_FILE_DONE    the configuration file is done
+ */
+    static ngx_int_t
 ngx_conf_read_token(ngx_conf_t *cf)
 {
     u_char      *start, ch, *src, *dst;

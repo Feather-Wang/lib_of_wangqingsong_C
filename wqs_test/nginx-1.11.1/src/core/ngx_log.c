@@ -314,7 +314,7 @@ ngx_log_errno(u_char *buf, u_char *last, ngx_err_t err)
 }
 
 /*
- * 作用：初始化错误日志信息，打开文件，将文件描述符添加到ngx_log_file中，继而通过ngx_log加入到ngx_cycle变量中
+ * 作用：初始化Nginx的日志功能，打开文件，将文件描述符添加到ngx_log_file中，继而通过ngx_log加入到ngx_cycle变量中
  * 文件的路径：安装目录/logs/error.log
  * */
 ngx_log_t *
@@ -324,8 +324,10 @@ ngx_log_init(u_char *prefix)
     size_t   nlen, plen;
 
     ngx_log.file = &ngx_log_file;
+    /*设置默认日志级别*/
     ngx_log.log_level = NGX_LOG_NOTICE;
 
+    /*NGX_ERROR_LOG_PATH：默认的日志文件名称，其定义在objs/ngx_auto_config.h中*/
     name = (u_char *) NGX_ERROR_LOG_PATH;
 
     /*
@@ -335,6 +337,7 @@ ngx_log_init(u_char *prefix)
 
     nlen = ngx_strlen(name);
 
+    /*如果没有默认的日志文件，则将fd设置为标准错误输出*/
     if (nlen == 0) {
         ngx_log_file.fd = ngx_stderr;
         return &ngx_log;
@@ -342,6 +345,7 @@ ngx_log_init(u_char *prefix)
 
     p = NULL;
 
+    /*如果name不是绝对路径，则将参数-p的值或者NGX_PREFIX宏定义的值作为路径填充在name前面，NGX_PREFIX是宏定义，其定义在objs/ngx_auto_config.h中，是在编译代码时指定的*/
 #if (NGX_WIN32)
     if (name[1] != ':') {
 #else
@@ -378,6 +382,7 @@ ngx_log_init(u_char *prefix)
         }
     }
 
+    /*打开（创建）日志文件，如果文件打开失败，则将fd指定为标准错误输出*/
     ngx_log_file.fd = ngx_open_file(name, NGX_FILE_APPEND,
                                     NGX_FILE_CREATE_OR_OPEN,
                                     NGX_FILE_DEFAULT_ACCESS);
