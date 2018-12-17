@@ -283,12 +283,13 @@ ngx_execute_proc(ngx_cycle_t *cycle, void *data)
 }
 
 
+/*信号初始化*/
 ngx_int_t
 ngx_init_signals(ngx_log_t *log)
 {
     ngx_signal_t      *sig;
     struct sigaction   sa;
-
+    /*signals是一个ngx_signal_t类型的数组，存放了NGINX中用到的所有的信号类型、处理函数等信息*/
     for (sig = signals; sig->signo != 0; sig++) {
         ngx_memzero(&sa, sizeof(struct sigaction));
         sa.sa_handler = sig->handler;

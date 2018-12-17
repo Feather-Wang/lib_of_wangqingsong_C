@@ -15,17 +15,20 @@ ngx_daemon(ngx_log_t *log)
     int  fd;
 
     switch (fork()) {
+        /*生成一个子进程，准备启动守护进程*/
         case -1:
             ngx_log_error(NGX_LOG_EMERG, log, ngx_errno, "fork() failed");
             return NGX_ERROR;
 
         case 0:
+            /*子进程要作为守护进程*/
             break;
 
         default:
             exit(0);
     }
 
+    /*将全局变量ngx_pid设置为守护进程PID*/
     ngx_pid = ngx_getpid();
 
     if (setsid() == -1) {
@@ -42,11 +45,13 @@ ngx_daemon(ngx_log_t *log)
         return NGX_ERROR;
     }
 
+    /*设置守护进程的输入终端（为空）*/
     if (dup2(fd, STDIN_FILENO) == -1) {
         ngx_log_error(NGX_LOG_EMERG, log, ngx_errno, "dup2(STDIN) failed");
         return NGX_ERROR;
     }
 
+    /*设置守护进程的输出终端（为空）*/
     if (dup2(fd, STDOUT_FILENO) == -1) {
         ngx_log_error(NGX_LOG_EMERG, log, ngx_errno, "dup2(STDOUT) failed");
         return NGX_ERROR;

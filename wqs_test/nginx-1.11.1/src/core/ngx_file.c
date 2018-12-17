@@ -571,7 +571,7 @@ ngx_add_path(ngx_conf_t *cf, ngx_path_t **slot)
     return NGX_OK;
 }
 
-
+/*创建cycle结构中paths成员中存储的缓存在磁盘上的路径，并且检查目录用户权限以及操作权限*/
 ngx_int_t
 ngx_create_paths(ngx_cycle_t *cycle, ngx_uid_t user)
 {

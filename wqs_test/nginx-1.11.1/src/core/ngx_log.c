@@ -407,7 +407,7 @@ ngx_log_init(u_char *prefix)
     return &ngx_log;
 }
 
-
+/*将日志等级默认置为NGX_LOG_ERR，日志文件设置为NGX_ERROR_LOG_PATH（该宏是在configure时指定的），由此可以看出无论配置文件中是否有error_log配置项，始终会有日志输出，nginx唯一禁止日志输出的办法是经error_log配置项的输出日志文件名指定为/dev/null*/
 ngx_int_t
 ngx_log_open_default(ngx_cycle_t *cycle)
 {
@@ -684,7 +684,7 @@ ngx_log_set_log(ngx_conf_t *cf, ngx_log_t **head)
     return NGX_CONF_OK;
 }
 
-
+/*将new_log添加到*/
 static void
 ngx_log_insert(ngx_log_t *log, ngx_log_t *new_log)
 {

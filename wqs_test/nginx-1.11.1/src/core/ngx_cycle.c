@@ -359,6 +359,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
     }
 
 
+    /*创建cycle结构中paths成员中存储的缓存在磁盘上的路径，并且检查目录用户权限以及操作权限*/
     if (ngx_create_paths(cycle, ccf->user) != NGX_OK) {
         goto failed;
     }
@@ -511,16 +512,18 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
 
 
     /* handle the listening sockets */
-
+    /*旧的监听socket不为空*/
     if (old_cycle->listening.nelts) {
         ls = old_cycle->listening.elts;
         for (i = 0; i < old_cycle->listening.nelts; i++) {
+            /*设置旧的监听socket的标识*/
             ls[i].remain = 0;
         }
 
         nls = cycle->listening.elts;
         for (n = 0; n < cycle->listening.nelts; n++) {
 
+            /*第二层循环是要在旧的监听socket信息中寻找符合nls的成员，如果cycle->listening中的socket同时存在于init_cycle_listening中，则直接继承原来的打开描述符，并将init_cycle->listening中该socket的remain标志置为1*/
             for (i = 0; i < old_cycle->listening.nelts; i++) {
                 if (ls[i].ignore) {
                     continue;
@@ -534,6 +537,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
                     continue;
                 }
 
+                /*复制旧的监听socket的标志信息*/
                 if (ngx_cmp_sockaddr(nls[n].sockaddr, nls[n].socklen,
                                      ls[i].sockaddr, ls[i].socklen, 1)
                     == NGX_OK)
@@ -592,6 +596,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
                 }
             }
 
+            /*socket未打开时，需要打开*/
             if (nls[n].fd == (ngx_socket_t) -1) {
                 nls[n].open = 1;
 #if (NGX_HAVE_DEFERRED_ACCEPT && defined SO_ACCEPTFILTER)
@@ -608,6 +613,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         }
 
     } else {
+        /*如果原来init_cycle->listening中继承过来的socket为空，就直接将cycle->listening中所有的socket的open标志置为1*/
         ls = cycle->listening.elts;
         for (i = 0; i < cycle->listening.nelts; i++) {
             ls[i].open = 1;
@@ -624,6 +630,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         }
     }
 
+    /*打开open标志位1的监听socket*/
     if (ngx_open_listening_sockets(cycle) != NGX_OK) {
         goto failed;
     }

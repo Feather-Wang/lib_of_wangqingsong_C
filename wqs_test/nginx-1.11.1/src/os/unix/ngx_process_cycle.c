@@ -30,7 +30,7 @@ static void ngx_cache_loader_process_handler(ngx_event_t *ev);
 
 ngx_uint_t    ngx_process;
 ngx_uint_t    ngx_worker;
-ngx_pid_t     ngx_pid;
+ngx_pid_t     ngx_pid;  /*保存PID信息，该变量会在ngx_daemon()中被设置为守护进程的PID*/
 
 sig_atomic_t  ngx_reap;
 sig_atomic_t  ngx_sigio;

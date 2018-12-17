@@ -371,6 +371,7 @@ main(int argc, char *const *argv)
 
 #endif
 
+    /*创建PID文件*/
     if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK) {
         return 1;
     }

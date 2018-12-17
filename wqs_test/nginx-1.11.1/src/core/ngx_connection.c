@@ -388,7 +388,7 @@ ngx_set_inherited_sockets(ngx_cycle_t *cycle)
     return NGX_OK;
 }
 
-/*打开socket套接字*/
+/*打开open标志位1的监听socket*/
 ngx_int_t
 ngx_open_listening_sockets(ngx_cycle_t *cycle)
 {
@@ -407,7 +407,7 @@ ngx_open_listening_sockets(ngx_cycle_t *cycle)
     log = cycle->log;
 
     /* TODO: configurable try number */
-
+    /*每个socket会尝试打开5次*/
     for (tries = 5; tries; tries--) {
         failed = 0;
 
