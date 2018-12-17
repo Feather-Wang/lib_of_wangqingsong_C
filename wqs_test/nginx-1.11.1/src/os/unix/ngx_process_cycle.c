@@ -68,7 +68,14 @@ static ngx_cycle_t      ngx_exit_cycle;
 static ngx_log_t        ngx_exit_log;
 static ngx_open_file_t  ngx_exit_log_file;
 
-
+/*
+ * 主要工作：
+ * 主进程设置信号堵塞
+ * 设置进程标题
+ * 启动worker进程
+ * 启动缓存索引重建（cache loader）进程及管理（Cache Manager）进程
+ * 主进程循环处理信号
+ * */
 void
 ngx_master_process_cycle(ngx_cycle_t *cycle)
 {
@@ -84,6 +91,7 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
     ngx_listening_t   *ls;
     ngx_core_conf_t   *ccf;
 
+    /*将下列信号添加到信号集set中*/
     sigemptyset(&set);
     sigaddset(&set, SIGCHLD);
     sigaddset(&set, SIGALRM);
@@ -98,7 +106,7 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
 
     if (sigprocmask(SIG_BLOCK, &set, NULL) == -1) {
         ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
-                      "sigprocmask() failed");
+     "sigprocmask() failed");
     }
 
     sigemptyset(&set);
