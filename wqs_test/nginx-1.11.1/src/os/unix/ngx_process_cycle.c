@@ -87,7 +87,7 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
     sigset_t           set;
     struct itimerval   itv;
     ngx_uint_t         live;
-    ngx_msec_t         delay;
+    ngx_msec_t         delay;   /*保存的是等待工作进程退出的时间*/
     ngx_listening_t   *ls;
     ngx_core_conf_t   *ccf;
 
@@ -133,14 +133,16 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
         p = ngx_cpystrn(p, (u_char *) ngx_argv[i], size);
     }
 
+    /*设置进程标题*/
     ngx_setproctitle(title);
 
-
+    /*获取核心模块上下文*/
     ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);
 
     /*启动工作进程*/
     ngx_start_worker_processes(cycle, ccf->worker_processes,
                                NGX_PROCESS_RESPAWN);
+    /*启动缓存索引重建进程，该进程在整个Nginx服务器运行过程中只存在很短的时间，主要用来遍历磁盘上的缓存数据，在内存中建立数据索引，提高Nginx服务器检索缓存的效率*/
     ngx_start_cache_manager_processes(cycle, 0);
 
     ngx_new_binary = 0;
@@ -150,6 +152,7 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
 
     for ( ;; ) {
         if (delay) {
+            /*等待工作进程退出的时间*/
             if (ngx_sigalrm) {
                 sigio = 0;
                 delay *= 2;
@@ -159,6 +162,7 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
             ngx_log_debug1(NGX_LOG_DEBUG_EVENT, cycle->log, 0,
                            "termination cycle: %M", delay);
 
+            /*初始化一个定时器*/
             itv.it_interval.tv_sec = 0;
             itv.it_interval.tv_usec = 0;
             itv.it_value.tv_sec = delay / 1000;
@@ -172,24 +176,30 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
 
         ngx_log_debug0(NGX_LOG_DEBUG_EVENT, cycle->log, 0, "sigsuspend");
 
+        /*挂起进程，等待接收到信号，在不向主进程发送信号的情况下，该进程将一直挂起在这里等待*/
         sigsuspend(&set);
 
+        /*更新缓冲时间*/
         ngx_time_update();
 
         ngx_log_debug1(NGX_LOG_DEBUG_EVENT, cycle->log, 0,
                        "wake up, sigio %i", sigio);
 
+        /*如果有工作进程异常退出，则调用ngx_reap_children()重启该工作进程*/
         if (ngx_reap) {
             ngx_reap = 0;
             ngx_log_debug0(NGX_LOG_DEBUG_EVENT, cycle->log, 0, "reap children");
 
+            /*重启工作进程*/
             live = ngx_reap_children(cycle);
         }
 
+        /*如果主进程接收到的是NGX_CMD_TERMINATE信号、SIGTERM信号、SIGINT信号（ngx_terminate=1）或者收到的是NGX_CMD_QUIT信号、SIGQUIT信号（ngx_quit=1），并且工作进程退出，则主进程调用ngx_master_process_exit()函数退出*/
         if (!live && (ngx_terminate || ngx_quit)) {
             ngx_master_process_exit(cycle);
         }
 
+        /*处理SIGINT信号*/
         if (ngx_terminate) {
             if (delay == 0) {
                 delay = 50;
@@ -375,11 +385,12 @@ ngx_start_worker_processes(ngx_cycle_t *cycle, ngx_int_t n, ngx_int_t type)
         ch.slot = ngx_process_slot;
         ch.fd = ngx_processes[ngx_process_slot].channel[0];
 
+        /*开启进程通信信道*/
         ngx_pass_open_channel(cycle, &ch);
     }
 }
 
-
+/*启动缓存索引重建进程，该进程在整个Nginx服务器运行过程中只存在很短的时间，主要用来遍历磁盘上的缓存数据，在内存中建立数据索引，提高Nginx服务器检索缓存的效率*/
 static void
 ngx_start_cache_manager_processes(ngx_cycle_t *cycle, ngx_uint_t respawn)
 {
@@ -406,6 +417,7 @@ ngx_start_cache_manager_processes(ngx_cycle_t *cycle, ngx_uint_t respawn)
         return;
     }
 
+    /*创建缓存索引管理进程Cache Manager Process，此时respawn=0，所以传入的参数是NGX_PROCESS_JUST_RESPAWN*/
     ngx_spawn_process(cycle, ngx_cache_manager_process_cycle,
                       &ngx_cache_manager_ctx, "cache manager process",
                       respawn ? NGX_PROCESS_JUST_RESPAWN : NGX_PROCESS_RESPAWN);
@@ -417,12 +429,14 @@ ngx_start_cache_manager_processes(ngx_cycle_t *cycle, ngx_uint_t respawn)
     ch.slot = ngx_process_slot;
     ch.fd = ngx_processes[ngx_process_slot].channel[0];
 
+    /*创建进程间通信管道*/
     ngx_pass_open_channel(cycle, &ch);
 
     if (loader == 0) {
         return;
     }
 
+    /*创建缓存索引管理进程Cache Loader Process，此时respawn=0，所以传入的参数是NGX_PROCESS_JUST_SPAWN*/
     ngx_spawn_process(cycle, ngx_cache_manager_process_cycle,
                       &ngx_cache_loader_ctx, "cache loader process",
                       respawn ? NGX_PROCESS_JUST_SPAWN : NGX_PROCESS_NORESPAWN);
@@ -432,6 +446,7 @@ ngx_start_cache_manager_processes(ngx_cycle_t *cycle, ngx_uint_t respawn)
     ch.slot = ngx_process_slot;
     ch.fd = ngx_processes[ngx_process_slot].channel[0];
 
+    /*创建进程间通信管道*/
     ngx_pass_open_channel(cycle, &ch);
 }
 

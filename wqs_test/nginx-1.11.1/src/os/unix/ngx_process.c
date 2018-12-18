@@ -83,6 +83,7 @@ ngx_signal_t  signals[] = {
 };
 
 
+/*打开主进程和工作进程通信的管道，并fork出子进程，在子进程中运行ngx_worker_process_cycle函数*/
 ngx_pid_t
 ngx_spawn_process(ngx_cycle_t *cycle, ngx_spawn_proc_pt proc, void *data,
     char *name, ngx_int_t respawn)

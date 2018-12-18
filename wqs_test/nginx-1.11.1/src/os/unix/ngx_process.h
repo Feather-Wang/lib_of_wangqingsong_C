@@ -46,11 +46,12 @@ typedef struct {
 
 #define NGX_MAX_PROCESSES         1024
 
+/**/
 #define NGX_PROCESS_NORESPAWN     -1
-#define NGX_PROCESS_JUST_SPAWN    -2
-#define NGX_PROCESS_RESPAWN       -3
-#define NGX_PROCESS_JUST_RESPAWN  -4
-#define NGX_PROCESS_DETACHED      -5
+#define NGX_PROCESS_JUST_SPAWN    -2    /*just_spawn=1 表示子进程为刚创建的进程，已区别与老的子进程*/
+#define NGX_PROCESS_RESPAWN       -3    /*respawn=1 表示子进程退出后执行重启操作*/
+#define NGX_PROCESS_JUST_RESPAWN  -4    /*just_spawn=1, respawn=1 表示子进程为刚创建的进程，已区别与老的子进程以及子进程退出后执行重启操作*/
+#define NGX_PROCESS_DETACHED      -5    /*detached=1 没有亲缘关系，不需要建立通信信道，譬如Binary热更新*/
 
 
 #define ngx_getpid   getpid
