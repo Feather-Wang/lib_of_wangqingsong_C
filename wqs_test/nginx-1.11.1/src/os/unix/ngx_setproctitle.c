@@ -31,6 +31,7 @@ extern char **environ;
 
 static char *ngx_os_argv_last;
 
+/*该函数会计算环境变量的总的大小，然后申请一块内存，然后逐一将环境变量拷贝到这块内存中，再将environ中的环境变量的指针指向这块内存中的具体地址*/
 ngx_int_t
 ngx_init_setproctitle(ngx_log_t *log)
 {
@@ -40,23 +41,28 @@ ngx_init_setproctitle(ngx_log_t *log)
 
     size = 0;
 
+    /*计算环境变量所用的总的空间的大小，然后以申请足够的空间用于存放环境变量*/
     for (i = 0; environ[i]; i++) {
         size += ngx_strlen(environ[i]) + 1;
     }
 
+    /*为环境分配空间*/
     p = ngx_alloc(size, log);
     if (p == NULL) {
         return NGX_ERROR;
     }
 
+    /*下面开始计算前面用于存放环境变量的最后位置*/
     ngx_os_argv_last = ngx_os_argv[0];
 
+    /*首先计算参数的最后位置*/
     for (i = 0; ngx_os_argv[i]; i++) {
         if (ngx_os_argv_last == ngx_os_argv[i]) {
             ngx_os_argv_last = ngx_os_argv[i] + ngx_strlen(ngx_os_argv[i]) + 1;
         }
     }
 
+    /*再计算环境变量占用的最后位置，并完成环境变量的拷贝*/
     for (i = 0; environ[i]; i++) {
         if (ngx_os_argv_last == environ[i]) {
 
@@ -69,12 +75,14 @@ ngx_init_setproctitle(ngx_log_t *log)
         }
     }
 
+    /*该步自减，将会让ngx_os_argv_last指向原environ的最后一个'\0'的位置*/
+    /*这步是为了在后面设置进程标题是，如果设置的标题小于参数+环境变量这块连续空间的大小，要把后面没用到的空间初始化，避免留下无用的信息*/
     ngx_os_argv_last--;
 
     return NGX_OK;
 }
 
-
+/*设置进程标题*/
 void
 ngx_setproctitle(char *title)
 {
@@ -87,11 +95,13 @@ ngx_setproctitle(char *title)
 
 #endif
 
+    /*不知道为什么要把argv[1]设置为NULL*/
     ngx_os_argv[1] = NULL;
 
+    /*将"nginx:"拷贝到argv[0]里，在ngx_cpystrn内部会在拷贝到"nginx:"结尾时跳出来*/
     p = ngx_cpystrn((u_char *) ngx_os_argv[0], (u_char *) "nginx: ",
                     ngx_os_argv_last - ngx_os_argv[0]);
-
+    /*将之前组织的title也拷贝到argv[0]中*/
     p = ngx_cpystrn(p, (u_char *) title, ngx_os_argv_last - (char *) p);
 
 #if (NGX_SOLARIS)
@@ -124,6 +134,7 @@ ngx_setproctitle(char *title)
 
 #endif
 
+    /*如果原参数列表+环境变量的连续空间没有用完，则将没用到的部分进行初始化*/
     if (ngx_os_argv_last - (char *) p) {
         ngx_memset(p, NGX_SETPROCTITLE_PAD, ngx_os_argv_last - (char *) p);
     }

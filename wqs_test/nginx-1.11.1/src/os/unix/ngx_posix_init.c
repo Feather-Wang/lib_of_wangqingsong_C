@@ -36,6 +36,7 @@ ngx_os_io_t ngx_os_io = {
  * ngx_ncpu             CPU的个数
  * ngx_cacheline_size   默认缓存大小
  * ngx_max_sockets      支持打开的最大网络套接字数量
+ * 调用ngx_init_setproctitle()函数，重新申请一块内存用于存放environ环境变量信息，为后面的设置进程标题做准备
  * */
 ngx_int_t
 ngx_os_init(ngx_log_t *log)

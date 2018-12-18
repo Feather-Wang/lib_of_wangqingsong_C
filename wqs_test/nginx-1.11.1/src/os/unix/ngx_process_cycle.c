@@ -104,6 +104,7 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
     sigaddset(&set, ngx_signal_value(NGX_SHUTDOWN_SIGNAL));
     sigaddset(&set, ngx_signal_value(NGX_CHANGEBIN_SIGNAL));
 
+    /*将信号集set覆盖为当前进程的信号集*/
     if (sigprocmask(SIG_BLOCK, &set, NULL) == -1) {
         ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
      "sigprocmask() failed");
@@ -112,6 +113,8 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
     sigemptyset(&set);
 
 
+    /*开始设置进程标题*/
+    /*计算进程标题的总体长度*/
     size = sizeof(master_process);
 
     for (i = 0; i < ngx_argc; i++) {
