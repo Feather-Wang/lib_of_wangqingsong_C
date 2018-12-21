@@ -123,6 +123,7 @@ void *
 ngx_palloc(ngx_pool_t *pool, size_t size)
 {
 #if !(NGX_DEBUG_PALLOC)
+    /*如果申请的内存大小是否超过该内存池允许分配的最大内存，则调用ngx_palloc_small()申请*/
     if (size <= pool->max) {
         return ngx_palloc_small(pool, size, 1);
     }
@@ -144,7 +145,7 @@ ngx_pnalloc(ngx_pool_t *pool, size_t size)
     return ngx_palloc_large(pool, size);
 }
 
-
+/*从内存池的ngx_pool_data_t d成员中申请内存，如果本块内存池的剩余大小以不满足于申请的大小，则查看内存池链表的下一块内存池，如果已经没有内存池可用，则调用ngx_palloc_block()申请一块新的内存池挂在pool->d链表的最后，并返回为size申请的内存块的首地址*/
 static ngx_inline void *
 ngx_palloc_small(ngx_pool_t *pool, size_t size, ngx_uint_t align)
 {
@@ -173,7 +174,9 @@ ngx_palloc_small(ngx_pool_t *pool, size_t size, ngx_uint_t align)
     return ngx_palloc_block(pool, size);
 }
 
-
+/*申请一块新的内存池，内存池大小为当初申请pool的大小*/
+/*申请成功后，将其挂在pool->d链表的最后*/
+/*返回值：申请size大小的内存块的首地址*/
 static void *
 ngx_palloc_block(ngx_pool_t *pool, size_t size)
 {
@@ -210,6 +213,8 @@ ngx_palloc_block(ngx_pool_t *pool, size_t size)
 }
 
 
+/*申请一块大小为size的内存块，是用ngx_alloc()申请的，实际上是malloc()*/
+/*遍历pool->large链表，查看有没有ngx_pool_large_t->alloc是NULL的，如果有，就把申请的内存地址赋值给alloc，如果没有或者遍历3个成员还没找到，则再ngx_pool_data_t链表中申请一个ngx_pool_large_t结构大小的内存，让ngx_pool_large_t->alloc=p，然后把申请的ngx_pool_large_t结构插入到ngx_pool_large_t结构链表的开头*/
 static void *
 ngx_palloc_large(ngx_pool_t *pool, size_t size)
 {

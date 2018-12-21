@@ -28,28 +28,28 @@ static void ngx_cache_manager_process_handler(ngx_event_t *ev);
 static void ngx_cache_loader_process_handler(ngx_event_t *ev);
 
 
-ngx_uint_t    ngx_process;
-ngx_uint_t    ngx_worker;
+ngx_uint_t    ngx_process;  /*保存进程类型*/
+ngx_uint_t    ngx_worker;   /*保存工作进程的序号，启动工作进程时，是通过for循环启动的，ngx_worker保存的就是第几次循环，以0开头*/
 ngx_pid_t     ngx_pid;  /*保存PID信息，该变量会在ngx_daemon()中被设置为守护进程的PID*/
 
 sig_atomic_t  ngx_reap;
 sig_atomic_t  ngx_sigio;
 sig_atomic_t  ngx_sigalrm;
-sig_atomic_t  ngx_terminate;
-sig_atomic_t  ngx_quit;
+sig_atomic_t  ngx_terminate;    /*对应SIGINT信号*/
+sig_atomic_t  ngx_quit;         /*对应SIGQUIT信号*/
 sig_atomic_t  ngx_debug_quit;
 ngx_uint_t    ngx_exiting;
-sig_atomic_t  ngx_reconfigure;
-sig_atomic_t  ngx_reopen;
+sig_atomic_t  ngx_reconfigure;  /*对应SIGHUP信号，表示热升级*/
+sig_atomic_t  ngx_reopen;       /*设置重新打开日志文件，对应SIGUSR1信号*/
 
-sig_atomic_t  ngx_change_binary;
-ngx_pid_t     ngx_new_binary;
+sig_atomic_t  ngx_change_binary;/*对应SIGUSR2信号，进行热代码切换*/
+ngx_pid_t     ngx_new_binary;   /*用于热升级时，表示主进程本身需要升级，但是不需要重新初始化Nginx配置，因此可以直接调用ngx_start_worker_processes()函数重启工作和ngx_start_cache_manager_processes()重启缓存索引管理进程*/
 ngx_uint_t    ngx_inherited;
 ngx_uint_t    ngx_daemonized;
 
-sig_atomic_t  ngx_noaccept;
-ngx_uint_t    ngx_noaccepting;
-ngx_uint_t    ngx_restart;
+sig_atomic_t  ngx_noaccept;     /*对应NGX_NOACCEPT_SIGNAL信号，表示不再接收请求，退出工作进程*/
+ngx_uint_t    ngx_noaccepting;  /*对应于ngx_noaccept变量，当处理ngx_noaccept时，会将ngx_noaccepting设置为1*/
+ngx_uint_t    ngx_restart;      /*设置重启工作进程和缓存索引管理进程*/
 
 
 static u_char  master_process[] = "master process";
@@ -210,11 +210,14 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
                 continue;
             }
 
+            /*包括两个管理内存索引的进程*/
             sigio = ccf->worker_processes + 2 /* cache processes */;
 
+            /*超时1s，直接终止工作进程*/
             if (delay > 1000) {
                 ngx_signal_worker_processes(cycle, SIGKILL);
             } else {
+                /*工作进程正常退出*/
                 ngx_signal_worker_processes(cycle,
                                        ngx_signal_value(NGX_TERMINATE_SIGNAL));
             }
@@ -222,10 +225,12 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
             continue;
         }
 
+        /*处理SIGQUIT信号*/
         if (ngx_quit) {
             ngx_signal_worker_processes(cycle,
                                         ngx_signal_value(NGX_SHUTDOWN_SIGNAL));
 
+            /*关闭所有的socket*/
             ls = cycle->listening.elts;
             for (n = 0; n < cycle->listening.nelts; n++) {
                 if (ngx_close_socket(ls[n].fd) == -1) {
@@ -239,9 +244,13 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
             continue;
         }
 
+        /*处理SIGHUP信号*/
         if (ngx_reconfigure) {
             ngx_reconfigure = 0;
 
+            /*热升级（平滑升级，不用停止服务）*/
+            /*当ngx_new_binary=1时，说明主进程本身需要升级，但是不需要重新初始化Nginx配置，因此可以直接调用ngx_start_worker_processes()函数重启工作进程和缓存索引管理进程*/
+            /*当ngx_new_binary!=1时，则说明时Nginx服务器配置改变，需要调用ngx_init_cycle()函数初始化Nginx配置，并按照新的配置启动工作进程和缓存索引管理进程，向之前的所有进程发送NGX_SHUTDOWN_SIGNAL信号，这样旧实现了Nginx服务器的平滑升级*/
             if (ngx_new_binary) {
                 ngx_start_worker_processes(cycle, ccf->worker_processes,
                                            NGX_PROCESS_RESPAWN);
@@ -253,35 +262,45 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
 
             ngx_log_error(NGX_LOG_NOTICE, cycle->log, 0, "reconfiguring");
 
+            /*建立信的cycle结构*/
             cycle = ngx_init_cycle(cycle);
             if (cycle == NULL) {
                 cycle = (ngx_cycle_t *) ngx_cycle;
                 continue;
             }
 
+            /*读取Nginx配置*/
             ngx_cycle = cycle;
             ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx,
                                                    ngx_core_module);
+            /*创建工作进程*/
             ngx_start_worker_processes(cycle, ccf->worker_processes,
                                        NGX_PROCESS_JUST_RESPAWN);
+            /*创建缓存管理进程*/
             ngx_start_cache_manager_processes(cycle, 1);
 
             /* allow new processes to start */
             ngx_msleep(100);
 
             live = 1;
+            /*关闭旧的Nginx进程*/
             ngx_signal_worker_processes(cycle,
                                         ngx_signal_value(NGX_SHUTDOWN_SIGNAL));
         }
 
+        /*重启工作进程*/
+        /*只有一种情况可以将ngx_restart变量赋值为1，就是在调用ngx_reap_children()函数重启工作进程的时候，当主进程接收到NGX_NOACCEPT_SIGNAL信号（不再接收请求，退出工作进程）时，会设置全局变量ngx_noaccept为1，然后再Nginx初始化信号设置时会将全局变量ngx_noaccepting设置为1，于是在ngx_reap_children()函数中就会将ngx_restart变量设置为1，进而执行下面的if语句中的代码，重启工作进程和缓存索引管理进程*/
         if (ngx_restart) {
             ngx_restart = 0;
+            /*启动工作进程*/
             ngx_start_worker_processes(cycle, ccf->worker_processes,
                                        NGX_PROCESS_RESPAWN);
+            /*启动缓存索引管理进程刷新缓存索引*/
             ngx_start_cache_manager_processes(cycle, 0);
             live = 1;
         }
 
+        /*处理SIGUSR1信号，该信号用于重新打开日志文件*/
         if (ngx_reopen) {
             ngx_reopen = 0;
             ngx_log_error(NGX_LOG_NOTICE, cycle->log, 0, "reopening logs");
@@ -290,15 +309,18 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
                                         ngx_signal_value(NGX_REOPEN_SIGNAL));
         }
 
+        /*处理SIGUSR2信号，热代码切换*/
         if (ngx_change_binary) {
             ngx_change_binary = 0;
             ngx_log_error(NGX_LOG_NOTICE, cycle->log, 0, "changing binary");
             ngx_new_binary = ngx_exec_new_binary(cycle, ngx_argv);
         }
 
+        /*处理NGX_NOACCEPT_SIGNAL信号*/
         if (ngx_noaccept) {
             ngx_noaccept = 0;
             ngx_noaccepting = 1;
+            /*退出工作进程，不再接收网络请求*/
             ngx_signal_worker_processes(cycle,
                                         ngx_signal_value(NGX_SHUTDOWN_SIGNAL));
         }
@@ -750,10 +772,11 @@ ngx_master_process_exit(ngx_cycle_t *cycle)
     exit(0);
 }
 
-
+/*工作进程的具体实现*/
 static void
 ngx_worker_process_cycle(ngx_cycle_t *cycle, void *data)
 {
+    /*实际是工作进程的序号*/
     ngx_int_t worker = (intptr_t) data;
 
     ngx_process = NGX_PROCESS_WORKER;
@@ -762,6 +785,7 @@ ngx_worker_process_cycle(ngx_cycle_t *cycle, void *data)
     /*工作进程初始化，主要是根据cycle中的信息初始化一些设置，以及将监听管道的handler加入到event中*/
     ngx_worker_process_init(cycle, worker);
 
+    /*设置工作进程标题*/
     ngx_setproctitle("worker process");
 
     for ( ;; ) {
@@ -828,6 +852,7 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
     ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);
 
     if (worker >= 0 && ccf->priority != 0) {
+        /*设置工作进程优先级*/
         if (setpriority(PRIO_PROCESS, 0, ccf->priority) == -1) {
             ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
                           "setpriority(%d) failed", ccf->priority);
@@ -837,7 +862,7 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
     if (ccf->rlimit_nofile != NGX_CONF_UNSET) {
         rlmt.rlim_cur = (rlim_t) ccf->rlimit_nofile;
         rlmt.rlim_max = (rlim_t) ccf->rlimit_nofile;
-
+        /*设置工作进程可打开的文件描述符的最大数*/
         if (setrlimit(RLIMIT_NOFILE, &rlmt) == -1) {
             ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
                           "setrlimit(RLIMIT_NOFILE, %i) failed",
@@ -848,7 +873,7 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
     if (ccf->rlimit_core != NGX_CONF_UNSET) {
         rlmt.rlim_cur = (rlim_t) ccf->rlimit_core;
         rlmt.rlim_max = (rlim_t) ccf->rlimit_core;
-
+        /*设置工作进程可生成的core文件的最大大小*/
         if (setrlimit(RLIMIT_CORE, &rlmt) == -1) {
             ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
                           "setrlimit(RLIMIT_CORE, %O) failed",

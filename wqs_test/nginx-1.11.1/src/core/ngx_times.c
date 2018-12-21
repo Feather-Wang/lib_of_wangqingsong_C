@@ -20,10 +20,11 @@
 
 #define NGX_TIME_SLOTS   64
 
-static ngx_uint_t        slot;
-static ngx_atomic_t      ngx_time_lock;
+static ngx_uint_t        slot;                          /*存储最后一次更新时间信息的时间slot的下标*/
+static ngx_atomic_t      ngx_time_lock;                 /*更新时间信息时的原子锁变量*/
 
-volatile ngx_msec_t      ngx_current_msec;
+volatile ngx_msec_t      ngx_current_msec;              /*保存获取到的时间转换后的毫秒数*/
+/*下面的六个变量用于存储最新的时间信息，它们只是指针，实际的信息时保存在下面以cached_开头的六个对应的时间数组中*/
 volatile ngx_time_t     *ngx_cached_time;
 volatile ngx_str_t       ngx_cached_http_time;
 volatile ngx_str_t       ngx_cached_err_log_time;
@@ -42,13 +43,19 @@ volatile ngx_str_t       ngx_cached_syslog_time;
 static ngx_int_t         cached_gmtoff;
 #endif
 
+/*cached_time: 用于缓存时间数据，NGX_TIME_SLOTS宏定义为64，每次Nginx更新时间缓存时都是更新这个数组中的一个新的元素，因为Nginx在时间管理方面，写时间缓存是加锁的，但是读时间缓存是没有加锁的，以避免给读操作频繁加锁带来性能损耗，所以为了避免读操作产生的冲突，Nginx程序通过维护多个时间slot得分昂发来减少读操作冲突，避免读取到无效的时间信息*/
+/*cached_time: 每次更新cached_time数组中的哪个时间slot，是由全局变量slot控制的，每次更新时间信息时，都将slot++，指向新的时间slot*/
 static ngx_time_t        cached_time[NGX_TIME_SLOTS];
+/*记录错误日志的时间*/
 static u_char            cached_err_log_time[NGX_TIME_SLOTS]
                                     [sizeof("1970/09/28 12:00:00")];
+/*记录http请求的时间*/
 static u_char            cached_http_time[NGX_TIME_SLOTS]
                                     [sizeof("Mon, 28 Sep 1970 06:00:00 GMT")];
+/*记录http请求日志的时间*/
 static u_char            cached_http_log_time[NGX_TIME_SLOTS]
                                     [sizeof("28/Sep/1970:12:00:00 +0600")];
+/*符合iso8601标准格式的时间*/
 static u_char            cached_http_log_iso8601[NGX_TIME_SLOTS]
                                     [sizeof("1970-09-28T12:00:00+06:00")];
 static u_char            cached_syslog_time[NGX_TIME_SLOTS]
@@ -88,17 +95,21 @@ ngx_time_update(void)
     ngx_time_t      *tp;
     struct timeval   tv;
 
+    /*使用原子变量ngx_time_lock进行写加锁*/
     if (!ngx_trylock(&ngx_time_lock)) {
         return;
     }
 
+    /*调用系统调用gettimeofday()获取时间*/
     ngx_gettimeofday(&tv);
 
+    /*将获取的时间统一转换成毫秒*/
     sec = tv.tv_sec;
     msec = tv.tv_usec / 1000;
 
     ngx_current_msec = (ngx_msec_t) sec * 1000 + msec;
 
+    /*获取上一次更新的时间，如果上一次的sec和这一次的一样，则只更新上一次时间slot的msec，如果不一样，则获取下一个时间slot用于保存这次的时间信息*/
     tp = &cached_time[slot];
 
     if (tp->sec == sec) {
@@ -118,9 +129,10 @@ ngx_time_update(void)
     tp->sec = sec;
     tp->msec = msec;
 
+    /*转换成可读的时间格式*/
     ngx_gmtime(sec, &gmt);
 
-
+    /*记录http请求的时间*/
     p0 = &cached_http_time[slot][0];
 
     (void) ngx_sprintf(p0, "%s, %02d %s %4d %02d:%02d:%02d GMT",
@@ -148,6 +160,7 @@ ngx_time_update(void)
 #endif
 
 
+    /*记录错误日志的时间*/
     p1 = &cached_err_log_time[slot][0];
 
     (void) ngx_sprintf(p1, "%4d/%02d/%02d %02d:%02d:%02d",
@@ -156,6 +169,7 @@ ngx_time_update(void)
                        tm.ngx_tm_min, tm.ngx_tm_sec);
 
 
+    /*记录http请求日志的时间*/
     p2 = &cached_http_log_time[slot][0];
 
     (void) ngx_sprintf(p2, "%02d/%s/%d:%02d:%02d:%02d %c%02i%02i",
@@ -165,6 +179,7 @@ ngx_time_update(void)
                        tp->gmtoff < 0 ? '-' : '+',
                        ngx_abs(tp->gmtoff / 60), ngx_abs(tp->gmtoff % 60));
 
+    /*符合iso8601标准格式的时间*/
     p3 = &cached_http_log_iso8601[slot][0];
 
     (void) ngx_sprintf(p3, "%4d-%02d-%02dT%02d:%02d:%02d%c%02i:%02i",
@@ -180,6 +195,7 @@ ngx_time_update(void)
                        months[tm.ngx_tm_mon - 1], tm.ngx_tm_mday,
                        tm.ngx_tm_hour, tm.ngx_tm_min, tm.ngx_tm_sec);
 
+    /*该函数得作用是避免下面得赋值语句在编译时与前面的赋值语句合并优化，这样无法保证数据的一致性*/
     ngx_memory_barrier();
 
     ngx_cached_time = tp;
@@ -194,7 +210,7 @@ ngx_time_update(void)
 
 
 #if !(NGX_WIN32)
-
+/*属于ngx_time_update()的一个特例，只更新cached_time和cached_err_log_time中的时间*/
 void
 ngx_time_sigsafe_update(void)
 {
