@@ -18,7 +18,7 @@ static void ngx_debug_accepted_connection(ngx_event_conf_t *ecf,
     ngx_connection_t *c);
 #endif
 
-
+/*用于实现工作进程接收连接请求事件的功能*/
 void
 ngx_event_accept(ngx_event_t *ev)
 {
@@ -112,6 +112,7 @@ ngx_event_accept(ngx_event_t *ev)
             }
 
             if (err == NGX_EMFILE || err == NGX_ENFILE) {
+                /*判断是否接收了太多的事件*/
                 if (ngx_disable_accept_events((ngx_cycle_t *) ngx_cycle, 1)
                     != NGX_OK)
                 {
@@ -123,7 +124,7 @@ ngx_event_accept(ngx_event_t *ev)
                         ngx_shmtx_unlock(&ngx_accept_mutex);
                         ngx_accept_mutex_held = 0;
                     }
-
+                    /*接收了太多的事件，则拒绝更多事件*/
                     ngx_accept_disabled = 1;
 
                 } else {
@@ -634,24 +635,30 @@ ngx_event_recvmsg(ngx_event_t *ev)
 #endif
 
 
+/*尝试获取accept_mutex互斥量*/
 ngx_int_t
 ngx_trylock_accept_mutex(ngx_cycle_t *cycle)
 {
+    /*尝试获取accept_mutex锁。注意是非阻塞的，返回1表示成功，返回0表示失败*/
     if (ngx_shmtx_trylock(&ngx_accept_mutex)) {
 
         ngx_log_debug0(NGX_LOG_DEBUG_EVENT, cycle->log, 0,
                        "accept mutex locked");
 
+        /*获取到锁，但是标志位ngx_accept_mutex_held为1，表示当前进程已经获取到锁了立即返回*/
         if (ngx_accept_mutex_held && ngx_accept_events == 0) {
             return NGX_OK;
         }
 
+        /*将所有监听事件添加到当前的epoll等事件驱动模型中*/
         if (ngx_enable_accept_events(cycle) == NGX_ERROR) {
+            /*添加失败，立即释放锁*/
             ngx_shmtx_unlock(&ngx_accept_mutex);
             return NGX_ERROR;
         }
-
+        /*标志位设置*/
         ngx_accept_events = 0;
+        /*当前进程已经获取到锁*/
         ngx_accept_mutex_held = 1;
 
         return NGX_OK;
@@ -660,11 +667,13 @@ ngx_trylock_accept_mutex(ngx_cycle_t *cycle)
     ngx_log_debug1(NGX_LOG_DEBUG_EVENT, cycle->log, 0,
                    "accept mutex lock failed: %ui", ngx_accept_mutex_held);
 
+    /*获取锁失败，但是标志位ngx_accept_mutex_held仍然为1，即当前进程还处在获取到锁的状态，这是不正确*/
     if (ngx_accept_mutex_held) {
+        /*将所有监听事件从当前的epoll等事件驱动模型中移除*/
         if (ngx_disable_accept_events(cycle, 0) == NGX_ERROR) {
             return NGX_ERROR;
         }
-
+        /*没有获取到锁，重置标志位*/
         ngx_accept_mutex_held = 0;
     }
 

@@ -50,11 +50,11 @@ ngx_atomic_t         *ngx_connection_counter = &connection_counter;
 
 ngx_atomic_t         *ngx_accept_mutex_ptr;
 ngx_shmtx_t           ngx_accept_mutex;
-ngx_uint_t            ngx_use_accept_mutex;
+ngx_uint_t            ngx_use_accept_mutex;     /*表示是否需要通过对accept加锁来解决惊群问题，当使用了master模式，nginx worker进程数>1时且配置文件中打开了accept_accept_mutex时，这个标志置为1，它在函数ngx_event_process_init()中被设置*/
 ngx_uint_t            ngx_accept_events;
-ngx_uint_t            ngx_accept_mutex_held;
+ngx_uint_t            ngx_accept_mutex_held;    /*标记当前进程是否获取到accept_mutex锁，当释放锁时并不会清空该标记，只有当下次再继续申请锁时才会判断，申请锁失败并且该标记为1，则会将事件驱动模型中的监听事件都移除，并将该标记置空*/
 ngx_msec_t            ngx_accept_mutex_delay;
-ngx_int_t             ngx_accept_disabled;
+ngx_int_t             ngx_accept_disabled;      /*用来标记当前工作进程接收连接请求事件的能力，在函数ngx_event_accept()中被设置，当接收了太多的事件时，则将其设置为1，表明拒绝更多事件，这样，当各个工作进程在争抢accept_mutex互斥量的使用机会时就会因为ngx_accept_disabled大于0而放弃此次争抢，同时，ngx_accept_disabled减1*/
 
 
 #if (NGX_STAT_STUB)
@@ -190,6 +190,7 @@ ngx_module_t  ngx_event_core_module = {
 };
 
 
+/*处理网络请求事件，这个函数是事件驱动机制的核心，既会处理普通的网络事件，也会处理定时器事件，它们分别被放在不同的事件队列种*/
 void
 ngx_process_events_and_timers(ngx_cycle_t *cycle)
 {
@@ -215,30 +216,42 @@ ngx_process_events_and_timers(ngx_cycle_t *cycle)
 #endif
     }
 
+    /*如果启动了accept_mutex互斥量*/
     if (ngx_use_accept_mutex) {
+        /*当各个工作进程在争抢accept_mutex互斥量的使用机会时就会因为ngx_accept_disabled大于0而放弃此次争抢，同时，ngx_accept_disabled减1*/
         if (ngx_accept_disabled > 0) {
             ngx_accept_disabled--;
 
         } else {
+            /*尝试获取accept_mutex互斥量*/
             if (ngx_trylock_accept_mutex(cycle) == NGX_ERROR) {
                 return;
             }
 
             if (ngx_accept_mutex_held) {
+                /*获取互斥量成功，给flags增加标记NGX_POST_EVENTS，这个标记作为处理时间核心函数ngx_process_events的一个参数，这个函数中所有事件将延后处理，会把accept事件都放到ngx_posted_ed_accept_events链表中，epollin|epollout普通事件都放到ngx_posted_events链表中*/
                 flags |= NGX_POST_EVENTS;
 
             } else {
+                /*获取互斥量失败*/
+                /*意味着既不能让当前worker进程频繁的试图抢互斥量，也不能让它经过太长时间再去抢互斥量*/
+                /*下面的代码，即使开启了timer_resolution时间精度，也需要让ngx_process_change()函数在没有新事件的时候至少等待ngx_accept_mutex_delay毫秒之后再去试图抢互斥量*/
+                /*而没有开启timer_resolution时间精度，如果最近一个定时器事件的超时时间距离现在超过ngx_accept_mutex_delay毫秒，也要把timer设置为ngx_accept_mutex_delay毫秒，这是因为当前进程虽然没有抢到accept_mutex互斥量，但也不能让ngx_process_change()函数在没有新事件的时候等待的时间超过ngx_accept_mutex_delay毫秒，这会影响整个负载均衡机制*/
                 if (timer == NGX_TIMER_INFINITE
                     || timer > ngx_accept_mutex_delay)
                 {
+                    /*推迟一段时间重新尝试获取互斥量*/
                     timer = ngx_accept_mutex_delay;
                 }
             }
         }
     }
 
+    /*计算ngx_process_events消耗的时间*/
     delta = ngx_current_msec;
 
+    /*事件处理核心函数，ngx_process_events()实际上调用的是各种事件驱动机制下的事件处理函数，我们以epoll机制为例，ngx_process_events()实际上是ngx_epool_process_events()函数*/
+    /*Nginx程序种的所有的事件驱动机制模型都是在/nginx/src/event/modules目录下，其中刚才提到的ngx_epool_process_events()实现是在ngx_epoll_module.c中*/
     (void) ngx_process_events(cycle, timer, flags);
 
     delta = ngx_current_msec - delta;
@@ -246,16 +259,21 @@ ngx_process_events_and_timers(ngx_cycle_t *cycle)
     ngx_log_debug1(NGX_LOG_DEBUG_EVENT, cycle->log, 0,
                    "timer delta: %M", delta);
 
+    /*ngx_posted_accept_events链表有数据，开始accept新连接*/
     ngx_event_process_posted(cycle, &ngx_posted_accept_events);
 
+    /*释放accept_mutex互斥量后再处理ngx_posted_events链表中的普通事件*/
     if (ngx_accept_mutex_held) {
         ngx_shmtx_unlock(&ngx_accept_mutex);
     }
 
+    /*如果ngx_process_events消耗的时间大于0，那么这时可能有新的定时器事件触发*/
     if (delta) {
+        /*处理定时器事件*/
         ngx_event_expire_timers();
     }
 
+    /*ngx_posted_events链表中有数据，进行处理*/
     ngx_event_process_posted(cycle, &ngx_posted_events);
 }
 

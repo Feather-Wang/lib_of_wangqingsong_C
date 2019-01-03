@@ -1,17 +1,14 @@
-0001 2018_12_19 09:06:08 del R_TongGTP6.1.0.9_redhat6.2_64bit_BOL_20181218.tar R_TongGTPCli6.1.0.9_redhat6.2_64bit_BOL_20181218.tar R_TongGTPCli6.1.0.9_RHT6.2_x64.tar.gz /home/jeff
-0002 2018_12_19 09:06:53 del TLQ安装介质.zip /home/jeff
-0003 2018_12_19 11:08:36 del logs/access.log logs/error.log /home/jeff/test/test/install_nginx
-0004 2018_12_20 16:08:33 del gtp_clientbroker.log gtp_exit.log gtp_spv.log /home/jeff
-0005 2018_12_20 16:08:36 del gtp.sys /home/jeff
-0006 2018_12_20 16:08:41 del java_dmp_core.zip /home/jeff
-0007 2018_12_20 16:08:46 del sendingfilelist.dat /home/jeff
-0008 2018_12_20 16:09:01 del chukou_119.txt chukou_16.23.txt gtp.sys_119.txt gtp.sys_16.23.txt /home/jeff/gtp/guangda/log
-0009 2018_12_20 16:21:24 del libxml /home/jeff/gtp/guangda/log/gtp_sendingfilelist
-0010 2018_12_20 16:21:27 del libxml.zip /home/jeff/gtp/guangda/log/gtp_sendingfilelist
-0011 2018_12_20 16:22:06 del gtp_sendingfilelist /home/jeff/gtp/guangda/log
-0012 2018_12_20 16:22:15 del libxml /home/jeff/gtp/guangda/log/gtp_sendingfilelist
-0013 2018_12_20 16:22:22 del gtp_sendingfilelist /home/jeff/gtp/guangda/log
-0014 2018_12_20 16:22:31 del libxml.zip /home/jeff/gtp/guangda/log/gtp_sendingfilelist
-0015 2018_12_21 12:54:51 del gdb-linaro-7.4-2012.04 /home/jeff/gtp/guangda/log
-0016 2018_12_21 13:01:39 del gdb-linaro-7.4-2012.04 /home/jeff/gtp/guangda/log
-0017 2018_12_21 13:52:15 del a.out /home/jeff/lib_of_wangqingsong_C/wqs_function/process/set_process_resource
+0001 2018_12_29 12:30:12 del timetostring /home/jeff/test
+0002 2018_12_29 17:21:34 del nmap/ /home/jeff/test
+0003 2018_12_30 01:40:09 del a.zip /home/jeff/lib_of_wangqingsong_C/wqs_test/zip30
+0004 2018_12_30 09:34:18 del unziptomemory-master /home/jeff/test/zip
+0005 2019_01_03 12:40:17 del log/gtp.sys /home/jeff/gtp/daliannongshang/TongGTP6.1
+0006 2019_01_03 12:40:32 del license.dat /home/jeff/gtp/daliannongshang/TongGTP6.1
+0007 2019_01_03 14:53:43 del TongGTP6.1/ /home/jeff/gtp/daliannongshang
+0008 2019_01_03 14:53:47 del R_TongGTP6.1.0.5_Suse11_64.tar.gz /home/jeff/gtp/daliannongshang
+0009 2019_01_03 15:17:02 del a.zip /home/jeff/lib_of_wangqingsong_C/wqs_test/zip30
+0010 2019_01_03 15:18:04 del a.zip /home/jeff/lib_of_wangqingsong_C/wqs_test/zip30
+0011 2019_01_03 15:22:55 del a.zip /home/jeff/lib_of_wangqingsong_C/wqs_test/zip30
+0012 2019_01_03 15:23:01 del a.zip /home/jeff/test
+0013 2019_01_03 17:30:04 del D_GTP6.1_guangdaBank /home/jeff/gtp/guangda
+0014 2019_01_03 17:30:07 del D_GTP6.1_guangdaBank.tar /home/jeff/gtp/guangda

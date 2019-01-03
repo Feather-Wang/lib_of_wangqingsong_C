@@ -9,8 +9,9 @@
 #include <ngx_core.h>
 #include <ngx_event.h>
 
-
+/*存储网络上的事件*/
 ngx_queue_t  ngx_posted_accept_events;
+/*存储非网络上的事件*/
 ngx_queue_t  ngx_posted_events;
 
 

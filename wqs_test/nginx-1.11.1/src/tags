@@ -178,7 +178,7 @@ HTTP_TEMPORARY_REDIRECT	http/modules/perl/nginx.pm	/^use constant HTTP_TEMPORARY
 HTTP_UNAUTHORIZED	http/modules/perl/nginx.pm	/^use constant HTTP_UNAUTHORIZED              => 401;$/;"	v
 HTTP_UNSUPPORTED_MEDIA_TYPE	http/modules/perl/nginx.pm	/^use constant HTTP_UNSUPPORTED_MEDIA_TYPE    => 415;$/;"	v
 I	core/ngx_md5.c	129;"	d	file:
-INADDR_NONE	core/ngx_config.h	118;"	d
+INADDR_NONE	core/ngx_config.h	119;"	d
 IOV_MAX	os/unix/ngx_darwin_config.h	55;"	d
 IOV_MAX	os/unix/ngx_freebsd_config.h	106;"	d
 IOV_MAX	os/unix/ngx_posix_config.h	104;"	d
@@ -821,7 +821,7 @@ NGX_INT32_LEN	core/ngx_config.h	83;"	d
 NGX_INT64_LEN	core/ngx_config.h	84;"	d
 NGX_INT_T_LEN	core/ngx_config.h	87;"	d
 NGX_INT_T_LEN	core/ngx_config.h	91;"	d
-NGX_INVALID_ARRAY_INDEX	core/ngx_config.h	109;"	d
+NGX_INVALID_ARRAY_INDEX	core/ngx_config.h	110;"	d
 NGX_INVALID_FILE	os/unix/ngx_files.h	49;"	d
 NGX_INVALID_INDEX	event/ngx_event.h	16;"	d
 NGX_INVALID_PID	os/unix/ngx_process.h	18;"	d
@@ -892,20 +892,20 @@ NGX_MAIL_STARTTLS_OFF	mail/ngx_mail_ssl_module.h	17;"	d
 NGX_MAIL_STARTTLS_ON	mail/ngx_mail_ssl_module.h	18;"	d
 NGX_MAIL_STARTTLS_ONLY	mail/ngx_mail_ssl_module.h	19;"	d
 NGX_MAIN_CONF	core/ngx_conf_file.h	51;"	d
-NGX_MAXHOSTNAMELEN	core/ngx_config.h	122;"	d
-NGX_MAXHOSTNAMELEN	core/ngx_config.h	124;"	d
+NGX_MAXHOSTNAMELEN	core/ngx_config.h	123;"	d
+NGX_MAXHOSTNAMELEN	core/ngx_config.h	125;"	d
 NGX_MAX_ALLOC_FROM_POOL	core/ngx_palloc.h	20;"	d
 NGX_MAX_CONF_ERRSTR	core/ngx_conf_file.h	74;"	d
 NGX_MAX_DYNAMIC_MODULES	core/ngx_module.c	13;"	d	file:
 NGX_MAX_ERROR_STR	core/ngx_log.h	76;"	d
-NGX_MAX_INT32_VALUE	core/ngx_config.h	129;"	d
+NGX_MAX_INT32_VALUE	core/ngx_config.h	130;"	d
 NGX_MAX_INT_T_VALUE	core/ngx_config.h	88;"	d
 NGX_MAX_INT_T_VALUE	core/ngx_config.h	92;"	d
 NGX_MAX_PATH	os/unix/ngx_files.h	207;"	d
 NGX_MAX_PATH	os/unix/ngx_files.h	211;"	d
 NGX_MAX_PATH_LEVEL	core/ngx_file.h	42;"	d
 NGX_MAX_PROCESSES	os/unix/ngx_process.h	47;"	d
-NGX_MAX_UINT32_VALUE	core/ngx_config.h	128;"	d
+NGX_MAX_UINT32_VALUE	core/ngx_config.h	129;"	d
 NGX_MIN_POOL_SIZE	core/ngx_palloc.h	25;"	d
 NGX_MIN_READ_AHEAD	core/ngx_open_file_cache.c	21;"	d	file:
 NGX_MODULE_SIGNATURE	core/ngx_module.h	224;"	d
@@ -1011,13 +1011,13 @@ NGX_POP3_TOP	mail/ngx_mail.h	255;"	d
 NGX_POP3_UIDL	mail/ngx_mail.h	256;"	d
 NGX_POP3_USER	mail/ngx_mail.h	242;"	d
 NGX_POST_EVENTS	event/ngx_event.h	488;"	d
-NGX_PROCESS_DETACHED	os/unix/ngx_process.h	53;"	d
+NGX_PROCESS_DETACHED	os/unix/ngx_process.h	54;"	d
 NGX_PROCESS_HELPER	os/unix/ngx_process_cycle.h	27;"	d
-NGX_PROCESS_JUST_RESPAWN	os/unix/ngx_process.h	52;"	d
-NGX_PROCESS_JUST_SPAWN	os/unix/ngx_process.h	50;"	d
+NGX_PROCESS_JUST_RESPAWN	os/unix/ngx_process.h	53;"	d
+NGX_PROCESS_JUST_SPAWN	os/unix/ngx_process.h	51;"	d
 NGX_PROCESS_MASTER	os/unix/ngx_process_cycle.h	24;"	d
-NGX_PROCESS_NORESPAWN	os/unix/ngx_process.h	49;"	d
-NGX_PROCESS_RESPAWN	os/unix/ngx_process.h	51;"	d
+NGX_PROCESS_NORESPAWN	os/unix/ngx_process.h	50;"	d
+NGX_PROCESS_RESPAWN	os/unix/ngx_process.h	52;"	d
 NGX_PROCESS_SIGNALLER	os/unix/ngx_process_cycle.h	25;"	d
 NGX_PROCESS_SINGLE	os/unix/ngx_process_cycle.h	23;"	d
 NGX_PROCESS_WORKER	os/unix/ngx_process_cycle.h	26;"	d
@@ -5617,9 +5617,9 @@ nginx	http/modules/perl/ngx_http_perl_module.c	/^    HV                *nginx;$/
 nginx	http/modules/perl/ngx_http_perl_module.h	/^typedef ngx_http_request_t   *nginx;$/;"	t
 nginx_stash	http/modules/perl/ngx_http_perl_module.c	/^static HV               *nginx_stash;$/;"	v	file:
 nginx_version	core/nginx.h	12;"	d
-ngx_abort	core/ngx_config.h	105;"	d
+ngx_abort	core/ngx_config.h	106;"	d
 ngx_abs	core/ngx_core.h	100;"	d
-ngx_accept_disabled	event/ngx_event.c	/^ngx_int_t             ngx_accept_disabled;$/;"	v
+ngx_accept_disabled	event/ngx_event.c	/^ngx_int_t             ngx_accept_disabled;      \/*用来标记当前工作进程接收连接请求事件的能力，在函数ngx_event_accept()中被设置，当接收了太多的事件时，则将其设置为1，表明拒绝更多事件，这样，当各个工作进程在争抢accept_mutex互斥量的使用机会时就会因为ngx_accept_disabled大于0而放弃此次争抢，同时，ngx_accept_disabled减1*\/$/;"	v
 ngx_accept_events	event/ngx_event.c	/^ngx_uint_t            ngx_accept_events;$/;"	v
 ngx_accept_log_error	event/ngx_event_accept.c	/^ngx_accept_log_error(ngx_log_t *log, u_char *buf, size_t len)$/;"	f	signature:(ngx_log_t *log, u_char *buf, size_t len)
 ngx_accept_mutex	event/ngx_event.c	/^ngx_shmtx_t           ngx_accept_mutex;$/;"	v
@@ -5638,8 +5638,8 @@ ngx_aio_ctx	event/modules/ngx_epoll_module.c	/^aio_context_t               ngx_a
 ngx_aiocb_t	os/unix/ngx_freebsd_config.h	/^typedef struct aiocb  ngx_aiocb_t;$/;"	t	typeref:struct:aiocb
 ngx_aiocb_t	os/unix/ngx_linux_config.h	/^typedef struct iocb  ngx_aiocb_t;$/;"	t	typeref:struct:iocb
 ngx_aiocb_t	os/unix/ngx_posix_config.h	/^typedef struct aiocb  ngx_aiocb_t;$/;"	t	typeref:struct:aiocb
-ngx_align	core/ngx_config.h	100;"	d
-ngx_align_ptr	core/ngx_config.h	101;"	d
+ngx_align	core/ngx_config.h	101;"	d
+ngx_align_ptr	core/ngx_config.h	102;"	d
 ngx_alloc	os/unix/ngx_alloc.c	/^ngx_alloc(size_t size, ngx_log_t *log)$/;"	f	signature:(size_t size, ngx_log_t *log)
 ngx_alloc_buf	core/ngx_buf.h	153;"	d
 ngx_alloc_chain_link	core/ngx_buf.c	/^ngx_alloc_chain_link(ngx_pool_t *pool)$/;"	f	signature:(ngx_pool_t *pool)
@@ -5772,7 +5772,7 @@ ngx_chain_update_chains	core/ngx_buf.c	/^ngx_chain_update_chains(ngx_pool_t *p, 
 ngx_chain_update_sent	core/ngx_buf.c	/^ngx_chain_update_sent(ngx_chain_t *in, off_t sent)$/;"	f	signature:(ngx_chain_t *in, off_t sent)
 ngx_chain_writer	core/ngx_output_chain.c	/^ngx_chain_writer(void *data, ngx_chain_t *in)$/;"	f	signature:(void *data, ngx_chain_t *in)
 ngx_chain_writer_ctx_t	core/ngx_buf.h	/^} ngx_chain_writer_ctx_t;$/;"	t	typeref:struct:__anon315
-ngx_change_binary	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_change_binary;$/;"	v
+ngx_change_binary	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_change_binary;\/*对应SIGUSR2信号，进行热代码切换*\/$/;"	v
 ngx_change_file_access	os/unix/ngx_files.h	165;"	d
 ngx_change_file_access_n	os/unix/ngx_files.h	166;"	d
 ngx_channel	os/unix/ngx_process.c	/^ngx_socket_t     ngx_channel;$/;"	v
@@ -5988,7 +5988,7 @@ ngx_crypt_plain	core/ngx_crypt.c	/^ngx_crypt_plain(ngx_pool_t *pool, u_char *key
 ngx_crypt_sha	core/ngx_crypt.c	/^ngx_crypt_sha(ngx_pool_t *pool, u_char *key, u_char *salt, u_char **encrypted)$/;"	f	file:	signature:(ngx_pool_t *pool, u_char *key, u_char *salt, u_char **encrypted)
 ngx_crypt_ssha	core/ngx_crypt.c	/^ngx_crypt_ssha(ngx_pool_t *pool, u_char *key, u_char *salt, u_char **encrypted)$/;"	f	file:	signature:(ngx_pool_t *pool, u_char *key, u_char *salt, u_char **encrypted)
 ngx_crypt_to64	core/ngx_crypt.c	/^ngx_crypt_to64(u_char *p, uint32_t v, size_t n)$/;"	f	file:	signature:(u_char *p, uint32_t v, size_t n)
-ngx_current_msec	core/ngx_times.c	/^volatile ngx_msec_t      ngx_current_msec;$/;"	v
+ngx_current_msec	core/ngx_times.c	/^volatile ngx_msec_t      ngx_current_msec;              \/*保存获取到的时间转换后的毫秒数*\/$/;"	v
 ngx_cycle	core/ngx_cycle.c	/^volatile ngx_cycle_t  *ngx_cycle;$/;"	v
 ngx_cycle_modules	core/ngx_module.c	/^ngx_cycle_modules(ngx_cycle_t *cycle)$/;"	f	signature:(ngx_cycle_t *cycle)
 ngx_cycle_s	core/ngx_cycle.h	/^struct ngx_cycle_s {$/;"	s
@@ -6382,7 +6382,7 @@ ngx_get_full_name	core/ngx_file.c	/^ngx_get_full_name(ngx_pool_t *pool, ngx_str_
 ngx_get_options	core/nginx.c	/^ngx_get_options(int argc, char *const *argv)$/;"	f	file:	signature:(int argc, char *const *argv)
 ngx_getcwd	os/unix/ngx_files.h	199;"	d
 ngx_getcwd_n	os/unix/ngx_files.h	200;"	d
-ngx_getpid	os/unix/ngx_process.h	56;"	d
+ngx_getpid	os/unix/ngx_process.h	57;"	d
 ngx_gettimeofday	os/unix/ngx_time.h	61;"	d
 ngx_gid_t	os/unix/ngx_user.h	/^typedef gid_t  ngx_gid_t;$/;"	t
 ngx_glob_t	os/unix/ngx_files.h	/^} ngx_glob_t;$/;"	t	typeref:struct:__anon249
@@ -9026,7 +9026,7 @@ ngx_init_setproctitle	os/unix/ngx_setproctitle.h	16;"	d
 ngx_init_setproctitle	os/unix/ngx_setproctitle.h	42;"	d
 ngx_init_signals	os/unix/ngx_process.c	/^ngx_init_signals(ngx_log_t *log)$/;"	f	signature:(ngx_log_t *log)
 ngx_init_zone_pool	core/ngx_cycle.c	/^ngx_init_zone_pool(ngx_cycle_t *cycle, ngx_shm_zone_t *zn)$/;"	f	file:	signature:(ngx_cycle_t *cycle, ngx_shm_zone_t *zn)
-ngx_inline	core/ngx_config.h	114;"	d
+ngx_inline	core/ngx_config.h	115;"	d
 ngx_int_t	core/ngx_config.h	/^typedef intptr_t        ngx_int_t;$/;"	t
 ngx_io	core/ngx_connection.c	/^ngx_os_io_t  ngx_io;$/;"	v
 ngx_iovec_t	os/unix/ngx_os.h	/^} ngx_iovec_t;$/;"	t	typeref:struct:__anon246
@@ -9172,7 +9172,7 @@ ngx_log_memory_buf_t	core/ngx_log.c	/^} ngx_log_memory_buf_t;$/;"	t	typeref:stru
 ngx_log_memory_cleanup	core/ngx_log.c	/^ngx_log_memory_cleanup(void *data)$/;"	f	file:	signature:(void *data)
 ngx_log_memory_writer	core/ngx_log.c	/^ngx_log_memory_writer(ngx_log_t *log, ngx_uint_t level, u_char *buf,$/;"	f	file:	signature:(ngx_log_t *log, ngx_uint_t level, u_char *buf, size_t len)
 ngx_log_open_default	core/ngx_log.c	/^ngx_log_open_default(ngx_cycle_t *cycle)$/;"	f	signature:(ngx_cycle_t *cycle)
-ngx_log_pid	os/unix/ngx_process.h	59;"	d
+ngx_log_pid	os/unix/ngx_process.h	60;"	d
 ngx_log_redirect_stderr	core/ngx_log.c	/^ngx_log_redirect_stderr(ngx_cycle_t *cycle)$/;"	f	signature:(ngx_cycle_t *cycle)
 ngx_log_s	core/ngx_log.h	/^struct ngx_log_s {$/;"	s
 ngx_log_s::action	core/ngx_log.h	/^    char                *action;$/;"	m	struct:ngx_log_s	access:public
@@ -9515,12 +9515,12 @@ ngx_msec_t	os/unix/ngx_time.h	/^typedef ngx_rbtree_key_t      ngx_msec_t;$/;"	t
 ngx_msleep	os/unix/ngx_time.h	62;"	d
 ngx_murmur_hash2	core/ngx_murmurhash.c	/^ngx_murmur_hash2(u_char *data, size_t len)$/;"	f	signature:(u_char *data, size_t len)
 ngx_ncpu	os/unix/ngx_posix_init.c	/^ngx_int_t   ngx_ncpu;$/;"	v
-ngx_new_binary	os/unix/ngx_process_cycle.c	/^ngx_pid_t     ngx_new_binary;$/;"	v
+ngx_new_binary	os/unix/ngx_process_cycle.c	/^ngx_pid_t     ngx_new_binary;   \/*用于热升级时，表示主进程本身需要升级，但是不需要重新初始化Nginx配置，因此可以直接调用ngx_start_worker_processes()函数重启工作和ngx_start_cache_manager_processes()重启缓存索引管理进程*\/$/;"	v
 ngx_next_temp_number	core/ngx_file.c	/^ngx_next_temp_number(ngx_uint_t collision)$/;"	f	signature:(ngx_uint_t collision)
 ngx_next_time	core/ngx_times.c	/^ngx_next_time(time_t when)$/;"	f	signature:(time_t when)
 ngx_next_time_n	core/ngx_times.h	31;"	d
-ngx_noaccept	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_noaccept;$/;"	v
-ngx_noaccepting	os/unix/ngx_process_cycle.c	/^ngx_uint_t    ngx_noaccepting;$/;"	v
+ngx_noaccept	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_noaccept;     \/*对应NGX_NOACCEPT_SIGNAL信号，表示不再接收请求，退出工作进程*\/$/;"	v
+ngx_noaccepting	os/unix/ngx_process_cycle.c	/^ngx_uint_t    ngx_noaccepting;  \/*对应于ngx_noaccept变量，当处理ngx_noaccept时，会将ngx_noaccepting设置为1*\/$/;"	v
 ngx_nonblocking	os/unix/ngx_socket.c	/^ngx_nonblocking(ngx_socket_t s)$/;"	f	signature:(ngx_socket_t s)
 ngx_nonblocking	os/unix/ngx_socket.h	33;"	d
 ngx_nonblocking_n	os/unix/ngx_socket.h	28;"	d
@@ -9668,7 +9668,7 @@ ngx_peer_connection_s::type	event/ngx_event_connect.h	/^    int                 
 ngx_peer_connection_t	event/ngx_event_connect.h	/^typedef struct ngx_peer_connection_s  ngx_peer_connection_t;$/;"	t	typeref:struct:ngx_peer_connection_s
 ngx_perl_term	http/modules/perl/ngx_http_perl_module.c	/^static ngx_uint_t        ngx_perl_term;$/;"	v	file:
 ngx_pfree	core/ngx_palloc.c	/^ngx_pfree(ngx_pool_t *pool, void *p)$/;"	f	signature:(ngx_pool_t *pool, void *p)
-ngx_pid	os/unix/ngx_process_cycle.c	/^ngx_pid_t     ngx_pid;$/;"	v
+ngx_pid	os/unix/ngx_process_cycle.c	/^ngx_pid_t     ngx_pid;  \/*保存PID信息，该变量会在ngx_daemon()中被设置为守护进程的PID*\/$/;"	v
 ngx_pid_t	os/unix/ngx_process.h	/^typedef pid_t       ngx_pid_t;$/;"	t
 ngx_pmemalign	core/ngx_palloc.c	/^ngx_pmemalign(ngx_pool_t *pool, size_t size, size_t alignment)$/;"	f	signature:(ngx_pool_t *pool, size_t size, size_t alignment)
 ngx_pnalloc	core/ngx_palloc.c	/^ngx_pnalloc(ngx_pool_t *pool, size_t size)$/;"	f	signature:(ngx_pool_t *pool, size_t size)
@@ -9718,7 +9718,7 @@ ngx_posted_accept_events	event/ngx_event_posted.c	/^ngx_queue_t  ngx_posted_acce
 ngx_posted_events	event/ngx_event_posted.c	/^ngx_queue_t  ngx_posted_events;$/;"	v
 ngx_prefix	core/nginx.c	/^static u_char      *ngx_prefix;$/;"	v	file:
 ngx_preinit_modules	core/ngx_module.c	/^ngx_preinit_modules(void)$/;"	f	signature:(void)
-ngx_process	os/unix/ngx_process_cycle.c	/^ngx_uint_t    ngx_process;$/;"	v
+ngx_process	os/unix/ngx_process_cycle.c	/^ngx_uint_t    ngx_process;  \/*保存进程类型*\/$/;"	v
 ngx_process_events	event/ngx_event.h	408;"	d
 ngx_process_events_and_timers	event/ngx_event.c	/^ngx_process_events_and_timers(ngx_cycle_t *cycle)$/;"	f	signature:(ngx_cycle_t *cycle)
 ngx_process_get_status	os/unix/ngx_process.c	/^ngx_process_get_status(void)$/;"	f	file:	signature:(void)
@@ -9753,7 +9753,7 @@ ngx_queue_sort	core/ngx_queue.c	/^ngx_queue_sort(ngx_queue_t *queue,$/;"	f	signa
 ngx_queue_split	core/ngx_queue.h	87;"	d
 ngx_queue_t	core/ngx_queue.h	/^typedef struct ngx_queue_s  ngx_queue_t;$/;"	t	typeref:struct:ngx_queue_s
 ngx_quiet_mode	core/ngx_cycle.c	/^ngx_uint_t             ngx_quiet_mode;$/;"	v
-ngx_quit	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_quit;$/;"	v
+ngx_quit	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_quit;         \/*对应SIGQUIT信号*\/$/;"	v
 ngx_radix128tree_delete	core/ngx_radix_tree.c	/^ngx_radix128tree_delete(ngx_radix_tree_t *tree, u_char *key, u_char *mask)$/;"	f	signature:(ngx_radix_tree_t *tree, u_char *key, u_char *mask)
 ngx_radix128tree_find	core/ngx_radix_tree.c	/^ngx_radix128tree_find(ngx_radix_tree_t *tree, u_char *key)$/;"	f	signature:(ngx_radix_tree_t *tree, u_char *key)
 ngx_radix128tree_insert	core/ngx_radix_tree.c	/^ngx_radix128tree_insert(ngx_radix_tree_t *tree, u_char *key, u_char *mask,$/;"	f	signature:(ngx_radix_tree_t *tree, u_char *key, u_char *mask, uintptr_t value)
@@ -9821,7 +9821,7 @@ ngx_realpath	os/unix/ngx_files.h	197;"	d
 ngx_realpath_n	os/unix/ngx_files.h	198;"	d
 ngx_reap	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_reap;$/;"	v
 ngx_reap_children	os/unix/ngx_process_cycle.c	/^ngx_reap_children(ngx_cycle_t *cycle)$/;"	f	file:	signature:(ngx_cycle_t *cycle)
-ngx_reconfigure	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_reconfigure;$/;"	v
+ngx_reconfigure	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_reconfigure;  \/*对应SIGHUP信号，表示热升级*\/$/;"	v
 ngx_recv	event/ngx_event.h	424;"	d
 ngx_recv_chain	event/ngx_event.h	425;"	d
 ngx_recv_chain_pt	os/unix/ngx_os.h	/^typedef ssize_t (*ngx_recv_chain_pt)(ngx_connection_t *c, ngx_chain_t *in,$/;"	t
@@ -9849,7 +9849,7 @@ ngx_regex_pcre_jit_post	core/ngx_regex.c	/^static ngx_conf_post_t  ngx_regex_pcr
 ngx_regex_t	core/ngx_regex.h	/^} ngx_regex_t;$/;"	t	typeref:struct:__anon295
 ngx_rename_file	os/unix/ngx_files.h	161;"	d
 ngx_rename_file_n	os/unix/ngx_files.h	162;"	d
-ngx_reopen	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_reopen;$/;"	v
+ngx_reopen	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_reopen;       \/*设置重新打开日志文件，对应SIGUSR1信号*\/$/;"	v
 ngx_reopen_files	core/ngx_cycle.c	/^ngx_reopen_files(ngx_cycle_t *cycle, ngx_uid_t user)$/;"	f	signature:(ngx_cycle_t *cycle, ngx_uid_t user)
 ngx_reset_pool	core/ngx_palloc.c	/^ngx_reset_pool(ngx_pool_t *pool)$/;"	f	signature:(ngx_pool_t *pool)
 ngx_resolve_addr	core/ngx_resolver.c	/^ngx_resolve_addr(ngx_resolver_ctx_t *ctx)$/;"	f	signature:(ngx_resolver_ctx_t *ctx)
@@ -9962,7 +9962,7 @@ ngx_resolver_tcp_read	core/ngx_resolver.c	/^ngx_resolver_tcp_read(ngx_event_t *r
 ngx_resolver_tcp_write	core/ngx_resolver.c	/^ngx_resolver_tcp_write(ngx_event_t *wev)$/;"	f	file:	signature:(ngx_event_t *wev)
 ngx_resolver_timeout_handler	core/ngx_resolver.c	/^ngx_resolver_timeout_handler(ngx_event_t *ev)$/;"	f	file:	signature:(ngx_event_t *ev)
 ngx_resolver_udp_read	core/ngx_resolver.c	/^ngx_resolver_udp_read(ngx_event_t *rev)$/;"	f	file:	signature:(ngx_event_t *rev)
-ngx_restart	os/unix/ngx_process_cycle.c	/^ngx_uint_t    ngx_restart;$/;"	v
+ngx_restart	os/unix/ngx_process_cycle.c	/^ngx_uint_t    ngx_restart;      \/*设置重启工作进程和缓存索引管理进程*\/$/;"	v
 ngx_reusable_connection	core/ngx_connection.c	/^ngx_reusable_connection(ngx_connection_t *c, ngx_uint_t reusable)$/;"	f	signature:(ngx_connection_t *c, ngx_uint_t reusable)
 ngx_rstrncasecmp	core/ngx_string.c	/^ngx_rstrncasecmp(u_char *s1, u_char *s2, size_t n)$/;"	f	signature:(u_char *s1, u_char *s2, size_t n)
 ngx_rstrncmp	core/ngx_string.c	/^ngx_rstrncmp(u_char *s1, u_char *s2, size_t n)$/;"	f	signature:(u_char *s1, u_char *s2, size_t n)
@@ -9970,8 +9970,8 @@ ngx_rwlock_rlock	core/ngx_rwlock.c	/^ngx_rwlock_rlock(ngx_atomic_t *lock)$/;"	f	
 ngx_rwlock_unlock	core/ngx_rwlock.c	/^ngx_rwlock_unlock(ngx_atomic_t *lock)$/;"	f	signature:(ngx_atomic_t *lock)
 ngx_rwlock_wlock	core/ngx_rwlock.c	/^ngx_rwlock_wlock(ngx_atomic_t *lock)$/;"	f	signature:(ngx_atomic_t *lock)
 ngx_save_argv	core/nginx.c	/^ngx_save_argv(ngx_cycle_t *cycle, int argc, char *const *argv)$/;"	f	file:	signature:(ngx_cycle_t *cycle, int argc, char *const *argv)
-ngx_sched_yield	os/unix/ngx_process.h	71;"	d
-ngx_sched_yield	os/unix/ngx_process.h	73;"	d
+ngx_sched_yield	os/unix/ngx_process.h	72;"	d
+ngx_sched_yield	os/unix/ngx_process.h	74;"	d
 ngx_select_add_event	event/modules/ngx_select_module.c	/^ngx_select_add_event(ngx_event_t *ev, ngx_int_t event, ngx_uint_t flags)$/;"	f	file:	signature:(ngx_event_t *ev, ngx_int_t event, ngx_uint_t flags)
 ngx_select_add_event	event/modules/ngx_win32_select_module.c	/^ngx_select_add_event(ngx_event_t *ev, ngx_int_t event, ngx_uint_t flags)$/;"	f	file:	signature:(ngx_event_t *ev, ngx_int_t event, ngx_uint_t flags)
 ngx_select_del_event	event/modules/ngx_select_module.c	/^ngx_select_del_event(ngx_event_t *ev, ngx_int_t event, ngx_uint_t flags)$/;"	f	file:	signature:(ngx_event_t *ev, ngx_int_t event, ngx_uint_t flags)
@@ -10576,7 +10576,7 @@ ngx_tcp_push_n	os/unix/ngx_socket.h	52;"	d
 ngx_temp_file_t	core/ngx_file.h	/^} ngx_temp_file_t;$/;"	t	typeref:struct:__anon357
 ngx_temp_number	core/ngx_file.c	/^ngx_atomic_t         *ngx_temp_number = &temp_number;$/;"	v
 ngx_temp_pool	core/ngx_cycle.c	/^static ngx_pool_t     *ngx_temp_pool;$/;"	v	file:
-ngx_terminate	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_terminate;$/;"	v
+ngx_terminate	os/unix/ngx_process_cycle.c	/^sig_atomic_t  ngx_terminate;    \/*对应SIGINT信号*\/$/;"	v
 ngx_test_config	core/ngx_cycle.c	/^ngx_uint_t             ngx_test_config;$/;"	v
 ngx_test_full_name	core/ngx_file.c	/^ngx_test_full_name(ngx_str_t *name)$/;"	f	file:	signature:(ngx_str_t *name)
 ngx_test_lockfile	core/ngx_cycle.c	/^ngx_test_lockfile(u_char *file, ngx_log_t *log)$/;"	f	file:	signature:(u_char *file, ngx_log_t *log)
@@ -10644,7 +10644,7 @@ ngx_tid_t	os/unix/ngx_thread.h	/^typedef uint32_t   ngx_tid_t;$/;"	t
 ngx_tid_t	os/unix/ngx_thread.h	/^typedef uint64_t   ngx_tid_t;$/;"	t
 ngx_time	core/ngx_times.h	36;"	d
 ngx_time_init	core/ngx_times.c	/^ngx_time_init(void)$/;"	f	signature:(void)
-ngx_time_lock	core/ngx_times.c	/^static ngx_atomic_t      ngx_time_lock;$/;"	v	file:
+ngx_time_lock	core/ngx_times.c	/^static ngx_atomic_t      ngx_time_lock;                 \/*更新时间信息时的原子锁变量*\/$/;"	v	file:
 ngx_time_sigsafe_update	core/ngx_times.c	/^ngx_time_sigsafe_update(void)$/;"	f	signature:(void)
 ngx_time_t	core/ngx_times.h	/^} ngx_time_t;$/;"	t	typeref:struct:__anon302
 ngx_time_update	core/ngx_times.c	/^ngx_time_update(void)$/;"	f	signature:(void)
@@ -10711,7 +10711,7 @@ ngx_unlock_fd	os/unix/ngx_files.c	/^ngx_unlock_fd(ngx_fd_t fd)$/;"	f	signature:(
 ngx_unlock_fd_n	os/unix/ngx_files.h	301;"	d
 ngx_unlock_mutexes	os/unix/ngx_process.c	/^ngx_unlock_mutexes(ngx_pid_t pid)$/;"	f	file:	signature:(ngx_pid_t pid)
 ngx_url_t	core/ngx_inet.h	/^} ngx_url_t;$/;"	t	typeref:struct:__anon354
-ngx_use_accept_mutex	event/ngx_event.c	/^ngx_uint_t            ngx_use_accept_mutex;$/;"	v
+ngx_use_accept_mutex	event/ngx_event.c	/^ngx_uint_t            ngx_use_accept_mutex;     \/*表示是否需要通过对accept加锁来解决惊群问题，当使用了master模式，nginx worker进程数>1时且配置文件中打开了accept_accept_mutex时，这个标志置为1，它在函数ngx_event_process_init()中被设置*\/$/;"	v
 ngx_use_epoll_rdhup	event/modules/ngx_epoll_module.c	/^ngx_uint_t                  ngx_use_epoll_rdhup;$/;"	v
 ngx_use_stderr	core/ngx_log.c	/^ngx_uint_t              ngx_use_stderr = 1;$/;"	v
 ngx_utf8_cpystrn	core/ngx_string.c	/^ngx_utf8_cpystrn(u_char *dst, u_char *src, size_t n, size_t len)$/;"	f	signature:(u_char *dst, u_char *src, size_t n, size_t len)
@@ -10723,7 +10723,7 @@ ngx_variable_value_t	core/ngx_string.h	/^} ngx_variable_value_t;$/;"	t	typeref:s
 ngx_vslprintf	core/ngx_string.c	/^ngx_vslprintf(u_char *buf, u_char *last, const char *fmt, va_list args)$/;"	f	signature:(u_char *buf, u_char *last, const char *fmt, va_list args)
 ngx_vsnprintf	core/ngx_string.h	154;"	d
 ngx_walk_tree	core/ngx_file.c	/^ngx_walk_tree(ngx_tree_ctx_t *ctx, ngx_str_t *tree)$/;"	f	signature:(ngx_tree_ctx_t *ctx, ngx_str_t *tree)
-ngx_worker	os/unix/ngx_process_cycle.c	/^ngx_uint_t    ngx_worker;$/;"	v
+ngx_worker	os/unix/ngx_process_cycle.c	/^ngx_uint_t    ngx_worker;   \/*保存工作进程的序号，启动工作进程时，是通过for循环启动的，ngx_worker保存的就是第几次循环，以0开头*\/$/;"	v
 ngx_worker_process_cycle	os/unix/ngx_process_cycle.c	/^ngx_worker_process_cycle(ngx_cycle_t *cycle, void *data)$/;"	f	file:	signature:(ngx_cycle_t *cycle, void *data)
 ngx_worker_process_exit	os/unix/ngx_process_cycle.c	/^ngx_worker_process_exit(ngx_cycle_t *cycle)$/;"	f	file:	signature:(ngx_cycle_t *cycle)
 ngx_worker_process_init	os/unix/ngx_process_cycle.c	/^ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)$/;"	f	file:	signature:(ngx_cycle_t *cycle, ngx_int_t worker)
@@ -11594,7 +11594,7 @@ skip_data	http/v2/ngx_http_v2.h	/^    unsigned                         skip_data
 skip_empty	http/ngx_http_upstream.h	/^    ngx_uint_t  skip_empty;$/;"	m	struct:__anon218	access:public
 slab	core/ngx_slab.h	/^    uintptr_t         slab;$/;"	m	struct:ngx_slab_page_s	access:public
 sleep	mail/ngx_mail_auth_http_module.c	/^    time_t                          sleep;$/;"	m	struct:ngx_mail_auth_http_ctx_s	file:	access:public
-slot	core/ngx_times.c	/^static ngx_uint_t        slot;$/;"	v	file:
+slot	core/ngx_times.c	/^static ngx_uint_t        slot;                          \/*存储最后一次更新时间信息的时间slot的下标*\/$/;"	v	file:
 slot	os/unix/ngx_channel.h	/^    ngx_int_t   slot;$/;"	m	struct:__anon256	access:public
 smhd_atom_buf	http/modules/ngx_http_mp4_module.c	/^    ngx_buf_t             smhd_atom_buf;$/;"	m	struct:__anon53	file:	access:public
 smhd_size	http/modules/ngx_http_mp4_module.c	/^    size_t                smhd_size;$/;"	m	struct:__anon53	file:	access:public

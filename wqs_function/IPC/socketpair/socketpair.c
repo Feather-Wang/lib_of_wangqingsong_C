@@ -4,6 +4,9 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
+#include <sys/ioctl.h>
+#include <fcntl.h>
+
 int main(int argc, const char *argv[])
 {
     int ret = -1;

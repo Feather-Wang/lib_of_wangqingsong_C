@@ -407,7 +407,7 @@ ngx_start_worker_processes(ngx_cycle_t *cycle, ngx_int_t n, ngx_int_t type)
         ch.slot = ngx_process_slot;
         ch.fd = ngx_processes[ngx_process_slot].channel[0];
 
-        /*开启进程通信信道*/
+        /*循环遍历所有的工作进程信息，将新打开的进程的PID、slot（也就是下标）、channel[0]发送给其他的进程*/
         ngx_pass_open_channel(cycle, &ch);
     }
 }
@@ -472,7 +472,7 @@ ngx_start_cache_manager_processes(ngx_cycle_t *cycle, ngx_uint_t respawn)
     ngx_pass_open_channel(cycle, &ch);
 }
 
-
+/*循环遍历所有的工作进程信息，将新打开的进程的PID、slot（也就是下标）、channel[0]发送给其他的进程*/
 static void
 ngx_pass_open_channel(ngx_cycle_t *cycle, ngx_channel_t *ch)
 {
@@ -803,6 +803,7 @@ ngx_worker_process_cycle(ngx_cycle_t *cycle, void *data)
 
         ngx_log_debug0(NGX_LOG_DEBUG_EVENT, cycle->log, 0, "worker cycle");
 
+        /*处理网络请求事件，这个函数是事件驱动机制的核心，既会处理普通的网络事件，也会处理定时器事件，它们分别被放在不同的事件队列种*/
         ngx_process_events_and_timers(cycle);
 
         if (ngx_terminate) {
@@ -882,6 +883,7 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
     }
 
     if (geteuid() == 0) {
+        /*设置组ID*/
         if (setgid(ccf->group) == -1) {
             ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
                           "setgid(%d) failed", ccf->group);
@@ -889,12 +891,14 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
             exit(2);
         }
 
+        /*初始化组清单*/
         if (initgroups(ccf->username, ccf->group) == -1) {
             ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
                           "initgroups(%s, %d) failed",
                           ccf->username, ccf->group);
         }
 
+        /*设置用户ID*/
         if (setuid(ccf->user) == -1) {
             ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
                           "setuid(%d) failed", ccf->user);
@@ -904,9 +908,11 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
     }
 
     if (worker >= 0) {
+        /*获取配置文件中的worker_cpu_affinit指令的配置*/
         cpu_affinity = ngx_get_cpu_affinity(worker);
 
         if (cpu_affinity) {
+            /*解析并使配置生效，为工作进程分配CPU的工作内核*/
             ngx_setaffinity(cpu_affinity, cycle->log);
         }
     }
@@ -923,6 +929,7 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
 #endif
 
     if (ccf->working_directory.len) {
+        /*设置进程的工作目录，工作进程在执行过程中会在当前目录下写入运行数据，因此需要对工作目录有相应的权限*/
         if (chdir((char *) ccf->working_directory.data) == -1) {
             ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
                           "chdir(\"%s\") failed", ccf->working_directory.data);
@@ -931,6 +938,7 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
         }
     }
 
+    /*取消对所有信号的屏蔽*/
     sigemptyset(&set);
 
     if (sigprocmask(SIG_SETMASK, &set, NULL) == -1) {
@@ -944,6 +952,7 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
      * disable deleting previous events for the listening sockets because
      * in the worker processes there are no events at all at this point
      */
+    /*遍历并设置所有监听套接字的状态*/
     ls = cycle->listening.elts;
     for (i = 0; i < cycle->listening.nelts; i++) {
         ls[i].previous = NULL;
@@ -951,6 +960,7 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
 
     for (i = 0; cycle->modules[i]; i++) {
         if (cycle->modules[i]->init_process) {
+            /*初始化Nginx各个模块*/
             if (cycle->modules[i]->init_process(cycle) == NGX_ERROR) {
                 /* fatal */
                 exit(2);
@@ -958,26 +968,30 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
         }
     }
 
+    /*遍历所有其他的工作进程，调用close()将它们用于监听的channel[1]关闭*/
     for (n = 0; n < ngx_last_process; n++) {
 
         if (ngx_processes[n].pid == -1) {
             continue;
         }
-
+        /*判断是否为当前的工作进程*/
         if (n == ngx_process_slot) {
             continue;
         }
 
+        /*判断进程间通信管道是否正常*/
         if (ngx_processes[n].channel[1] == -1) {
             continue;
         }
 
+        /*关闭其他进程的channel[1]*/
         if (close(ngx_processes[n].channel[1]) == -1) {
             ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
                           "close() channel failed");
         }
     }
 
+    /*然后将当前工作进程用于发送消息的channel[0]关闭，只留下channel[1]监听事件的到来*/
     if (close(ngx_processes[ngx_process_slot].channel[0]) == -1) {
         ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
                       "close() channel failed");
@@ -1078,6 +1092,7 @@ ngx_channel_handler(ngx_event_t *ev)
 
     for ( ;; ) {
 
+        /*读取进程通道信息*/
         n = ngx_read_channel(c->fd, &ch, sizeof(ngx_channel_t), ev->log);
 
         ngx_log_debug1(NGX_LOG_DEBUG_CORE, ev->log, 0, "channel: %i", n);
@@ -1105,6 +1120,7 @@ ngx_channel_handler(ngx_event_t *ev)
         ngx_log_debug1(NGX_LOG_DEBUG_CORE, ev->log, 0,
                        "channel command: %ui", ch.command);
 
+        /*解析信息*/
         switch (ch.command) {
 
         case NGX_CMD_QUIT:

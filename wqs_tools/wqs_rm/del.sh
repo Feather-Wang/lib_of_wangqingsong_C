@@ -59,6 +59,7 @@ function Usage()
     echo "--trashpath=<path>                  set the trash directory, the init path is \$HOME/trash_wqs"
     echo "--view-profile        view profile"
     echo "--size                view trash path size"
+    echo "--rm                  \"rm\" command use to del file"
 }
 
 # 清理$TRASH_DIR目录，保留5天内的删除文件
