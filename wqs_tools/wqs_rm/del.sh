@@ -281,6 +281,8 @@ then
 fi
 #echo $TRASH_PATH
 
+FILELIST[0]=""
+index_filelist=0
 # 进行文件处理，利用mv命令，将要删除的文件移动到回收站目录下
 for arg in "$@"
 do
@@ -306,6 +308,9 @@ do
     newFile=${arg##*/}
     newFile="${TRASH_PATH}/${newFile}_$TIME"
 
+    FILELIST[$index_filelist]=$arg
+    index_filelist=`expr $index_filelist + 1`
+
     #echo "arg=$arg"
     #echo "newFile=$newFile"
 
@@ -313,7 +318,7 @@ do
 done
 
 # 将本次删除记录到历史文件中
-echo -e "$HISTORY_NUMBER $DATE $TIME del $@ $path_command" >> $HISTORY_FILE
+echo -e "$HISTORY_NUMBER $DATE $TIME del ${FILELIST[@]} $path_command" >> $HISTORY_FILE
 
 # echo "Finished ..."
 
