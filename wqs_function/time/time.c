@@ -57,6 +57,8 @@ int get_time_1()
     strftime(time_string_1, sizeof(time_string_1), "%Y-%m-%d %H:%M:%S", &now);
     printf("local time by strftime is : %s\n", time_string_1);
 
+    printf("struct tm -> time_t, [%s] -> [%ld]\n", asctime(&now), mktime(&now));
+
     return 0;
 }
 
