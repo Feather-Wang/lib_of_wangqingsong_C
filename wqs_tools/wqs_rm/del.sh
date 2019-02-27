@@ -7,6 +7,7 @@ HISTORY_FILE="$WQS_PATH/wqs_tools/wqs_rm/history_file"
 TRASH_DIR=""
 TRASH_PATH=""
 
+
 if [ -f $CONFIG_FILE -a -e $CONFIG_FILE ]
 then
     TRASH_DIR=`cat $CONFIG_FILE | awk -v home=$HOME 'BEGIN{FS="=";}
@@ -109,13 +110,15 @@ function Recovery()
     path_trash=""
     path_old=""
 
+    # 获取指定行号的信息
     line=`sed -n "$@p" $HISTORY_FILE`
     if [ "$line" == "" ]
     then
         echo "there is not $@ history"
         return 1
     fi
-        
+
+    # 从信息中提取指定的信息
     str=`echo "$line" | cut -d ' ' -f 2`
     path_trash="$TRASH_DIR/$str"
     str=`echo "$line" | cut -d ' ' -f 3`
@@ -124,27 +127,40 @@ function Recovery()
     str=`echo "$line" | cut -d ' ' -f $num_line`
     path_old="$str"
 
-
+    # 循环读取文件，因为一条记录可能包含多个文件
     for((i=5;i<$num_line;i++))
     do
         name_old=`echo "$line" | cut -d ' ' -f $i`
-        name_trash="${name_old}_${time_trash}"
+        name_trash="${name_old##*/}_${time_trash}"
 
-        file_old="$path_old/$name_old"
+        # 判断文件信息是否为绝对路径，如果不是绝对路径的话，要把文件信息和目录信息组成一个绝对路径
+        isRootPath=${name_old:0:1}
+        if [[ "/" = "$isRootPath" ]]
+        then
+            file_old="$name_old"
+        else
+            file_old="$path_old/$name_old"
+        fi
         file_trash="$path_trash/$name_trash"
 
+        #echo "file_trash=[$file_trash]"
+        #echo "file_old=[$file_old]"
+
+        # 判断源目录下是否存在同名文件
         if [ -e $file_old ]
         then
             echo "$file_old is exist"
             return 2
         fi
 
+        # 判断回收站中是否存在备份文件
         if [ ! -e $file_trash ]
         then
             echo "$file_trash is already deleted"
             return 3
         fi
 
+        # 进行文件还原
         mv $file_trash $file_old
     done
 }
@@ -246,7 +262,8 @@ for arg in $@
 do
     arg_one=${arg:0:1}
     arg_two=${arg:0:2}
-    if [[ "-" =~ $arg_one || "--" =~ $arg_two ]]
+    #echo "arg_one=[$arg_one], arg_two=[$arg_two]"
+    if [[ "-" = "$arg_one" || "--" = "$arg_two" ]]
     then
         isCommand=1
     else
@@ -264,6 +281,7 @@ then
     #else
     # echo "Start Delete File ..."
 fi
+
 ##############################################################
 # 判断回收站目录是否存在，不存在则创建
 if [ ! -e $TRASH_DIR ]
@@ -299,21 +317,33 @@ do
         exit 0
     fi
 
+    # 获取最后一个字符，判断是否为'/'，如果为'/'，则去掉最后得'/'
+    # 这是因为当删除得是目录时，可能最后会带一个'/'，从而导致移动失败
     str=${arg:$len-1:1}
-
     if [ "$str" = "/" ]
     then
         arg=${arg:0:$len-1}
     fi
+
+    # 判断要处理得文件是不是绝对路径，如果为不是的话，就跟当前路径组成一个绝对路径
+    isRootPath=${arg:0:1}
+    if [[ "/" != "$isRootPath" ]]
+    then
+        arg=$path_command/$arg
+    fi
+
+    # 获取文件名，和当前时间组成一个新的文件名
     newFile=${arg##*/}
     newFile="${TRASH_PATH}/${newFile}_$TIME"
 
+    # 将当前处理的文件信息添加到数组FILELIST中，用于处理完后填写历史记录
     FILELIST[$index_filelist]=$arg
     index_filelist=`expr $index_filelist + 1`
 
     #echo "arg=$arg"
     #echo "newFile=$newFile"
 
+    # 备份文件或目录
     mv $arg $newFile
 done
 
