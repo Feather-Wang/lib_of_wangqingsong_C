@@ -71,6 +71,8 @@
 
 #include "zip.h"
 
+#ifndef USE_ZLIB
+
 /* ===========================================================================
  * Configuration parameters
  */
@@ -83,7 +85,16 @@
  * is still correct, and might even be smaller in some cases.
  */
 
+#ifdef SMALL_MEM
+#   define HASH_BITS  13  /* Number of bits used to hash strings */
+#endif
+#ifdef MEDIUM_MEM
+#   define HASH_BITS  14
+#endif
+#ifndef HASH_BITS
 #   define HASH_BITS  15
+   /* For portability to 16 bit machines, do not use values above 15. */
+#endif
 
 #define HASH_SIZE (unsigned)(1<<HASH_BITS)
 #define HASH_MASK (HASH_SIZE-1)
@@ -97,19 +108,34 @@
 #define SLOW 2
 /* speed options for the general purpose bit flag */
 
+#ifndef TOO_FAR
 #  define TOO_FAR 4096
+#endif
 /* Matches of length 3 are discarded if their distance exceeds TOO_FAR */
+
+#if (defined(ASMV) && !defined(MSDOS16) && defined(DYN_ALLOC))
+   error: DYN_ALLOC not yet supported in match.S or match32.asm
+#endif
+
+#ifdef MEMORY16
+#  define MAXSEG_64K
+#endif
 
 /* ===========================================================================
  * Local data used by the "longest match" routines.
  */
 
+#if defined(MMAP) || defined(BIG_MEM)
+  typedef unsigned Pos; /* must be at least 32 bits */
+#else
   typedef ush Pos;
+#endif
 typedef unsigned IPos;
 /* A Pos is an index in the character window. We use short instead of int to
  * save space in the various tables. IPos is used only for parameter passing.
  */
 
+#ifndef DYN_ALLOC
   uch    window[2L*WSIZE];
   /* Sliding window. Input bytes are read into the second half of the window,
    * and move to the first half later to keep a dictionary of at least WSIZE
@@ -129,6 +155,11 @@ typedef unsigned IPos;
   /* Heads of the hash chains or NIL. If your compiler thinks that
    * HASH_SIZE is a dynamic value, recompile with -DDYN_ALLOC.
    */
+#else
+  uch far * near window = NULL;
+  Pos far * near prev   = NULL;
+  Pos far * near head;
+#endif
 ulg window_size;
 /* window size, 2*WSIZE except for MMAP or BIG_MEM, where it is the
  * input file length plus MIN_LOOKAHEAD.
@@ -180,7 +211,11 @@ local unsigned int max_lazy_match;
 unsigned near good_match;
 /* Use a faster search when the previous match is longer than this */
 
+#ifdef  FULL_SEARCH
+# define nice_match MAX_MATCH
+#else
   int near nice_match; /* Stop searching when current match exceeds this */
+#endif
 
 
 /* Values for max_lazy_match, good_match, nice_match and max_chain_length,
@@ -227,6 +262,13 @@ local void fill_window   OF((void));
 local uzoff_t deflate_fast OF((void));    /* now use uzoff_t 7/24/04 EG */
 
       int  longest_match OF((IPos cur_match));
+#if defined(ASMV) && !defined(RISCOS)
+      void match_init OF((void)); /* asm code initialization */
+#endif
+
+#ifdef DEBUG
+local  void check_match OF((IPos start, IPos match, int length));
+#endif
 
 /* ===========================================================================
  * Update a hash value with the given input byte
@@ -275,7 +317,21 @@ void lm_init (pack_level, flags)
         window_size = (ulg)2L*WSIZE;
     }
 
-    printf("[Debug] lm_init,%d\n", __LINE__);
+    /* Use dynamic allocation if compiler does not like big static arrays: */
+#ifdef DYN_ALLOC
+    if (window == NULL) {
+        window = (uch far *) zcalloc(WSIZE,   2*sizeof(uch));
+        if (window == NULL) ziperr(ZE_MEM, "window allocation");
+    }
+    if (prev == NULL) {
+        prev   = (Pos far *) zcalloc(WSIZE,     sizeof(Pos));
+        head   = (Pos far *) zcalloc(HASH_SIZE, sizeof(Pos));
+        if (prev == NULL || head == NULL) {
+            ziperr(ZE_MEM, "hash table allocation");
+        }
+    }
+#endif /* DYN_ALLOC */
+
     /* Initialize the hash table (avoiding 64K overflow for 16 bit systems).
      * prev[] will be initialized on the fly.
      */
@@ -286,7 +342,9 @@ void lm_init (pack_level, flags)
      */
     max_lazy_match   = configuration_table[pack_level].max_lazy;
     good_match       = configuration_table[pack_level].good_length;
+#ifndef FULL_SEARCH
     nice_match       = configuration_table[pack_level].nice_length;
+#endif
     max_chain_length = configuration_table[pack_level].max_chain;
     if (pack_level <= 2) {
        *flags |= FAST;
@@ -297,8 +355,14 @@ void lm_init (pack_level, flags)
 
     strstart = 0;
     block_start = 0L;
+#if defined(ASMV) && !defined(RISCOS)
+    match_init(); /* initialize the asm code */
+#endif
+
     j = WSIZE;
+#ifndef MAXSEG_64K
     if (sizeof(int) > 2) j <<= 1; /* Can read 64K in one step */
+#endif
     lookahead = (*read_buf)((char*)window, j);
 
     if (lookahead == 0 || lookahead == (unsigned)EOF) {
@@ -323,6 +387,17 @@ void lm_init (pack_level, flags)
  */
 void lm_free()
 {
+#ifdef DYN_ALLOC
+    if (window != NULL) {
+        zcfree(window);
+        window = NULL;
+    }
+    if (prev != NULL) {
+        zcfree(prev);
+        zcfree(head);
+        prev = head = NULL;
+    }
+#endif /* DYN_ALLOC */
 }
 
 /* ===========================================================================
@@ -333,6 +408,7 @@ void lm_free()
  * IN assertions: cur_match is the head of the hash chain for the current
  *   string (strstart) and its distance is <= MAX_DIST, and prev_length >= 1
  */
+#ifndef ASMV
 /* For 80x86 and 680x0 and ARM, an optimized version is in match.asm or
  * match.S. The code is functionally equivalent, so you can use the C version
  * if desired.
@@ -353,10 +429,22 @@ int longest_match(cur_match)
 /* The code is optimized for HASH_BITS >= 8 and MAX_MATCH-2 multiple of 16.
  * It is easy to get rid of this optimization if necessary.
  */
+#if HASH_BITS < 8 || MAX_MATCH != 258
+   error: Code too clever
+#endif
 
+#ifdef UNALIGNED_OK
+    /* Compare two bytes at a time. Note: this is not always beneficial.
+     * Try with and without -DUNALIGNED_OK to check.
+     */
+    register uch far *strend = window + strstart + MAX_MATCH - 1;
+    register ush scan_start = *(ush far *)scan;
+    register ush scan_end   = *(ush far *)(scan+best_len-1);
+#else
     register uch far *strend = window + strstart + MAX_MATCH;
     register uch scan_end1  = scan[best_len-1];
     register uch scan_end   = scan[best_len];
+#endif
 
     /* Do not waste too much time if we already have a good match: */
     if (prev_length >= good_match) {
@@ -372,6 +460,39 @@ int longest_match(cur_match)
         /* Skip to next match if the match length cannot increase
          * or if the match length is less than 2:
          */
+#if (defined(UNALIGNED_OK) && MAX_MATCH == 258)
+        /* This code assumes sizeof(unsigned short) == 2. Do not use
+         * UNALIGNED_OK if your compiler uses a different size.
+         */
+        if (*(ush far *)(match+best_len-1) != scan_end ||
+            *(ush far *)match != scan_start) continue;
+
+        /* It is not necessary to compare scan[2] and match[2] since they are
+         * always equal when the other bytes match, given that the hash keys
+         * are equal and that HASH_BITS >= 8. Compare 2 bytes at a time at
+         * strstart+3, +5, ... up to strstart+257. We check for insufficient
+         * lookahead only every 4th comparison; the 128th check will be made
+         * at strstart+257. If MAX_MATCH-2 is not a multiple of 8, it is
+         * necessary to put more guard bytes at the end of the window, or
+         * to check more often for insufficient lookahead.
+         */
+        scan++, match++;
+        do {
+        } while (*(ush far *)(scan+=2) == *(ush far *)(match+=2) &&
+                 *(ush far *)(scan+=2) == *(ush far *)(match+=2) &&
+                 *(ush far *)(scan+=2) == *(ush far *)(match+=2) &&
+                 *(ush far *)(scan+=2) == *(ush far *)(match+=2) &&
+                 scan < strend);
+        /* The funny "do {}" generates better code on most compilers */
+
+        /* Here, scan <= window+strstart+257 */
+        Assert(scan <= window+(unsigned)(window_size-1), "wild scan");
+        if (*scan == *match) scan++;
+
+        len = (MAX_MATCH - 1) - (int)(strend-scan);
+        scan = strend - (MAX_MATCH-1);
+
+#else /* UNALIGNED_OK */
 
         if (match[best_len]   != scan_end  ||
             match[best_len-1] != scan_end1 ||
@@ -401,21 +522,54 @@ int longest_match(cur_match)
         len = MAX_MATCH - (int)(strend - scan);
         scan = strend - MAX_MATCH;
 
+#endif /* UNALIGNED_OK */
 
         if (len > best_len) {
             match_start = cur_match;
             best_len = len;
             if (len >= nice_match) break;
+#ifdef UNALIGNED_OK
+            scan_end = *(ush far *)(scan+best_len-1);
+#else
             scan_end1  = scan[best_len-1];
             scan_end   = scan[best_len];
+#endif
         }
     } while ((cur_match = prev[cur_match & WMASK]) > limit
              && --chain_length != 0);
 
     return best_len;
 }
+#endif /* ASMV */
 
+#ifdef DEBUG
+/* ===========================================================================
+ * Check that the match at match_start is indeed a match.
+ */
+local void check_match(start, match, length)
+    IPos start, match;
+    int length;
+{
+    /* check that the match is indeed a match */
+    if (memcmp((char*)window + match,
+                (char*)window + start, length) != EQUAL) {
+        fprintf(mesg,
+            " start %d, match %d, length %d\n",
+            start, match, length);
+        error("invalid match");
+    }
+    if (verbose > 1) {
+        fprintf(mesg,"\\[%d,%d]", start-match, length);
+#ifndef WINDLL
+        do { putc(window[start++], mesg); } while (--length != 0);
+#else
+        do { fprintf(stdout,"%c",window[start++]); } while (--length != 0);
+#endif
+    }
+}
+#else
 #  define check_match(start, match, length)
+#endif
 
 /* ===========================================================================
  * Flush the current block, with given end-of-file flag.
@@ -457,6 +611,12 @@ local void fill_window()
          */
         } else if (strstart >= WSIZE+MAX_DIST && sliding) {
 
+#ifdef FORCE_METHOD
+            /* When methods "stored" or "store_block" are requested, the
+             * current block must be flushed before sliding the window.
+             */
+            if (level <= 2) FLUSH_BLOCK(0), block_start = strstart;
+#endif
             /* By the IN assertion, the window is not empty so we can't confuse
              * more == 0 with more == 64K on a 16 bit machine.
              */
@@ -481,16 +641,24 @@ local void fill_window()
             if (dot_size > 0 && !display_globaldots) {
               /* initial space */
               if (noisy && dot_count == -1) {
+#ifndef WINDLL
                 putc(' ', mesg);
                 fflush(mesg);
+#else
+                fprintf(stdout,"%c",' ');
+#endif
                 dot_count++;
               }
               dot_count++;
               if (dot_size <= (dot_count + 1) * WSIZE) dot_count = 0;
             }
             if ((verbose || noisy) && dot_size && !dot_count) {
+#ifndef WINDLL
               putc('.', mesg);
               fflush(mesg);
+#else
+              fprintf(stdout,"%c",'.');
+#endif
               mesg_line_started = 1;
             }
         }
@@ -535,7 +703,9 @@ local uzoff_t deflate_fast()
         /* Insert the string window[strstart .. strstart+2] in the
          * dictionary, and set hash_head to the head of the hash chain:
          */
+#ifndef DEFL_UNDETERM
         if (lookahead >= MIN_MATCH)
+#endif
         INSERT_STRING(strstart, hash_head);
 
         /* Find the longest match, discarding those <= prev_length.
@@ -546,13 +716,17 @@ local uzoff_t deflate_fast()
              * of window index 0 (in particular we have to avoid a match
              * of the string with itself at the start of the input file).
              */
+#ifndef HUFFMAN_ONLY
+#  ifndef DEFL_UNDETERM
             /* Do not look for matches beyond the end of the input.
              * This is necessary to make deflate deterministic.
              */
             if ((unsigned)nice_match > lookahead) nice_match = (int)lookahead;
+#  endif
             match_length = longest_match (hash_head);
             /* longest_match() sets match_start */
             if (match_length > lookahead) match_length = lookahead;
+#endif
         }
         if (match_length >= MIN_MATCH) {
             check_match(strstart, match_start, match_length);
@@ -565,7 +739,9 @@ local uzoff_t deflate_fast()
              * is not too large. This saves time but degrades compression.
              */
             if (match_length <= max_insert_length
+#ifndef DEFL_UNDETERM
                 && lookahead >= MIN_MATCH
+#endif
                                                  ) {
                 match_length--; /* string at strstart already in hash table */
                 do {
@@ -574,6 +750,12 @@ local uzoff_t deflate_fast()
                     /* strstart never exceeds WSIZE-MAX_MATCH, so there are
                      * always MIN_MATCH bytes ahead.
                      */
+#ifdef DEFL_UNDETERM
+                    /* If lookahead < MIN_MATCH these bytes are garbage,
+                     * but it does not matter since the next lookahead bytes
+                     * will be emitted as literals.
+                     */
+#endif
                 } while (--match_length != 0);
                 strstart++;
             } else {
@@ -581,6 +763,9 @@ local uzoff_t deflate_fast()
                 match_length = 0;
                 ins_h = window[strstart];
                 UPDATE_HASH(ins_h, window[strstart+1]);
+#if MIN_MATCH != 3
+                Call UPDATE_HASH() MIN_MATCH-3 more times
+#endif
             }
         } else {
             /* No match, output a literal byte */
@@ -608,12 +793,14 @@ local uzoff_t deflate_fast()
  */
 uzoff_t deflate()
 {
-    printf("[Debug] deflate,%d\n", __LINE__);
     IPos hash_head = NIL;       /* head of hash chain */
     IPos prev_match;            /* previous match */
     int flush;                  /* set if current block must be flushed */
     int match_available = 0;    /* set if previous match exists */
     register unsigned match_length = MIN_MATCH-1; /* length of best match */
+#ifdef DEBUG
+    extern uzoff_t isize;       /* byte length of input file, for debug only */
+#endif
 
     if (level <= 3) return deflate_fast(); /* optimized for speed */
 
@@ -622,7 +809,9 @@ uzoff_t deflate()
         /* Insert the string window[strstart .. strstart+2] in the
          * dictionary, and set hash_head to the head of the hash chain:
          */
+#ifndef DEFL_UNDETERM
         if (lookahead >= MIN_MATCH)
+#endif
         INSERT_STRING(strstart, hash_head);
 
         /* Find the longest match, discarding those <= prev_length.
@@ -636,16 +825,25 @@ uzoff_t deflate()
              * of window index 0 (in particular we have to avoid a match
              * of the string with itself at the start of the input file).
              */
+#ifndef HUFFMAN_ONLY
+#  ifndef DEFL_UNDETERM
             /* Do not look for matches beyond the end of the input.
              * This is necessary to make deflate deterministic.
              */
             if ((unsigned)nice_match > lookahead) nice_match = (int)lookahead;
+#  endif
             match_length = longest_match (hash_head);
             /* longest_match() sets match_start */
             if (match_length > lookahead) match_length = lookahead;
+#endif
 
+#ifdef FILTERED
+            /* Ignore matches of length <= 5 */
+            if (match_length <= 5) {
+#else
             /* Ignore a length 3 match if it is too distant: */
             if (match_length == MIN_MATCH && strstart-match_start > TOO_FAR){
+#endif
                 /* If prev_match is also MIN_MATCH, match_start is garbage
                  * but we will ignore the current match anyway.
                  */
@@ -656,7 +854,10 @@ uzoff_t deflate()
          * match is not better, output the previous match:
          */
         if (prev_length >= MIN_MATCH && match_length <= prev_length) {
+#ifndef DEFL_UNDETERM
             unsigned max_insert = strstart + lookahead - MIN_MATCH;
+
+#endif
             check_match(strstart-1, prev_match, prev_length);
 
             flush = ct_tally(strstart-1-prev_match, prev_length - MIN_MATCH);
@@ -666,6 +867,7 @@ uzoff_t deflate()
              */
             lookahead -= prev_length-1;
             prev_length -= 2;
+#ifndef DEFL_UNDETERM
             do {
                 if (++strstart <= max_insert) {
                     INSERT_STRING(strstart, hash_head);
@@ -675,6 +877,18 @@ uzoff_t deflate()
                 }
             } while (--prev_length != 0);
             strstart++;
+#else /* DEFL_UNDETERM */
+            do {
+                strstart++;
+                INSERT_STRING(strstart, hash_head);
+                /* strstart never exceeds WSIZE-MAX_MATCH, so there are
+                 * always MIN_MATCH bytes ahead. If lookahead < MIN_MATCH
+                 * these bytes are garbage, but it does not matter since the
+                 * next lookahead bytes will always be emitted as literals.
+                 */
+            } while (--prev_length != 0);
+            strstart++;
+#endif /* ?DEFL_UNDETERM */
             match_available = 0;
             match_length = MIN_MATCH-1;
 
@@ -712,3 +926,4 @@ uzoff_t deflate()
 
     return FLUSH_BLOCK(1); /* eof */
 }
+#endif /* !USE_ZLIB */

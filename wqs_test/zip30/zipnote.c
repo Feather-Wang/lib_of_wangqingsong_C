@@ -23,6 +23,11 @@
 
 /* Calculate size of static line buffer used in write (-w) mode. */
 #define WRBUFSIZ 2047
+/* The line buffer size should be at least as large as FNMAX. */
+#if FNMAX > WRBUFSIZ
+#  undef WRBUFSIZ
+#  define WRBUFSIZ FNMAX
+#endif
 
 /* Character to mark zip entry names in the comment file */
 #define MARK '@'
@@ -52,9 +57,40 @@ struct option_struct far options[] = {
     {NULL, NULL,          o_NO_VALUE,       o_NOT_NEGATABLE, 0,    NULL} /* end has option_ID = 0 */
   };
 
+#ifdef MACOS
+#define ziperr(c, h)    zipnoteerr(c, h)
+#define zipwarn(a, b)   zipnotewarn(a, b)
+
+void zipnoteerr(int c, ZCONST char *h);
+void zipnotewarn(ZCONST char *a, ZCONST char *b);
+#endif
+
+#ifdef QDOS
+#define exit(p1) QDOSexit()
+#endif
+
 int set_filetype(out_path)
   char *out_path;
 {
+#ifdef __BEOS__
+  /* Set the filetype of the zipfile to "application/zip" */
+  setfiletype( out_path, "application/zip" );
+#endif
+
+#ifdef __ATHEOS__
+  /* Set the filetype of the zipfile to "application/x-zip" */
+  setfiletype(out_path, "application/x-zip");
+#endif
+
+#ifdef MACOS
+  /* Set the Creator/Type of the zipfile to 'IZip' and 'ZIP ' */
+  setfiletype(out_path, 'IZip', 'ZIP ');
+#endif
+
+#ifdef RISCOS
+  /* Set the filetype of the zipfile to &DDC */
+  setfiletype(out_path, 0xDDC);
+#endif
   return ZE_OK;
 }
 
@@ -139,7 +175,9 @@ local void handler(s)
 int s;                  /* signal number (ignored) */
 /* Upon getting a user interrupt, abort cleanly using ziperr(). */
 {
+#ifndef MSDOS
   putc('\n', mesg);
+#endif /* !MSDOS */
   ziperr(ZE_ABORT, "aborting");
   s++;                                  /* keep some compilers happy */
 }
@@ -172,18 +210,49 @@ local void help()
   static ZCONST char *text[] = {
 "",
 "ZipNote %s (%s)",
+#ifdef VM_CMS
+"Usage:  zipnote [-w] [-q] [-b fm] zipfile",
+#else
 "Usage:  zipnote [-w] [-q] [-b path] zipfile",
+#endif
 "  the default action is to write the comments in zipfile to stdout",
 "  -w   write the zipfile comments from stdin",
+#ifdef VM_CMS
+"  -b   use \"fm\" as the filemode for the temporary zip file",
+#else
 "  -b   use \"path\" for the temporary zip file",
+#endif
 "  -q   quieter operation, suppress some informational messages",
 "  -h   show this help    -v   show version info    -L   show software license",
 "",
 "Example:",
+#ifdef VMS
+"     define/user sys$output foo.tmp",
+"     zipnote foo.zip",
+"     edit foo.tmp",
+"     ... then you edit the comments, save, and exit ...",
+"     define/user sys$input foo.tmp",
+"     zipnote -w foo.zip",
+#else
+#ifdef RISCOS
+"     zipnote foo/zip > foo/tmp",
+"     <!Edit> foo/tmp",
+"     ... then you edit the comments, save, and exit ...",
+"     zipnote -w foo/zip < foo/tmp",
+#else
+#ifdef VM_CMS
+"     zipnote foo.zip > foo.tmp",
+"     xedit foo tmp",
+"     ... then you edit the comments, save, and exit ...",
+"     zipnote -w foo.zip < foo.tmp",
+#else
 "     zipnote foo.zip > foo.tmp",
 "     ed foo.tmp",
 "     ... then you edit the comments, save, and exit ...",
 "     zipnote -w foo.zip < foo.tmp",
+#endif /* VM_CMS */
+#endif /* RISCOS */
+#endif /* VMS */
 "",
 "  \"@ name\" can be followed by an \"@=newname\" line to change the name"
   };
@@ -211,6 +280,9 @@ local void version_info()
 
   /* Options info array */
   static ZCONST char *comp_opts[] = {
+#ifdef DEBUG
+    "DEBUG",
+#endif
     NULL
   };
 
@@ -308,7 +380,11 @@ char *s;                /* string to concatenate on a */
 }
 
 
+#ifndef USE_ZIPNOTEMAIN
 int main(argc, argv)
+#else
+int zipnotemain(argc, argv)
+#endif
 int argc;               /* number of tokens in command line */
 char **argv;            /* command line tokens */
 /* Write the comments in the zipfile to stdout, or read them from stdin. */
@@ -325,6 +401,12 @@ char **argv;            /* command line tokens */
   FILE *x;              /* input file for testing if can write it */
   struct zlist far *z;  /* steps through zfiles linked list */
 
+#ifdef THEOS
+  setlocale(LC_CTYPE, "I");
+#endif
+
+#ifdef UNICODE_SUPPORT
+# ifdef UNIX
   /* For Unix, set the locale to UTF-8.  Any UTF-8 locale is
      OK and they should all be the same.  This allows seeing,
      writing, and displaying (if the fonts are loaded) all
@@ -332,14 +414,31 @@ char **argv;            /* command line tokens */
   {
     char *loc;
 
+    /*
+      loc = setlocale(LC_CTYPE, NULL);
+      printf("  Initial language locale = '%s'\n", loc);
+    */
+
     loc = setlocale(LC_CTYPE, "en_US.UTF-8");
+
+    /*
+      printf("langinfo %s\n", nl_langinfo(CODESET));
+    */
 
     if (loc != NULL) {
       /* using UTF-8 character set so can set UTF-8 GPBF bit 11 */
       using_utf8 = 1;
+      /*
+        printf("  Locale set to %s\n", loc);
+      */
     } else {
+      /*
+        printf("  Could not set Unicode UTF-8 locale\n");
+      */
     }
   }
+# endif
+#endif
 
   /* If no args, show help */
   if (argc == 1)
@@ -357,11 +456,24 @@ char **argv;            /* command line tokens */
   zipfile = tempzip = NULL;
   tempzf = NULL;
   signal(SIGINT, handler);
+#ifdef SIGTERM              /* AMIGA has no SIGTERM */
   signal(SIGTERM, handler);
+#endif
+#ifdef SIGABRT
   signal(SIGABRT, handler);
+#endif
+#ifdef SIGBREAK
+  signal(SIGBREAK, handler);
+#endif
+#ifdef SIGBUS
   signal(SIGBUS, handler);
+#endif
+#ifdef SIGILL
   signal(SIGILL, handler);
+#endif
+#ifdef SIGSEGV
   signal(SIGSEGV, handler);
+#endif
   k = w = 0;
   for (r = 1; r < argc; r++)
     if (*argv[r] == '-') {
@@ -457,7 +569,11 @@ char **argv;            /* command line tokens */
         free((zvoid *)z->iname);
       if ((z->iname = malloc(strlen(a+1))) == NULL)
         ziperr(ZE_MEM, "was changing name");
+#ifdef EBCDIC
+      strtoasc(z->iname, a+2);
+#else
       strcpy(z->iname, a+2);
+#endif
 
 /*
  * Don't update z->nam here, we need the old value a little later.....
@@ -487,6 +603,7 @@ char **argv;            /* command line tokens */
   }
 
   /* Open output zip file for writing */
+#if defined(UNIX) && !defined(NO_MKSTEMP)
   {
     int yd;
     int i;
@@ -525,6 +642,10 @@ char **argv;            /* command line tokens */
       ZIPERR(ZE_TEMP, tempzip);
     }
   }
+#else
+  if ((tempzf = y = fopen(tempzip = tempname(zipfile), FOPW)) == NULL)
+    ziperr(ZE_TEMP, tempzip);
+#endif
 
   /* Open input zip file again, copy preamble if any */
   if ((in_file = fopen(zipfile, FOPR)) == NULL)
@@ -566,6 +687,10 @@ char **argv;            /* command line tokens */
   free((zvoid *)tempzip);
   tempzip = NULL;
   setfileattr(zipfile, t);
+#ifdef RISCOS
+  /* Set the filetype of the zipfile to &DDC */
+  setfiletype(zipfile,0xDDC);
+#endif
   free((zvoid *)zipfile);
   zipfile = NULL;
 

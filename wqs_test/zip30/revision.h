@@ -28,7 +28,9 @@
 #define DW_MINORVER    Z_MINORVER
 #define DW_PATCHLEVEL  Z_PATCHLEVEL
 
+#ifndef IZ_COMPANY_NAME               /* might be already defined... */
 #  define IZ_COMPANY_NAME "Info-ZIP"
+#endif
 
 #if !defined(WINDLL) && !defined(IZ_VERSION_SYMBOLS_ONLY)
 /* Copyright notice for binary executables--this notice only applies to
@@ -49,6 +51,10 @@ extern ZCONST char * far cryptnote[7];
 
 ZCONST char *copyright[] = {
 "Copyright (c) 1990-2008 Info-ZIP - Type '%s \"-L\"' for software license."
+/* XXX still necessary ???? */
+#ifdef AZTEC_C
+,        /* extremely lame compiler bug workaround */
+#endif
 };
 
 ZCONST char * far versinfolines[] = {

@@ -12,6 +12,7 @@
  *  zipsplit.c by Mark Adler.
  */
 #define __ZIPSPLIT_C
+
 #ifndef UTIL
 #define UTIL
 #endif

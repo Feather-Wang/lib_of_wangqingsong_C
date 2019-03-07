@@ -36,6 +36,7 @@
 #ifndef __timezone_c
 #define __timezone_c
 
+
 #include "zip.h"
 #include "timezone.h"
 #include <ctype.h>
@@ -794,7 +795,6 @@ time_t mkgmtime(tm)
 
 #if (defined(TM_YEAR_MAX) && defined(TM_MON_MAX) && defined(TM_MDAY_MAX))
 #if (defined(TM_HOUR_MAX) && defined(TM_MIN_MAX) && defined(TM_SEC_MAX))
-#error ----------------------
   if (years > TM_YEAR_MAX ||
       (years == TM_YEAR_MAX &&
        (tm->tm_yday > (YDAYS(TM_MON_MAX, TM_YEAR_MAX) + (TM_MDAY_MAX - 1)) ||

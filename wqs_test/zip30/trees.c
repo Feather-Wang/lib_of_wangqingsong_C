@@ -483,8 +483,19 @@ void ct_init(attr, method)
     file_method = method;
     cmpr_len_bits = 0L;
     cmpr_bytelen = (uzoff_t)0;
-    printf("[Debug] ct_init,%d\n", __LINE__);
+#ifdef DEBUG
+    input_len = (uzoff_t)0;
+#endif
+
     if (static_dtree[0].Len != 0) return; /* ct_init already called */
+
+#ifdef DYN_ALLOC
+    d_buf = (ush far *) zcalloc(DIST_BUFSIZE, sizeof(ush));
+    l_buf = (uch far *) zcalloc(LIT_BUFSIZE/2, 2);
+    /* Avoid using the value 64K on 16 bit machines */
+    if (l_buf == NULL || d_buf == NULL)
+        ziperr(ZE_MEM, "ct_init: out of memory");
+#endif
 
     /* Initialize the mapping length (0..255) -> length code (0..28) */
     length = 0;
@@ -1299,6 +1310,9 @@ void bi_init (tgt_buf, tgt_size, flsh_allowed)
 
     bi_buf = 0;
     bi_valid = 0;
+#ifdef DEBUG
+    bits_sent = (uzoff_t)0;
+#endif
 }
 
 #if (!defined(ASMV) || !defined(RISCOS))
