@@ -87,22 +87,11 @@ typedef unsigned long ulg;      /* unsigned 32-bit value */
 /* Set up portability */
 #include "tailor.h"
 
-#ifdef USE_ZLIB
-#  include "zlib.h"
-#endif
-
-/* In the utilities, the crc32() function is only used for UNICODE_SUPPORT. */
-#if defined(UTIL) && !defined(UNICODE_SUPPORT)
-#  define CRC_TABLE_ONLY
-#endif
-
 #define MIN_MATCH  3
 #define MAX_MATCH  258
 /* The minimum and maximum match lengths */
 
-#ifndef WSIZE
 #  define WSIZE  (0x8000)
-#endif
 /* Maximum window size = 32K. If you are really short of memory, compile
  * with a smaller WSIZE but this reduces the compression ratio for files
  * of size > WSIZE. WSIZE must be a power of two in the current implementation.
@@ -119,15 +108,9 @@ typedef unsigned long ulg;      /* unsigned 32-bit value */
  */
 
 /* Forget FILENAME_MAX (incorrectly = 14 on some System V) */
-#ifdef DOS
-#  define FNMAX 256
-#else
 #  define FNMAX 1024
-#endif
 
-#ifndef MATCH
 #  define MATCH shmatch         /* Default for pattern matching: UNIX style */
-#endif
 
 /* Structure carrying extended timestamp information */
 typedef struct iztimes {
@@ -150,8 +133,11 @@ struct zlist {
      in scanzipf_reg() depends on u being set to ver and then stepping
      through as a byte array.  Ack.  Should be fixed.  5/25/2005 EG */
   /* All the new read code does not rely on this order.  */
-  ush vem, ver, flg, how;
-  ulg tim, crc;
+  ush vem;                      /*文件头标识*/
+  ush ver;                      /*解压文件所需最低版本*/
+  ush flg;                      /*通用位标识*/
+  ush how;                      /*压缩方法*/
+  ulg tim, crc;                 /*文件时间，说明采用的crc算法*/
   uzoff_t siz, len;             /* zip64 support 08/29/2003 R.Nausedat */
   /* changed from extent to ush 3/10/2005 EG */
   ush nam, ext, cext, com;      /* offset of ext must be >= LOCHEAD */
@@ -166,19 +152,11 @@ struct zlist {
   char *iname;                  /* Internal file name after cleanup (stored in archive) */
   char *zname;                  /* External version of internal name */
   char *oname;                  /* Display version of name used in messages */
-#ifdef UNICODE_SUPPORT
   /* Unicode support */
   char *uname;                  /* UTF-8 version of iname */
   /* if uname has chars not in local char set, zuname can be different than zname */
   char *zuname;                 /* Escaped Unicode zname from uname */
   char *ouname;                 /* Display version of zuname */
-# ifdef WIN32
-  char *wuname;                 /* Converted back ouname for Win32 */
-  wchar_t *namew;               /* Windows wide character version of name */
-  wchar_t *inamew;              /* Windows wide character version of iname */
-  wchar_t *znamew;              /* Windows wide character version of zname */
-# endif
-#endif
   int mark;                     /* Marker for files to operate on */
   int trash;                    /* Marker for files to delete */
   int current;                  /* Marker for files that are current to what is on OS (filesync) */
@@ -190,14 +168,7 @@ struct flist {
   char *iname;                  /* Internal file name after cleanup */
   char *zname;                  /* External version of internal name */
   char *oname;                  /* Display version of internal name */
-#ifdef UNICODE_SUPPORT
   char *uname;                  /* UTF-8 name */
-# ifdef WIN32
-  wchar_t *namew;               /* Windows wide character version of name */
-  wchar_t *inamew;              /* Windows wide character version of iname */
-  wchar_t *znamew;              /* Windows wide character version of zname */
-# endif
-#endif
   int dosflag;                  /* Set to force MSDOS file attributes */
   uzoff_t usize;                /* usize from initial scan */
   struct flist far *far *lst;   /* Pointer to link pointing here */
@@ -279,17 +250,7 @@ struct plist {
 /* Error return codes and PERR macro */
 #include "ziperr.h"
 
-#if 0            /* Optimization: use the (const) result of crc32(0L,NULL,0) */
-#  define CRCVAL_INITIAL  crc32(0L, (uch *)NULL, 0)
-# if 00 /* not used, should be removed !! */
-#  define ADLERVAL_INITIAL adler16(0U, (uch *)NULL, 0)
-# endif /* 00 */
-#else
 #  define CRCVAL_INITIAL  0L
-# if 00 /* not used, should be removed !! */
-#  define ADLERVAL_INITIAL 1
-# endif /* 00 */
-#endif
 
 #define DOSTIME_MINIMUM         ((ulg)0x00210000L)
 #define DOSTIME_2038_01_18      ((ulg)0x74320000L)
@@ -298,42 +259,18 @@ struct plist {
 /* Public globals */
 extern uch upper[256];          /* Country dependent case map table */
 extern uch lower[256];
-#ifdef EBCDIC
-extern ZCONST uch ascii[256];   /* EBCDIC <--> ASCII translation tables */
-extern ZCONST uch ebcdic[256];
-#endif /* EBCDIC */
-#if (!defined(USE_ZLIB) || defined(USE_OWN_CRCTAB))
   extern ZCONST ulg near *crc_32_tab;
-#else
-  extern ZCONST ulg Far *crc_32_tab;
-#endif
-
-/* Are these ever used?  6/12/05 EG */
-#ifdef IZ_ISO2OEM_ARRAY         /* ISO 8859-1 (Win CP 1252) --> OEM CP 850 */
-extern ZCONST uch Far iso2oem[128];
-#endif
-#ifdef IZ_OEM2ISO_ARRAY         /* OEM CP 850 --> ISO 8859-1 (Win CP 1252) */
-extern ZCONST uch Far oem2iso[128];
-#endif
 
 extern char errbuf[FNMAX+4081]; /* Handy place to build error messages */
 extern int recurse;             /* Recurse into directories encountered */
 extern int dispose;             /* Remove files after put in zip file */
 extern int pathput;             /* Store path with name */
 
-#ifdef RISCOS
-extern int scanimage;           /* Scan through image files */
-#endif
-
 #define BEST -1                 /* Use best method (deflation or store) */
 #define STORE 0                 /* Store method */
 #define DEFLATE 8               /* Deflation method*/
 #define BZIP2 12                /* BZIP2 method */
-#ifdef BZIP2_SUPPORT
-#define LAST_KNOWN_COMPMETHOD   BZIP2
-#else
 #define LAST_KNOWN_COMPMETHOD   DEFLATE
-#endif
 
 extern int method;              /* Restriction on compression method */
 
@@ -351,6 +288,7 @@ extern int adjust;              /* Adjust the unzipsfx'd zip file */
 extern int level;               /* Compression level */
 extern int translate_eol;       /* Translate end-of-line LF -> CR LF */
 #ifdef VMS
+#error ---
    extern int vmsver;           /* Append VMS version number to file names */
    extern int vms_native;       /* Store in VMS format */
    extern int vms_case_2;       /* ODS2 file name case in VMS. -1: down. */
