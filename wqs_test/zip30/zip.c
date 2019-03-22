@@ -1584,6 +1584,7 @@ int main(argc, argv)
        OK and they should all be the same.  This allows seeing,
        writing, and displaying (if the fonts are loaded) all
        characters in UTF-8. */
+    /*设置当前系统时间*/
     {
         char *loc;
 
@@ -1619,6 +1620,7 @@ int main(argc, argv)
     init_upper();           /* build case map table */
 
     /* test if we can support large files - 9/29/04 */
+    /*判断是否支持大文件，原本在编译时会根据不同得编译选项，将不同得变量重命名为zoff_t*/
     if (sizeof(zoff_t) < 8) {
         ZIPERR(ZE_COMPERR, "LARGE_FILE_SUPPORT enabled but OS not supporting it");
     }
