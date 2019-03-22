@@ -1635,9 +1635,6 @@ int main(argc, argv)
      *    the MKS Korn Shell in place of the command line info from DOS.
      */
 
-    /* extract extended argument list from environment */
-    expand_args(&argc, &argv);
-
     /* Process arguments */
     diag("processing arguments");
     /* First, check if just the help or version screen should be displayed */
@@ -1655,6 +1652,8 @@ int main(argc, argv)
         version_info();
         EXIT(ZE_OK);
     }
+    /*将ZIPOPT和ZIP环境变量及其值，添加到argv中*/
+    /*查看源码时，运行查看，没有这两个环境变量*/
     envargs(&argc, &argv, "ZIPOPT", "ZIP");  /* get options from environment */
 
     zipfile = tempzip = NULL;
@@ -1667,23 +1666,11 @@ int main(argc, argv)
     signal(SIGILL, handler);
     signal(SIGSEGV, handler);
 
-    /* make copy of args that can use with insert_arg() used by get_option() */
+    /*将argv的内容，赋值到args，args指向的地址是在函数内malloc出来的*/
     args = copy_args(argv, 0);
 
     kk = 0;                       /* Next non-option argument type */
     s = 0;                        /* set by -@ */
-
-    /*
-       -------------------------------------------
-       Process command line using get_option
-       -------------------------------------------
-
-       Each call to get_option() returns either a command
-       line option and possible value or a non-option argument.
-       Arguments are permuted so that all options (-r, -b temp)
-       are returned before non-option arguments (zipfile).
-       Returns 0 when nothing left to read.
-       */
 
     /* set argnum = 0 on first call to init get_option */
     argnum = 0;
@@ -2290,11 +2277,12 @@ int main(argc, argv)
 
     /* do processing of command line and one-time tasks */
 
-    /* Key not yet specified.  If needed, get/verify it now. */
+    /*如果需要加密，获取密码，填充到key数组中*/
     if (key_needed) {
         if ((key = malloc(IZ_PWLEN+1)) == NULL) {
             ZIPERR(ZE_MEM, "was getting encryption password");
         }
+        /*获取密码*/
         r = encr_passwd(ZP_PW_ENTER, key, IZ_PWLEN+1, zipfile);
         if (r != IZ_PW_ENTERED) {
             if (r < IZ_PW_ENTERED)
@@ -2307,12 +2295,14 @@ int main(argc, argv)
         if ((e = malloc(IZ_PWLEN+1)) == NULL) {
             ZIPERR(ZE_MEM, "was verifying encryption password");
         }
+        /*获取校验密码*/
         r = encr_passwd(ZP_PW_VERIFY, e, IZ_PWLEN+1, zipfile);
         if (r != IZ_PW_ENTERED && r != IZ_PW_SKIPVERIFY) {
             free((zvoid *)e);
             if (r < ZE_OK) r = ZE_PARMS;
             ZIPERR(r, "was verifying encryption password");
         }
+        /*对比两次输入的内容*/
         r = ((r == IZ_PW_SKIPVERIFY) ? 0 : strcmp(key, e));
         free((zvoid *)e);
         if (r) {
@@ -2390,6 +2380,8 @@ int main(argc, argv)
 
 
     /* open log file */
+    /*无用的代码*/
+    /*打开日志文件，目前看不到有用，因为当解析命令参数的时候，只有当设置参数o_lf时，会将该参数的值设置为日志文件，但是该参数是个宏命令，其值为0x122*/
     if (logfile_path) {
         char mode[10];
         char *p;
@@ -2460,7 +2452,9 @@ int main(argc, argv)
         logall = 0;
     }
 
-
+    /*无用的代码*/
+    /*split_method需要由命令行参数o_sp指定，o_sp是宏变量，其值为0x134*/
+    /*out_path需要由命令行参数o_NON_OPTION_ARG指定，o_NON_OPTION_ARG宏变量，其值为0xFFFF*/
     if (split_method && out_path) {
         /* if splitting, the archive name must have .zip extension */
         int plen = strlen(out_path);
@@ -2478,6 +2472,8 @@ int main(argc, argv)
     }
 
 
+    /*无用的代码*/
+    /*verbose需要由命令行参数o_ve指定，o_ve是宏变量，其值为0x141*/
     if (verbose && (dot_size == 0) && (dot_count == 0)) {
         /* now default to default 10 MB dot size */
         dot_size = 10 * 0x100000;
