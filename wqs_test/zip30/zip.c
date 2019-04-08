@@ -1619,7 +1619,6 @@ int main(argc, argv)
 
     init_upper();           /* build case map table */
 
-    /* test if we can support large files - 9/29/04 */
     /*判断是否支持大文件，原本在编译时会根据不同得编译选项，将不同得变量重命名为zoff_t*/
     if (sizeof(zoff_t) < 8) {
         ZIPERR(ZE_COMPERR, "LARGE_FILE_SUPPORT enabled but OS not supporting it");
@@ -1635,7 +1634,6 @@ int main(argc, argv)
      *    the MKS Korn Shell in place of the command line info from DOS.
      */
 
-    /* Process arguments */
     diag("processing arguments");
     /* First, check if just the help or version screen should be displayed */
     if (argc == 1 && isatty(1))   /* no arguments, and output screen available */
@@ -1652,6 +1650,7 @@ int main(argc, argv)
         version_info();
         EXIT(ZE_OK);
     }
+
     /*将ZIPOPT和ZIP环境变量及其值，添加到argv中*/
     /*查看源码时，运行查看，没有这两个环境变量*/
     envargs(&argc, &argv, "ZIPOPT", "ZIP");  /* get options from environment */
@@ -1682,6 +1681,7 @@ int main(argc, argv)
        negated - option was negated with trailing -
        */
 
+    /*最后面的o_NON_OPTION_ARG必走*/
     while ((option = get_option(&args, &argcnt, &argnum,
                     &optchar, &value, &negated,
                     &fna, &optnum, 0)))
@@ -2166,10 +2166,12 @@ int main(argc, argv)
                             zipstdout();
                         } else
                         {
+                            printf("1zipfile=[%s]\n", zipfile);
                             /* name of zipfile */
                             if ((zipfile = ziptyp(value)) == NULL) {
                                 ZIPERR(ZE_MEM, "was processing arguments");
                             }
+                            printf("2zipfile=[%s]\n", zipfile);
                             /* read zipfile if exists */
                             /*
                                if ((r = readzipfile()) != ZE_OK) {
@@ -2316,12 +2318,16 @@ int main(argc, argv)
         }
     }
 
+    /*无用的代码*/
+    /*show_what_doing需要由命令行参数o_sd指定，o_sd是宏变量，其值为0x131*/
     if (show_what_doing) {
         fprintf(mesg, "sd: Command line read\n");
         fflush(mesg);
     }
 
-    /* show command line args */
+    /* 显示命令行信息 */
+    /*无用的代码*/
+    /*show_args需要由命令行参数o_sc指定，o_sc是宏变量，其值为0x130*/
     if (show_args) {
         fprintf(mesg, "command line:\n");
         for (i = 0; args[i]; i++) {
@@ -2332,6 +2338,8 @@ int main(argc, argv)
     }
 
     /* show all options */
+    /*无用的代码*/
+    /*show_options需要由命令行参数o_so指定，o_so是宏变量，其值为0x133*/
     if (show_options) {
         printf("available options:\n");
         printf(" %-2s  %-18s %-4s %-3s %-30s\n", "sh", "long", "val", "neg", "description");
@@ -2483,46 +2491,68 @@ int main(argc, argv)
     }
 
     /* done getting -R filters so convert filterlist if not done */
+    /*无用的代码*/
+    /*filterlist只有在调用add_filter()的时候才会有信息_*/
+    /*而add_filter()函数只有在特定的命令行参数时会有调用*/
     if (pcount && patterns == NULL) {
         filterlist_to_patterns();
     }
 
+    /*无用的代码*/
+    /*have_out需要由命令行参数'-O'指定*/
     if (have_out && kk == 3) {
         copy_only = 1;
         action = ARCHIVE;
     }
 
+    /*无用的代码*/
+    /*have_out需要由命令行参数'-O'指定*/
     if (have_out && namecmp(in_path, out_path) == 0) {
         sprintf(errbuf, "--out path must be different than in path: %s", out_path);
         ZIPERR(ZE_PARMS, errbuf);
     }
 
+    /*无用的代码*/
+    /*diff_mode需要由命令行参数o_DF指定，o_DF是宏变量，其值为0x110*/
     if (fix && diff_mode) {
         ZIPERR(ZE_PARMS, "can't use --diff (-DF) with fix (-F or -FF)");
     }
 
+    /*无用的代码*/
+    /*action默认值位ADD，只有在特定的参数下才会赋值为其他的操作*/
     if (action == ARCHIVE && !have_out && !show_files) {
         ZIPERR(ZE_PARMS, "-U (--copy) requires -O (--out)");
     }
 
+    /*无用的代码*/
+    /*fix默认值为0，需要参数-F才会赋值为其它的，have_out默认值为0*/
     if (fix && !have_out) {
         zipwarn("fix options -F and -FF require --out:\n",
                 "                     zip -F indamagedarchive --out outfixedarchive");
         ZIPERR(ZE_PARMS, "fix options require --out");
     }
 
+    /*无用的代码*/
+    /*fix默认值为0，需要参数-F才会赋值为其它的，copy_only默认值为0*/
     if (fix && !copy_only) {
         ZIPERR(ZE_PARMS, "no other actions allowed when fixing archive (-F or -FF)");
     }
 
+    /*无用的代码*/
+    /*diff_mode需要由命令行参数o_DF指定，o_DF是宏变量，其值为0x110*/
     if (!have_out && diff_mode) {
         ZIPERR(ZE_PARMS, "-DF (--diff) requires -O (--out)");
     }
 
+    /*无用的代码*/
+    /*diff_mode需要由命令行参数o_DF指定，o_DF是宏变量，其值为0x110*/
     if (diff_mode && (action == ARCHIVE || action == DELETE)) {
         ZIPERR(ZE_PARMS, "can't use --diff (-DF) with -d or -U");
     }
 
+    /*无用的代码*/
+    /*recurse默认值为0，需要参数'-r'和'-R'才会赋值为其它值，pcount默认值为0，只有在调用add_filter()的时候才会有信息*/
+    /*而add_filter()函数只有在特定的命令行参数时会有调用*/
     if (action != ARCHIVE && (recurse == 2 || pcount) && first_listarg == 0 &&
             !filelist && (kk < 3 || (action != UPDATE && action != FRESHEN))) {
         ZIPERR(ZE_PARMS, "nothing to select from");
@@ -2534,6 +2564,7 @@ int main(argc, argv)
        -------------------------------------
        */
 
+    /*无用的代码，如果是没有参数时启动（不一定必须是没有参数的时候），在处理完参数后就会将kk设置为4*/
     if (kk < 3) {               /* zip used as filter */
         zipstdout();
         comment_stream = NULL;
@@ -2555,6 +2586,7 @@ int main(argc, argv)
         }
     }
 
+    /*无用得代码，因为zipfile不为"-"*/
     if (zipfile && !strcmp(zipfile, "-")) {
         if (show_what_doing) {
             fprintf(mesg, "sd: Zipping to stdout\n");
@@ -2564,12 +2596,16 @@ int main(argc, argv)
     }
 
     /* Check option combinations */
+    /*无用的代码*/
+    /*special需要由命令行参数n指定*/
     if (special == NULL) {
         ZIPERR(ZE_PARMS, "missing suffix list");
     }
     if (level == 9 || !strcmp(special, ";") || !strcmp(special, ":"))
         special = NULL; /* compress everything */
 
+    /*无用的代码*/
+    /*action默认值位ADD，只有在特定的参数下才会赋值为其他的操作*/
     if (action == DELETE && (method != BEST || dispose || recurse ||
                 key != NULL || comadd || zipedit)) {
         zipwarn("invalid option(s) used with -d; ignored.","");
@@ -2584,6 +2620,8 @@ int main(argc, argv)
         comadd  = 0;
         zipedit = 0;
     }
+    /*无用的代码*/
+    /*action默认值位ADD，只有在特定的参数下才会赋值为其他的操作*/
     if (action == ARCHIVE && (method != BEST || dispose || recurse ||
                 comadd || zipedit)) {
         zipwarn("can't set method, move, recurse, or comments with copy mode.","");
@@ -2594,11 +2632,15 @@ int main(argc, argv)
         comadd  = 0;
         zipedit = 0;
     }
+    /*无用的代码*/
+    /*linkout默认值为0,需要指定参数-y，linkout才会被赋值为1*/
     if (linkput && dosify)
     {
         zipwarn("can't use -y with -k, -y ignored", "");
         linkput = 0;
     }
+    /*无用的代码*/
+    /*fix默认值为0，需要参数-F才会赋值为其它的*/
     if (fix == 1 && adjust)
     {
         zipwarn("can't use -F with -A, -F ignored", "");
@@ -2609,6 +2651,8 @@ int main(argc, argv)
         zipwarn("can't use -FF with -A, -FF ignored", "");
         fix = 0;
     }
+    /*无用的代码*/
+    /*test默认值为0，需要参数-T才会赋值为其它的*/
     if (test && zip_to_stdout) {
         test = 0;
         zipwarn("can't use -T on stdout, -T ignored", "");

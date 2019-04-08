@@ -28,9 +28,6 @@ char errbuf[FNMAX+4081];
 int recurse = 0;        /* 1=recurse into directories encountered */
 int dispose = 0;        /* 1=remove files after put in zip file */
 int pathput = 1;        /* 1=store path with name */
-#ifdef RISCOS
-int scanimage = 1;      /* 1=scan through image files */
-#endif
 int method = BEST;      /* one of BEST, DEFLATE (only), or STORE (only) */
 int dosify = 0;         /* 1=make new entries look like MSDOS */
 int verbose = 0;        /* 1=report oddities in zip file structure */
@@ -39,30 +36,12 @@ int filesync = 0;       /* 1=file sync, delete entries not on file system */
 int adjust = 0;         /* 1=adjust offsets for sfx'd file (keep preamble) */
 int level = 6;          /* 0=fastest compression, 9=best compression */
 int translate_eol = 0;  /* Translate end-of-line LF -> CR LF */
-#ifdef VMS
-   int vmsver = 0;      /* 1=append VMS version number to file names */
-   int vms_native = 0;  /* 1=store in VMS format */
-   int vms_case_2 = 0;  /* ODS2 file name case in VMS.  -1: down. */
-   int vms_case_5 = 0;  /* ODS5 file name case in VMS.  +1: preserve. */
-#endif /* VMS */
-#if defined(OS2) || defined(WIN32)
-   int use_longname_ea = 0;  /* 1=use the .LONGNAME EA as the file's name */
-#endif
 /* 9/26/04 */
 int no_wild = 0;             /* 1 = wildcards are disabled */
 int allow_regex = 0;         /* 1 = allow [list] matching */
-#ifdef WILD_STOP_AT_DIR
-   int wild_stop_at_dir = 1; /* default wildcards do not include / in matches */
-#else
    int wild_stop_at_dir = 0; /* default wildcards do include / in matches */
-#endif
 
-#ifdef UNICODE_SUPPORT
    int using_utf8 = 0;       /* 1 if current character set UTF-8 */
-# ifdef WIN32
-   int no_win32_wide = -1; /* 1 = no wide functions, like GetFileAttributesW() */
-# endif
-#endif
 
 ulg skip_this_disk = 0;
 int des_good = 0;       /* Good data descriptor found */
@@ -98,10 +77,6 @@ int volume_label = 0;         /* add volume label */
 int dirnames = 1;             /* include directory entries by default */
 int filter_match_case = 1;    /* 1=match case when filter() */
 int diff_mode = 0;            /* 1=require --out and only store changed and add */
-#if defined(WIN32)
-int only_archive_set = 0;     /* include only files with DOS archive bit set */
-int clear_archive_bits = 0;   /* clear DOS archive bit of included files */
-#endif
 int linkput = 0;              /* 1=store symbolic links as such */
 int noisy = 1;                /* 0=quiet operation */
 int extra_fields = 1;         /* 0=create minimum, 1=don't copy old, 2=keep old */
@@ -114,36 +89,17 @@ int show_files = 0;           /* show files to operate on and exit (=2 log only)
 
 int output_seekable = 1;      /* 1 = output seekable 3/13/05 EG */
 
-#ifdef ZIP64_SUPPORT          /* zip64 support 10/4/03 */
   int force_zip64 = -1;       /* if 1 force entries to be zip64, 0 force not zip64 */
                               /* mainly for streaming from stdin */
   int zip64_entry = 0;        /* current entry needs Zip64 */
   int zip64_archive = 0;      /* if 1 then at least 1 entry needs zip64 */
-#endif
 
-#ifdef NTSD_EAS
-  int use_privileges = 0;     /* 1=use security privilege overrides */
-#endif
-#ifndef RISCOS
-#ifndef QDOS
-#ifndef TANDEM
 char *special = ".Z:.zip:.zoo:.arc:.lzh:.arj"; /* List of special suffixes */
-#else /* TANDEM */
-char *special = " Z: zip: zoo: arc: lzh: arj"; /* List of special suffixes */
-#endif
-#else /* QDOS */
-char *special = "_Z:_zip:_zoo:_arc:_lzh:_arj"; /* List of special suffixes */
-#endif
-#else /* RISCOS */
-char *special = "DDC:D96:68E";
-#endif /* ?RISCOS */
 char *key = NULL;       /* Scramble password if scrambling */
 char *tempath = NULL;   /* Path for temporary files */
 FILE *mesg;             /* stdout by default, stderr for piping */
 
-#ifdef UNICODE_SUPPORT
  int utf8_force = 0;    /* 1=force storing UTF-8 as standard per AppNote bit 11 */
-#endif
 int unicode_escape_all = 0; /* 1=escape all non-ASCII characters in paths */
 int unicode_mismatch = 1; /* unicode mismatch is 0=error, 1=warn, 2=ignore, 3=no */
 
@@ -212,13 +168,7 @@ int noisy_splits = 0;             /* note when splits are being created */
 int mesg_line_started = 0;        /* 1=started writing a line to mesg */
 int logfile_line_started = 0;     /* 1=started writing a line to logfile */
 
-#ifdef WIN32
-  int nonlocal_name = 0;          /* Name has non-local characters */
-  int nonlocal_path = 0;          /* Path has non-local characters */
-#endif
-#ifdef UNICODE_SUPPORT
   int use_wide_to_mb_default = 0;
-#endif
 
 struct zlist far *zfiles = NULL;  /* Pointer to list of files in zip file */
 /* The limit for number of files using the Zip64 format is 2^64 - 1 (8 bytes)
@@ -232,9 +182,7 @@ int zipfile_exists = 0;           /* 1 if zipfile exists */
 ush zcomlen;                      /* Length of zip file comment */
 char *zcomment = NULL;            /* Zip file comment (not zero-terminated) */
 struct zlist far **zsort;         /* List of files sorted by name */
-#ifdef UNICODE_SUPPORT
   struct zlist far **zusort;      /* List of files sorted by zuname */
-#endif
 
 /* Files to operate on that are not in zip file */
 struct flist far *found = NULL;   /* List of names found */
@@ -247,7 +195,3 @@ struct plist *patterns = NULL;  /* List of patterns to be matched */
 unsigned pcount = 0;            /* number of patterns */
 unsigned icount = 0;            /* number of include only patterns */
 unsigned Rcount = 0;            /* number of -R include patterns */
-
-#ifdef IZ_CHECK_TZ
-int zp_tz_is_valid;     /* signals "timezone info is available" */
-#endif

@@ -122,4 +122,7 @@ echo "{} 5.7 --> str = $str, str7 = $str7"
 str8=${str?myfile.txt}
 echo "{} 5.8 --> str = $str, str8 = $str8"
 
-
+# 用法6：字符串转换数字。10表示10进制，变量不用{}括起来也可以
+StartHour=09
+StartMinute=09
+StartTime=$((10#${StartHour} * 60 + 10#$StartMinute))
