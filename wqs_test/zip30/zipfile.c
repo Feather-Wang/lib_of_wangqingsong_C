@@ -1570,7 +1570,13 @@ int readlocal(localz, z)
 
 local char sigbuf[4];   /* signature found */
 
-
+/*
+满足以下条件则返回1，否则返回0，sigbuf是全局变量
+1、如果第一个是0x50，就将其存储到sigbuf[0]
+2、如果第二个是0x4b，就将其存储到sigbuf[1]
+3、如果第三个既不是0x50，且其小于16，则将其存储到sigbuf[2]
+4、如果第四个同第三个判断条件
+*/
 local int find_next_signature(f)
     FILE *f;
 {
@@ -1641,7 +1647,10 @@ local int find_next_signature(f)
  *
  * Return 0 if not found.
  */
-
+/*
+查找指定的signature
+成功：1，失败：0
+*/
 local int find_signature(f, signature)
     FILE *f;
     ZCONST char *signature;
@@ -2556,18 +2565,18 @@ of these structures.
     struct zlist far *z;        /* current zip entry structure */
 
 
-    /* open the zipfile */
+    /*打开zip文件*/
     if ((in_file = zfopen(in_path, FOPR)) == NULL) {
         zipwarn("could not open input archive", in_path);
         return ZE_OPEN;
     }
 
-    /* look for End Of Central Directory Record */
-
-    /* In a valid Zip archive, the EOCDR can be at most (64k-1 + ENDHEAD + 4)
+    /* In a valid Zip archive, the EOCDR(End Of Central Directory Record) can be at most (64k-1 + ENDHEAD + 4)
        bytes (=65557 bytes) from the end of the file.
        We back up 128k, to allow some junk being appended to a Zip file.
        */
+    /*下面的这个判断，主要是判断文件是否为一个合格的ZIP归档文件*/
+    /*在一个有效的ZIP归档文件中，至少有65557个字节*/
     if ((zfseeko(in_file, -0x20000L, SEEK_END) != 0) ||
             /* Some fseek() implementations (e.g. MSC 8.0 16-bit) fail to signal
                an error when seeking before the beginning of the file.
@@ -2584,7 +2593,8 @@ of these structures.
         }
     }
 
-    /* find EOCD Record signature */
+    /*查找EOCD记录唯一标识*/
+    /* find EOCD(End Of Central Directory) Record signature */
     if (!find_signature(in_file, "PK\05\06")) {
         /* No End Of Central Directory Record */
         fclose(in_file);
@@ -2612,6 +2622,7 @@ of these structures.
        The below assumes the signature does not appear in the assumed ASCII text
        .ZIP file comment.
        */
+    /*如果存在多个"PK\05\06"标识的话，下面的while循环就是要找到最后一个"PK\05\06"*/
     while (find_signature(in_file, "PK\05\06")) {
         /* previous one was not the one */
         eocdr_offset = (uzoff_t) zftello(in_file);
@@ -2620,33 +2631,36 @@ of these structures.
     /* found EOCDR */
     /* format is
        end of central dir signature     4 bytes  (0x06054b50)
-       number of this disk              2 bytes
+       number of this disk              2 bytes     当前磁盘编号
        number of the disk with the
-       start of the central directory  2 bytes
+       start of the central directory  2 bytes      核心目录开始位置的磁盘编号
        total number of entries in the
-       central directory on this disk  2 bytes
+       central directory on this disk  2 bytes      该磁盘上所记录的核心目录的总数
        total number of entries in
-       the central directory           2 bytes
-       size of the central directory    4 bytes
+       the central directory           2 bytes      核心目录结构总数
+       size of the central directory    4 bytes     核心目录的大小
        offset of start of central
        directory with respect to
-       the starting disk number        4 bytes
-       .ZIP file comment length         2 bytes
-       .ZIP file comment        (variable size)
+       the starting disk number        4 bytes      核心目录开始位置相对于archive开始的位移
+       .ZIP file comment length         2 bytes     注释长度
+       .ZIP file comment        (variable size)     注释内容
        */
-
+    /*跳转到EOCDR所在的位置*/
     if (zfseeko(in_file, eocdr_offset, SEEK_SET) != 0) {
         fclose(in_file);
         in_file = NULL;
         zipwarn("unable to seek in input file ", in_path);
         return ZE_READ;
     }
-
+    
+    /*读取EOCDR的头部信息，这里的头部信息不包含0x06054b50标识*/
     /* read the EOCDR */
     s = fread(scbuf, 1, ENDHEAD, in_file);
 
     /* the first field should be number of this (the last) disk */
+    /*获取当前磁盘编号*/
     eocdr_disk = (ulg)SH(scbuf);
+    /*?不知道为什么当前磁盘编号+1要赋值给该磁盘上所记录的核心目录的总数*/
     total_disks = eocdr_disk + 1;
 
     /* Assume EOCDR disk is this disk.  If a lot of disks, the Zip64 field
@@ -2656,11 +2670,16 @@ of these structures.
     current_in_disk = total_disks - 1;
 
     /* Central Directory disk, offset, and total entries */
+    /*核心目录开始位置的磁盘编号*/
     in_cd_start_disk = (ulg)SH(scbuf + ENDBEG);
+    /*核心目录开始位置相对于achive的相对位移*/
     in_cd_start_offset = (uzoff_t)LG(scbuf + ENDOFF);
+    /*核心目录结构总数*/
     cd_total_entries = (uzoff_t)SH(scbuf + ENDTOT);
+    /*核心目录的大小*/
     cd_total_size = (uzoff_t)LG(scbuf + ENDSIZ);
 
+    /*获取注释内容长度，再根据长度读取注释内容*/
     /* length of zipfile comment */
     zcomlen = SH(scbuf + ENDCOM);
     if (zcomlen)
@@ -2676,6 +2695,7 @@ of these structures.
         zcomment[zcomlen] = '\0';
     }
 
+    /*如果核心目录结构总数为0，则表示没有压缩文件，退出*/
     if (cd_total_entries == 0) {
         /* empty archive */
 
@@ -2685,6 +2705,8 @@ of these structures.
     }
 
     /* if total disks is other than 1 then multi-disk archive */
+    /*如果磁盘总数不为1，表示应该是多磁盘归档文件*/
+    /*判断归档文件的后缀是否为".ZIP"*/
     if (total_disks != 1) {
         /* zipfile name must end in .zip for split archives */
         int plen = strlen(in_path);
@@ -3497,12 +3519,15 @@ int readzipfile()
     zipfile_exists = 0;
 
     /* If zip file exists, read headers and check structure */
+    /*如果存在zip文件信息，且不为'-'*/
+    /*打开zip文件，打开成功，则readable为1*/
     readable = (zipfile != NULL && *zipfile && strcmp(zipfile, "-"));
     if (readable) {
         readable = ((f = zfopen(zipfile, FOPR)) != NULL);
     }
 
     /* skip check if streaming */
+    /*如果文件存在，则设置zipfile_exists=1*/
     if (!readable) {
         if (!zip_to_stdout && fix != 2 && strcmp(in_path, out_path)) {
             /* If -O used then in_path must exist */

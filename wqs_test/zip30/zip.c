@@ -387,6 +387,7 @@ void zipmessage_nl(a, nl)
     }
 }
 
+/*将内容输出到mesg指向的文件描述符，mesg在程序开头指向stdout*/
 void zipmessage(a, b)
     ZCONST char *a, *b;     /* message strings juxtaposed in output */
     /* Print a message to mesg and flush.  Also write to log file if
@@ -2657,19 +2658,28 @@ int main(argc, argv)
         test = 0;
         zipwarn("can't use -T on stdout, -T ignored", "");
     }
+
+    /*无用的代码*/
+    /*split_method需要由命令行参数o_sp指定，o_sp是宏变量，其值为0x134*/
     if (split_method && (fix || adjust)) {
         ZIPERR(ZE_PARMS, "can't create split archive while fixing or adjusting\n");
     }
     if (split_method && (d || zip_to_stdout)) {
         ZIPERR(ZE_PARMS, "can't create split archive with -d or -g or on stdout\n");
     }
+    /*无用的代码*/
+    /*filesync需要由命令行参数o_FS指定，o_FS是宏变量，其值为0x117*/
     if ((action != ADD || d) && filesync) {
         ZIPERR(ZE_PARMS, "can't use -d, -f, -u, -U, or -g with filesync -FS\n");
     }
+    /*无用的代码*/
+    /*zip_to_stdout不为1，只有一个地方设置该值为1，这个地方不会被执行到*/
     if ((action != ADD || d) && zip_to_stdout) {
         ZIPERR(ZE_PARMS, "can't use -d, -f, -u, -U, or -g on stdout\n");
     }
 
+    /*无用的代码*/
+    /*fix默认值为0，需要参数-F才会赋值为其它的*/
     if (noisy) {
         if (fix == 1)
             zipmessage("Fix archive (-F) - assume mostly intact archive", "");
@@ -2681,14 +2691,15 @@ int main(argc, argv)
 
     /* Now read the zip file here instead of when doing args above */
     /* Only read the central directory and build zlist */
+    /*无用的代码*/
+    /*show_what_doing需要由命令行参数o_sd指定，o_sd是宏变量，其值为0x131*/
     if (show_what_doing) {
         fprintf(mesg, "sd: Reading archive\n");
         fflush(mesg);
     }
 
-
-
-
+    /*无用的代码*/
+    /*fix默认值为0，需要参数-F才会赋值为其它的*/
     /* If -FF we do it all here */
     if (fix == 2) {
 
